@@ -1,0 +1,32 @@
+{
+    "name": "zouxiang0639/thinkphp-cms",
+    "description": "the thinkphp5 cms",
+    "type": "project",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "zouxiang",
+            "email": "542506511@qq.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "topthink/framework": "^5.0"
+    },
+    "require-dev": {
+        "zouxiang0639/thinkcms-auth": "^1.0",
+        "zouxiang0639/form-builder":"^1.0",
+        "topthink/think-image":"^1.0",
+        "topthink/think-migration":"^1.0",
+        "topthink/think-captcha":"^1.0",
+        "phpoffice/phpexcel": "^1.8",
+        "phpmailer/phpmailer": "~5.2",
+        "zircote/swagger-php": "^2.0"
+    },
+    "extra": {
+        "think-path": "thinkphp"
+    },
+    "config": {
+        "preferred-install": "dist"
+    }
+}
