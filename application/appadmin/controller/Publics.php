@@ -45,7 +45,7 @@ class Publics extends Controller
 
                 //手动加入日志
                 $auth = new Auth();
-                $auth->createLog('管理员 {name} 的进入后台了,','后台登录');
+                $auth->createLog('管理员 {admin_name} 进入后台了,','后台登录');
 
                 return $this->redirect('index/index');
             }

@@ -9,10 +9,23 @@ class AdminModel extends Model
     // 设置完整的数据表（包含前缀）
     protected $name = 'admin';
 
+    protected $type = [
+        'role' => 'array'
+    ];
+
     //初始化属性
     protected function initialize()
     {
 
+    }
+
+    /**
+     * 获取器 last_login_ip  long2ip 转换Ip地址
+     *
+     * @return string
+     */
+    public function getLastLoginIpAttr($value,$data){
+        return long2ip($value);
     }
 
     /**

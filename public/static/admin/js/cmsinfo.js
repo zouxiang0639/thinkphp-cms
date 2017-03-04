@@ -66,22 +66,22 @@
 
     });
 
-
     //form表达提交
     $(".ajax-post").click(function(){
 
-        var d,ajaxCallUrl,postUrl;
+        var data,ajaxCallUrl,postUrl;
 
-        d =$(this).parents('.form-horizontal');
+        d = $(this).parents('.form-horizontal');
         postUrl = $(this).attr('post-url');
 
         //按钮上的url优先
         ajaxCallUrl = postUrl ? postUrl : d.attr('action');
 
-        d.ajaxSubmit({
-            type:'post',
-            url:ajaxCallUrl,
-            dataType:  'json',
+        $.ajax({
+            url : ajaxCallUrl,
+            type : 'post',
+            dataType : 'json',
+            data : d.serialize(),
             success: function(json) {
                 if(json.code == 1){
 
