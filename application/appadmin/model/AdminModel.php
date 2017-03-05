@@ -1,10 +1,9 @@
 <?php
 namespace app\appadmin\model;
 
-use think\Model;
 use app\common\tool\Tool;
 
-class AdminModel extends Model
+class AdminModel extends BasicModel
 {
     // 设置完整的数据表（包含前缀）
     protected $name = 'admin';
