@@ -1,5 +1,5 @@
 <?php
-namespace app\appadmin\model;
+namespace app\common\model;
 
 use app\common\tool\Tool;
 

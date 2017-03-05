@@ -1,7 +1,7 @@
 <?php
 namespace app\appadmin\controller;
 
-use app\appadmin\model\ConfigureModel;
+use app\common\model\ConfigureModel;
 use app\common\tool\Tool;
 use think\Config;
 
