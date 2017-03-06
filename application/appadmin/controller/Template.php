@@ -87,9 +87,10 @@ class Template extends BasicController
      */
     public function edit()
     {
+
         $info = TemplateModel::get($this->id);
         if(empty($info)){
-            return abort(lang('404 not found'));
+            return abort(404, lang('404 not found'));
         }
         $info['groups'] = self::$groups;
         $info['types']  = self::$type;
@@ -116,7 +117,7 @@ class Template extends BasicController
             //更新数据库
             $update = TemplateModel::get($this->id);
             if(empty($update)){
-                return abort(lang('404 not found'));
+                return abort(404, lang('404 not found'));
             }
             if($update->save($post)){
                 return $this->success(lang('Update success'), url($this->url));
@@ -125,7 +126,7 @@ class Template extends BasicController
             }
         }
 
-        return abort(lang('404 not found'));
+        return abort(404, lang('404 not found'));
     }
 
     /**
@@ -136,7 +137,7 @@ class Template extends BasicController
         if($this->request->isPost() && !empty($this->id)){
             $delete  = TemplateModel::get($this->id);
             if(empty($delete)){
-                return abort(lang('404 not found'));
+                return abort(404, lang('404 not found'));
             }
             if($delete->delete()){
                 return $this->success(lang('delete success'), url($this->url));
