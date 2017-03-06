@@ -2,7 +2,6 @@
 use \app\common\tool\Tool;
 ?>
 <div class="bs-example">
-
     <table class="table table-bordered">
         <tbody>
         <tr>
@@ -18,7 +17,6 @@ use \app\common\tool\Tool;
                 <?=Tool::get('form')->select('type', $info['class'], object_get($info,'type'), ['class'=>"form-control text"] )?>
             </td>
         </tr>
-
         <tr>
             <th>配置名称</th>
             <th>
@@ -26,7 +24,6 @@ use \app\common\tool\Tool;
                 <span class="form-required">*</span><span class="span-text">只能是英文命名</span>
             </th>
         </tr>
-
         <tr>
             <th>渲染类型</th>
             <td>
@@ -48,10 +45,8 @@ use \app\common\tool\Tool;
         </tbody>
     </table>
 </div>
-
-
 <div class="form-actions col-sm-12">
-  <button class="btn btn-primary js-ajax-submit" type="submit">提交</button>
+  <!--<button class="btn btn-primary js-ajax-submit" type="submit">提交</button>-->
     <button type="button" class="btn btn-primary ajax-post " autocomplete="off">
         保存
     </button>

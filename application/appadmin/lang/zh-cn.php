@@ -14,6 +14,8 @@ return [
     'Add failed'                => '增加失败',
     'Edit success'              => '更新成功',
     'Edit failed'               => '更新失败',
+    'Update success'            => '更新成功',
+    'Update failed'             => '更新失败',
     'Delete success'            => '删除成功',
     'Delete failed'             => '删除失败',
     'Ratify success'            => '启用成功',
