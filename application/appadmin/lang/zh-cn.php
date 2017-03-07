@@ -20,6 +20,8 @@ return [
     'Delete failed'             => '删除失败',
     'Ratify success'            => '启用成功',
     'Ratify failed'             => '启用失败',
+    'Sort success'              => '排序成功',
+    'Sort failed'               => '没有变化',
     'Forbidden success'         => '禁用成功',
     'Forbidden failed'          => '禁用失败',
     'Clear data success'        => '数据清空成功',
