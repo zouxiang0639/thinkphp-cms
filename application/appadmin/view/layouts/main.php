@@ -7,10 +7,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title><?php echo isset($navTabs['title'])?$navTabs['title']:'后台操作系统'?></title>
-
+    <script type="text/javascript">
+        //全局变量
+        var GV = {
+            ROOT: "/appadmin/",
+            WEB_ROOT: "/static",
+            JS_ROOT: "/default/",
+            APP:'Portal'/*当前应用名*/
+        };
+    </script>
     <link href="__PublicAdmin__/css/bootstrap.min.css" rel="stylesheet">
     <link href="__PublicAdmin__/css/site.css" rel="stylesheet">
     <script src="__PublicAdmin__/js/jquery.min.js"></script>
+    <script src="__PublicDefault__/headjs.js"></script>
 
 </head>
 
@@ -26,11 +35,10 @@
     <div id="alert"></div>
     [__REPLACE__]
 </div>
-
+<script src="__PublicAdmin__/js/common.js"></script>
 
 <script src="__PublicAdmin__/js/cmsinfo.js"></script>
 <script src="__PublicDefault__/js/jquery-form.js" type="text/javascript"></script>
-
 <script src="__PublicAdmin__/js/bootstrap.min.js"></script>
 </body>
 </html>

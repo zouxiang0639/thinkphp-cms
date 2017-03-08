@@ -1,10 +1,13 @@
 <?php
 use app\common\tool\Tool;
 ?>
+
+<link href="__PublicDefault__/artDialog/skins/default.css" rel="stylesheet" />
 <div class="bs-example">
     <!--右侧-->
     <div class="col-sm-9">
         <table class="table table-bordered">
+
             <tr>
                 <th>标题</th>
                 <th>
@@ -15,7 +18,7 @@ use app\common\tool\Tool;
             <tr>
                 <th width="150">前端</th>
                 <td>
-                    <?=Tool::get('form')->select('terminal', $enum['terminal'], '', ['class' => 'form-control text'])?>
+                    <?=Tool::get('form')->select('terminal', $enum['terminal'], object_get($info, 'terminal'), ['class' => 'form-control text'])?>
                     <span class="form-required">*</span>
                 </td>
             </tr>
@@ -67,18 +70,20 @@ use app\common\tool\Tool;
     <div class="col-sm-3">
         <table class="table table-bordered">
             <tr>
+                <th>缩略图</th>
+            </tr>
+            <tr>
+                <th>
+                    <?=Tool::get('form')->uploadPicture('picture', object_get($info, 'picture'))?>
+                </th>
+            </tr>
+            <tr>
                 <th>可见性</th>
             </tr>
             <tr>
                 <th>
                     <?=Tool::get('form')->select('display', $enum['display'], '', ['class' => 'form-control text'])?>
                 </th>
-            </tr>
-            <tr>
-                <th>排序</th>
-            </tr>
-            <tr>
-                <th> <input type="text" class="form-control text" name="sort" value="{$info.sort ?? '0'}"></th>
             </tr>
             <tr>
                 <th>关键字</th>
@@ -131,6 +136,6 @@ use app\common\tool\Tool;
             }
         });
         $("#group").trigger("change");
-    })
-</script>
+    });
 
+</script>

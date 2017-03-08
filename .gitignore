@@ -4,4 +4,4 @@ composer.lock
 thinkphp
 vendor
 runtime/
-
+public/uploads/

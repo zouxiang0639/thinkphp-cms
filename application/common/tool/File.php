@@ -9,8 +9,6 @@ class File extends \think\File
         parent::__construct($filename, $mode);
     }
 
-
-
     /**
      * 数据写入文件
      *
@@ -52,4 +50,62 @@ class File extends \think\File
         return $str;
     }
 
+    /**
+     * 图片上传
+     *
+     * @param  object  $request
+     * @param  string  $arr
+     * @return array
+     */
+    public function uploadPicture($request, $name)
+    {
+
+        // 获取表单上传文件
+        $file = $request->file($name);
+
+        if (empty($file)) {
+            return [
+                'code'      => 0,
+                'message'   => '请选择上传文件',
+            ];
+        }
+        $type   = self::fileType('img');
+
+        // 移动到框架应用根目录/public/uploads/ 目录下
+        $info = $file->validate(['ext' => $type['ext']])->move(ROOT_PATH . 'public'.$type['path']);
+
+        if ($info) {
+
+            // 上传失败成功
+            return [
+                'hash'      => $info->hash(),
+                'saveName'  => $type['path'].$info->saveName,
+                'info'      => $info->info,
+                'code'      => 1
+            ];
+        } else {
+            // 上传失败获取错误信息
+            return [
+                'code'      => 0,
+                'message'   => $file->getError(),
+            ];
+        }
+
+    }
+
+
+    /**
+     *  文件上传类型
+     *
+     * @param  string  $name
+     * @return array
+     */
+    public function fileType($name)
+    {
+        $path   = '/uploads'.DS;
+        switch($name){
+            case 'img':
+                return ['path' => $path.'img/', 'ext' => 'jpg,png'];
+        }
+    }
 }
