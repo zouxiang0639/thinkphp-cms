@@ -35,4 +35,20 @@ class Form extends FormBuilder
                         \" value='取消图片'>";
         return $html;
     }
+
+    /**
+     * 编辑器
+     *
+     * @param  string  $name
+     * @param  string  $value
+     * @param  array   $options
+     * @return string
+     */
+    public function editor($name, $value = '', $options = [])
+    {
+        return  "<textarea name='{$name}'  id='{$name}' class='form-control'>{$value}</textarea>
+                <script>
+                    CKEDITOR.replace('{$name}');
+                </script>";
+    }
 }

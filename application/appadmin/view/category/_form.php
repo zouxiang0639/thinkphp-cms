@@ -1,8 +1,9 @@
 <?php
 use app\common\tool\Tool;
 ?>
-
 <link href="__PublicDefault__/artDialog/skins/default.css" rel="stylesheet" />
+<script src="__PublicDefault__/ckeditor/ckeditor.js"></script>
+
 <div class="bs-example">
     <!--右侧-->
     <div class="col-sm-9">
@@ -82,7 +83,7 @@ use app\common\tool\Tool;
             </tr>
             <tr>
                 <th>
-                    <?=Tool::get('form')->select('display', $enum['display'], '', ['class' => 'form-control text'])?>
+                    <?=Tool::get('form')->select('display', $enum['display'], object_get($info, 'display'), ['class' => 'form-control text'])?>
                 </th>
             </tr>
             <tr>
@@ -109,7 +110,7 @@ use app\common\tool\Tool;
             <tr>
                 <th width="150">文章内容</th>
                 <th>
-                    <textarea name="content" class="form-control "  rows="5">{$info.content ?? ''}</textarea>
+                    <?=Tool::get('form')->editor('content', object_get($info, 'content'))?>
                 </th>
             </tr>
         </table>
@@ -122,7 +123,6 @@ use app\common\tool\Tool;
     </button>
     <a class="btn btn-default active" href="JavaScript:history.go(-1)">返回</a>
 </div>
-
 <script>
     $(function(){
         $("#group").change(function() {

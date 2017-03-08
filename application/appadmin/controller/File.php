@@ -48,7 +48,16 @@ class File extends BasicController
 
                 ];
             }
-            return json($json);
+
+            //图片上传的途径
+            switch($this->request->param('type')){
+                case 'editor': //编辑器
+                    return "<script type='text/javascript'>window.parent.CKEDITOR.tools.callFunction({$_REQUEST["CKEditorFuncNum"]},'".$data['saveName']."','');</script>";
+                case 'onePicture': //单张图片
+                    return json($json);
+                default:
+                    return abort(404, lang('404 not found'));
+            }
         }
         $this->view->engine->layout(false);
         $info   = [
