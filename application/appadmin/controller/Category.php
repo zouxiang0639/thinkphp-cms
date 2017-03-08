@@ -141,8 +141,7 @@ class Category extends BasicController
             if(empty($query)){
                 return abort(404, lang('404 not found'));
             }
-            dump($post);
-            dump($query);die;
+
             //修改数据库
             if($query->save($post)){
                 return $this->success(lang('Update success'),$this->url);
