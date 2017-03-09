@@ -25,9 +25,9 @@ if ($('a.js-dialog').length) {
  */
 function upload_one_image(dialog_title, input_selector, extra_params, app) {
     open_upload_dialog(dialog_title, function (dialog, files) {
-        $(input_selector).val(files['filepath']);
-        $(input_selector + '-preview').attr('src', files['preview_url']);
-        $(input_selector + '-name').val(files['name']);
+        $(input_selector).val(files[0].filepath);
+        $(input_selector + '-preview').attr('src', files[0].preview_url);
+        $(input_selector + '-name').val(files[0].name);
     }, extra_params, 0, 'image', app);
 }
 
@@ -44,9 +44,9 @@ function open_upload_dialog(dialog_title,callback,extra_params,multi,filetype,ap
     multi = multi?1:0;
     filetype = filetype?filetype:'image';
     app = app?app:GV.APP;
-    var params = '&multi='+multi+'&filetype='+filetype+'&app='+app ;
+    var params = '?multi='+multi+'&filetype='+filetype+'&app='+app+'&type=inputImgae';
     Wind.use("artDialog","iframeTools",function(){
-        art.dialog.open(GV.ROOT+'file/uploadPicture?g=asset&m=asset&a=plupload'  + params, {
+        art.dialog.open(GV.ROOT+'file/uploadPicture'  + params, {
             title: dialog_title,
             id: new Date().getTime(),
             width: '650px',
@@ -68,6 +68,50 @@ function open_upload_dialog(dialog_title,callback,extra_params,multi,filetype,ap
                 }
             },
             cancel: true
+        });
+    });
+}
+
+/**
+ * 多图上传
+ * @param dialog_title 上传对话框标题
+ * @param container_selector 图片容器
+ * @param item_tpl_wrapper_id 单个图片html模板容器id
+ * @param extra_params 额外参数，object
+ * @param app  应用名,CMF 的应用名
+ */
+function upload_multi_image(dialog_title, container_selector, item_tpl_wrapper_id, extra_params, app) {
+    open_upload_dialog(dialog_title, function (dialog, files) {
+        var tpl = $('#' + item_tpl_wrapper_id).html();
+        var html = '';
+        $.each(files, function (i, item) {
+            var itemtpl = tpl;
+            itemtpl = itemtpl.replace(/\{id\}/g, item.id);
+            itemtpl = itemtpl.replace(/\{filepath\}/g, item.filepath);
+            itemtpl = itemtpl.replace(/\{name\}/g, item.name);
+            html += itemtpl;
+        });
+        $(container_selector).append(html);
+
+    }, extra_params, 1, 'image', app);
+}
+
+/**
+ * 查看图片对话框
+ * @param img 图片地址
+ */
+function image_preview_dialog(img) {
+    Wind.use("artDialog", function () {
+        art.dialog({
+            title: '图片查看',
+            fixed: true,
+            width: "420px",
+            height: '420px',
+            id: "image_preview_" + img,
+            lock: true,
+            background: "#CCCCCC",
+            opacity: 0,
+            content: '<img src="' + img + '" />'
         });
     });
 }

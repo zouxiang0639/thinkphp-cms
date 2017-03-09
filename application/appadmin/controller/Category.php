@@ -83,7 +83,7 @@ class Category extends BasicController
 
 
         if($this->request->isPost()){
-            $post = $this->request->post();
+            $post   = CategoryModel::recombinantArray($this->request->post(), 'pictures');
 
             //数据验证
             $result = $this->validate($post, $this->validate);
@@ -128,7 +128,8 @@ class Category extends BasicController
 
         //edit_post 数据处理
         if($this->request->isPost()){
-            $post   = $this->request->post();
+
+            $post   = CategoryModel::recombinantArray($this->request->post(), 'photos');
 
             //数据验证
             $result = $this->validate($post,$this->validate);

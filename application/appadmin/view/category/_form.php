@@ -65,6 +65,12 @@ use app\common\tool\Tool;
                     <textarea name="comment" class="form-control "  rows="5">{$info.comment ?? ''}</textarea>
                 </th>
             </tr>
+            <tr>
+                <th>相册图集</th>
+                <th>
+                    <?=Tool::get('form')->multiImage('photos', object_get($info, 'photos'))?>
+                </th>
+            </tr>
         </table>
     </div>
 <!--    左侧-->
@@ -75,7 +81,7 @@ use app\common\tool\Tool;
             </tr>
             <tr>
                 <th>
-                    <?=Tool::get('form')->uploadPicture('picture', object_get($info, 'picture'))?>
+                    <?=Tool::get('form')->oneImage('picture', object_get($info, 'picture'))?>
                 </th>
             </tr>
             <tr>

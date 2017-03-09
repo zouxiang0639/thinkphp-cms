@@ -1,6 +1,8 @@
 <?php
 namespace app\common\tool;
 
+use app\common\model\FileModel;
+
 class File extends \think\File
 {
 
@@ -51,60 +53,84 @@ class File extends \think\File
     }
 
     /**
-     * 图片上传
+     * 文件上传
      *
      * @param  object  $request
      * @param  string  $arr
+     * @param  string  $type
      * @return array
      */
-    public function uploadPicture($request, $name)
+    public function fileUpload($request, $name, $type)
     {
 
         // 获取表单上传文件
         $file = $request->file($name);
 
+        //没有文件返回错误
         if (empty($file)) {
             return [
                 'code'      => 0,
-                'message'   => '请选择上传文件',
+                'msg'       => '请选择上传文件',
             ];
         }
-        $type   = self::fileType('img');
 
-        // 移动到框架应用根目录/public/uploads/ 目录下
-        $info = $file->validate(['ext' => $type['ext']])->move(ROOT_PATH . 'public'.$type['path']);
+        $type   = self::fileType($type);
+        $hash   = $file->hash();
 
-        if ($info) {
+        $info = FileModel::where(['hash'=>$hash])->column(['0,path,name']);
+        if($info){
 
             // 上传失败成功
             return [
-                'hash'      => $info->hash(),
-                'saveName'  => $type['path'].$info->saveName,
-                'info'      => $info->info,
-                'code'      => 1
+                'code'      => 1,
+                'msg'       => '上传成功',
+                'path'      => $info[0]['path'],
+                'name'      => $info[0]['name'],
             ];
-        } else {
-            // 上传失败获取错误信息
-            return [
-                'code'      => 0,
-                'message'   => $file->getError(),
-            ];
-        }
+        }else{
 
+            $info = $file->validate(['ext' => $type['ext']])->move(ROOT_PATH . 'public'.$type['path']);
+
+            //图片写入数据库利于管理
+            FileModel::create([
+                'path'      => $type['path'].$info->saveName,
+                'name'      => $info->info['name'],
+                'type'      => 'image',
+                'hash'      => $hash,
+            ]);
+
+            if ($info) {
+
+                // 上传成功
+                return [
+                    'code'      => 1,
+                    'path'      => $type['path'].$info->saveName,
+                    'name'      => $info->info['name'],
+                    'msg'       => '上传成功'
+                ];
+            } else {
+
+                // 上传失败获取错误信息
+                return [
+                    'code'      => 0,
+                    'msg'       => $file->getError(),
+                ];
+            }
+        }
     }
 
 
     /**
      *  文件上传类型
      *
-     * @param  string  $name
+     * @param  string  $type
      * @return array
      */
-    public function fileType($name)
+    public function fileType($type)
     {
         $path   = '/uploads'.DS;
-        switch($name){
-            case 'img':
+        switch($type){
+            case 'image':
                 return ['path' => $path.'img/', 'ext' => 'jpg,png'];
         }
     }

@@ -97,7 +97,7 @@
     function get_selected_files(){
         var tab = $("#uploader-tabs li.active").data('tab');
 
-        var files= new Array();
+        var files= [];
         if(tab=='upload-file'){
             var $files=$('#files-container li.uploaded.selected');
             if($files.length==0){
@@ -106,11 +106,12 @@
             }
            $files.each(function(){
                var $this=$(this);
-               files['url']         = $this.data('url');
-               files['preview_url'] = $this.data('preview_url');
-               files['filepath']    = $this.data('filepath');
-               files['name']        = $this.data('name');
-               files['id']          = $this.data('id');
+               var url = $this.data('url');
+               var preview_url = $this.data('preview_url');
+               var filepath = $this.data('filepath');
+               var name = $this.data('name');
+               var id = $this.data('id');
+               files.push({'url':url,'preview_url':preview_url,'filepath':filepath,'name':name,'id':id});
             });
         }
 
@@ -120,10 +121,8 @@
                 alert('请填写文件地址！');
                 return false;
             }
-            files['url']         = url;
-            files['preview_url'] = url;
-            files['filepath']    = url;
-            files['id']          = "networkfile"+new Date().getTime();
+            var id = "networkfile"+new Date().getTime();
+            files.push({'url':url,'preview_url':url,'filepath':url,'id':id});
         }
         return files;
     }
@@ -149,9 +148,9 @@
                     </a>
                 </div>
 					<span class="num">
-						<empty name="multi">
+						{empty name="$info['multi']"}
                             最多上传<em>1</em>个附件,
-                        </empty>
+                        {/empty}
 						单文件最大<em>{$info['upload_max_filesize_mb']}MB</em>,
 						<em style="cursor: help;" title="可上传格式：jpg,jpeg,png,gif,bmp4{//$extensions}" data-toggle="tooltip">支持格式？</em>
 					</span>
@@ -179,7 +178,7 @@
             runtimes : 'html5,flash,silverlight,html4',
             browse_button : 'select-files', // you can pass an id...
             container: document.getElementById('container'), // ... or DOM Element itself
-            url : "{:url('file/uploadPicture')}",
+            url : "{:url('file/uploadPicture', ['type' => input('type')])}",
             flash_swf_url : '__PUBLIC__/js/plupload/Moxie.swf',
             silverlight_xap_url : '__PUBLIC__/js/plupload/Moxie.xap',
             filters : {
@@ -217,7 +216,7 @@
 
                 FileUploaded: function(up, file, response) {
                     var data = JSON.parse(response.response);
-                    if(data.status==1){
+                    if(data.code==1){
                         if(!multi) {
                             $('#select-files').css('visibility','hidden');
                             $('#container').css('visibility','hidden');
@@ -225,21 +224,21 @@
                         var $file=$('#'+file.id);
                         $file.addClass('uploaded')
                             .data('id',file.id)
-                            .data('url',data.url)
-                            .data('preview_url',data.preview_url)
-                            .data('filepath',data.filepath)
+                            .data('url',data.path)
+                            .data('preview_url',data.path)
+                            .data('filepath',data.path)
                             .data('name',data.name);
 
-                        if(data.url.match(/\.(jpeg|gif|jpg|png|bmp|pic)$/gi)){
+                        if(data.path.match(/\.(jpeg|gif|jpg|png|bmp|pic)$/gi)){
                             var $img=$('<img/>');
-                            $img.attr('src',data.url);
+                            $img.attr('src',data.path);
                             $file.find('.upload-percent')
                                 .html($img);
                         }else{
                             $file.find('.upload-percent').attr('title',data.name).text(data.name);
                         }
                     }else{
-                        alert(data.message);
+                        alert(data.msg);
                         $('#'+file.id).remove();
                     }
                 },

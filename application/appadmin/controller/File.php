@@ -17,35 +17,15 @@ class File extends BasicController
     public function uploadPicture()
     {
         if($this->request->isPost()){
-
+            $data = [];
             foreach((array)$_FILES as $k => $v){
-               $data = Tool::get('file')->uploadPicture($this->request, $k);
+               $data = Tool::get('file')->fileUpload($this->request, $k, 'image');
             }
 
-            if($data['code'] ==1 ){
-
-                //图片写入数据库利于管理
-                FileModel::create([
-                    'path'      => $data['saveName'],
-                    'name'      => $data['info']['name'],
-                    'type'      => 'img',
-                    'hash'      => $data['hash'],
-                ]);
-
-                $json = [
-                    'preview_url'   => $data['saveName'],
-                    'filepath'      => $data['saveName'],
-                    'url'           => $data['saveName'],
-                    'referer'       => $data['saveName'],
-                    'name'          => $data['info']['name'],
-                    'status'        => 1,
-                    'message'       => 'success'
-                ];
-            }else{
-                $json = [
-                    'status'        => 0,
-                    'message'       => $data['message']
-
+            if(empty($data)){
+                $data = [
+                    'code'      => 0,
+                    'msg'       => '请选择上传文件',
                 ];
             }
 
@@ -53,18 +33,21 @@ class File extends BasicController
             switch($this->request->param('type')){
                 case 'editor': //编辑器
                     return "<script type='text/javascript'>window.parent.CKEDITOR.tools.callFunction({$_REQUEST["CKEditorFuncNum"]},'".$data['saveName']."','');</script>";
-                case 'onePicture': //单张图片
-                    return json($json);
+                case 'inputImgae': //单张图片
+                    return json($data);
                 default:
                     return abort(404, lang('404 not found'));
             }
         }
         $this->view->engine->layout(false);
+        $get            = $this->request->get();
+
+        $extensions     = Tool::get('file')->fileType('image');
         $info   = [
-            'multi'                     => 0,
-            'mime_type'                 => '{"title":"Image files","extensions":"jpg,jpeg,png,gif,bmp4"}',
+            'multi'                     => $get['multi'],
+            'mime_type'                 => "{'title':'Image files','extensions':'{$extensions['ext']}'}",
             'upload_max_filesize_mb'    => 10,
-            'app'                       => 'Portal'
+            'app'                       => $get['app']
         ];
         return $this->fetch('',[
             'info'  =>  $info
