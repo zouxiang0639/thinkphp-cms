@@ -2,9 +2,9 @@
 <head>
     <title>后台</title>
 
-    <link href="__PublicAdmin__/css/theme.min.css" rel="stylesheet">
-    <link href="__PublicDefault__/font-awesome/4.4.0/css/font-awesome.min.css"  rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="__PublicAdmin__/css/simplebootadminindex.min.css?">
+    <link href="__STATIC__/admin/css/theme.min.css" rel="stylesheet">
+    <link href="__STATIC__/default/font-awesome/4.4.0/css/font-awesome.min.css"  rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="__STATIC__/admin/css/simplebootadminindex.min.css?">
     <style>
         .navbar .nav_shortcuts .btn {
             margin-top: 5px;
@@ -46,10 +46,10 @@
 
 <body style="min-width:900px;" screen_capture_injected="true">
 [__REPLACE__]
-<script src="__PublicAdmin__/js/jquery.min.js"></script>
-<script src="__PublicAdmin__/js/bootstrap.min.js"></script>
-<script src="__PublicAdmin__/js/jquery-1.8.0.min.js"></script>
-<script src="__PublicAdmin__/js/index.js"></script>
+<script src="__STATIC__/admin/js/jquery.min.js"></script>
+<script src="__STATIC__/admin/js/bootstrap.min.js"></script>
+<script src="__STATIC__/admin/js/jquery-1.8.0.min.js"></script>
+<script src="__STATIC__/admin/js/index.js"></script>
 <script>
     var ismenumin = $("#sidebar").hasClass("menu-min");
     $(".nav-list").on( "click",function(event) {

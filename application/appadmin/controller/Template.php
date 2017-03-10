@@ -145,6 +145,7 @@ class Template extends BasicController
                 return $this->error(lang('delete failed'));
             }
         }
+        return abort(404, lang('404 not found'));
     }
 
 }

@@ -72,10 +72,11 @@
         var data,ajaxCallUrl,postUrl;
 
         //解决ckeditor编辑器 ajax上传问他
-        for(instance in CKEDITOR.instances){
-            CKEDITOR.instances[instance].updateElement();
+        if(typeof CKEDITOR=="object"){
+            for(instance in CKEDITOR.instances){
+                CKEDITOR.instances[instance].updateElement();
+            }
         }
-
         d = $(this).parents('.form-horizontal');
         postUrl = $(this).attr('post-url');
 

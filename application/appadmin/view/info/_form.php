@@ -7,7 +7,6 @@ use app\common\tool\Tool;
     <!--右侧-->
     <div class="col-sm-8">
         <table class="table table-bordered">
-
             <tr>
                 <th>标题</th>
                 <th>
@@ -16,46 +15,30 @@ use app\common\tool\Tool;
                 </th>
             </tr>
             <tr>
-                <th width="150">前端</th>
+                <th width="150">分类</th>
                 <td>
-                    <?=Tool::get('form')->select('terminal', $enum['terminal'], object_get($info, 'terminal'), ['class' => 'form-control text'])?>
-                    <span class="form-required">*</span>
-                </td>
-            </tr>
-            <tr>
-                <th width="150">上级分类</th>
-                <td>
-                    <select class="form-control text" name="parent_id">
-                        <option value="0">无</option>
-                        {$enum.parent}
+                    <select class="form-control text" name="category_id">
+                        {$enum.category}
                     </select>
                     <span class="form-required">*</span>
                 </td>
             </tr>
             <tr>
-                <th width="150">模版模型</th>
-                <td>
-                    <?=Tool::get('form')->select('template_group', $enum['template_group'], object_get($info, 'template_group'), ['class' => 'form-control
-                    text', 'id' =>
-                        'group'])?>
-                </td>
+                <th>外链</th>
+                <th>
+                    <input type="text" class="form-control text" name="links" value="{$info.links ?? ''}">
+                </th>
             </tr>
             <tr>
-                <th width="150">默认模版</th>
-                <td>
-                    <?=Tool::get('form')->select('template_default', $enum['template_default'], object_get($info, 'template_default'), ['class' => 'form-control text'])?>
-                </td>
-            </tr>
-            <tr class="template_info">
-                <th width="150">详情模板</th>
-                <td>
-                    <?=Tool::get('form')->select('template_info', $enum['template_info'], '', ['class' => 'form-control text'])?>
-                </td>
-            </tr>
-            <tr class="template_info">
-                <th>列表行数</th>
+                <th>访问量</th>
                 <th>
-                    <input type="text" class="form-control text" name="list_row" value="{$info.list_row ?? '10'}">
+                    <input type="text" class="form-control text" name="visiting" value="{$info.visiting ?? '0'}">
+                </th>
+            </tr>
+            <tr>
+                <th>推荐</th>
+                <th>
+                    <?=Tool::get('form')->checkboxs('recommendation', $enum['recommendation'], object_get($info, 'recommendation'))?>
                 </th>
             </tr>
             <tr>
@@ -72,7 +55,8 @@ use app\common\tool\Tool;
             </tr>
         </table>
     </div>
-<!--    左侧-->
+
+    <!--左侧-->
     <div class="col-sm-3">
         <table class="table table-bordered">
             <tr>
@@ -84,16 +68,15 @@ use app\common\tool\Tool;
                 </th>
             </tr>
             <tr>
-                <th>可见性</th>
+                <th>创建时间</th>
             </tr>
             <tr>
                 <th>
-                    <?=Tool::get('form')->select('display', $enum['display'], object_get($info, 'display'), ['class' => 'form-control text'])?>
+                    <input type="text" class="form-control text" name="create_time" value="{$info.create_time ?? ''}">
                 </th>
             </tr>
             <tr>
-                <th>关键字</th>
-
+                <th>网页描述</th>
             </tr>
             <tr>
                 <th>
@@ -101,7 +84,7 @@ use app\common\tool\Tool;
                 </th>
             </tr>
             <tr>
-                <th>描述</th>
+                <th>网页关键字</th>
             </tr>
             <tr>
                 <th>
@@ -110,12 +93,13 @@ use app\common\tool\Tool;
             </tr>
         </table>
     </div>
-    <div class="col-sm-12"> <!--底部-->
+    <!--底部-->
+    <div class="col-sm-12">
         <table class="table table-bordered" >
             <tr>
                 <th width="150">文章内容</th>
                 <th>
-                    <?=Tool::get('form')->editor('content', object_get($info, 'content'))?>
+                    <?=Tool::get('form')->editor('content')?>
                 </th>
             </tr>
         </table>
@@ -128,19 +112,3 @@ use app\common\tool\Tool;
     </button>
     <a class="btn btn-default active" href="JavaScript:history.go(-1)">返回</a>
 </div>
-<script>
-    $(function(){
-        $("#group").change(function() {
-            var tr,num;
-            num = $(this).val();
-            tr  = $('.template_info');
-            if(num == 2){
-                tr.show();
-            }else {
-                tr.hide();
-            }
-        });
-        $("#group").trigger("change");
-    });
-
-</script>

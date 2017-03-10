@@ -10,7 +10,7 @@ class Category extends BasicController
     private $id         = 0;
     private $url        = 'category/index';
     private $display    = ['所有人可见' => '所有人可见', '不可见' => '不可见', '管理员可见' => '管理员可见'];  //枚举enum字段 如果有变动需要修改数据库
-    private $terminal   = ['电脑端' => '电脑端'];  //加入一个选项,需要在数据库修改成terminal enum('电脑端','微信端')
+    public static $terminal   = ['电脑端' => '电脑端', '微信端' => '微信端'];  //加入一个选项,需要在数据库修改成terminal enum('电脑端','微信端')
     private $validate =[
         ['title|标题', 'require'],
     ];
@@ -29,7 +29,7 @@ class Category extends BasicController
 
     public function index()
     {
-        $where['terminal']  = empty($this->request->get('terminal')) ? reset($this->terminal) : $this->request->get('terminal');
+        $where['terminal']  = empty($this->request->get('terminal')) ? reset(self::$terminal) : $this->request->get('terminal');
         $query     = CategoryModel::where($where)
             ->order(["sort" => "asc",'category_id'=>'asc'])
             ->column('category_id, title, sort, parent_id', 'category_id');
@@ -72,7 +72,7 @@ class Category extends BasicController
 
         return $this->fetch('', [
             'html'      => $html,
-            'terminal'  => $this->terminal
+            'terminal'  => self::$terminal
         ]);
     }
 
@@ -130,7 +130,6 @@ class Category extends BasicController
         if($this->request->isPost()){
 
             $post   = CategoryModel::recombinantArray($this->request->post(), 'photos');
-
             //数据验证
             $result = $this->validate($post,$this->validate);
             if($result !== true){
@@ -205,7 +204,7 @@ class Category extends BasicController
             'template_group'     => Template::$groups,
             'template_default'   => TemplateModel::tplTypeLife(['分类页面', '通用页面']),
             'template_info'      => TemplateModel::tplTypeLife(['信息内页', '通用页面']),
-            'terminal'           => $this->terminal,
+            'terminal'           => self::$terminal,
             'parent'             => CategoryModel::treeCategory($arr['parent_id'])
         ];
     }

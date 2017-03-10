@@ -1,6 +1,7 @@
 <?php
 namespace app\common\tool;
 
+use think\Config;
 use think\form\FormBuilder;
 use think\form\HtmlBuilder;
 
@@ -22,9 +23,9 @@ class Form extends FormBuilder
      */
     public function oneImage($name, $value = '', $options = [])
     {
-        $picture    = 'http://localhost/ThinkC/admin/themes/simplebootx/Public/assets/images/default-thumbnail.png';
+        $picture    = Config::get('basic.default_picture');
         $value      = !empty($value) ? $value : $picture;
-        $html       ="  <input type='hidden' name='{$name}' id='{$name}' value=''>
+        $html       ="  <input type='hidden' name='{$name}' id='{$name}' value='{$value}'>
                         <a href=\"javascript:upload_one_image('图片上传','#{$name}');\">
                             <img src='{$value}' id='{$name}-preview' height='40' style='cursor: hand' />
                         </a>
@@ -78,7 +79,7 @@ class Form extends FormBuilder
             }
         }
         $html      .="</ul>
-                        <input type='hidden' class='' name='{$name}' value='array'>
+                        <input type='hidden' class='' name='{$name}' value=''>
                         <a  href=\"javascript:upload_multi_image('图片上传','#{$name}','{$name}-item-wrapper');\"
                         class='btn btn-primary'>选择图片</a>";
         return $html;
@@ -98,5 +99,46 @@ class Form extends FormBuilder
                 <script>
                     CKEDITOR.replace('{$name}');
                 </script>";
+    }
+
+    /**
+     * 多个单选
+     *
+     * @param  string  $name
+     * @param  array  $list
+     * @param  string  $value
+     * @param  array   $options
+     * @return string
+     */
+    public function radios($name, $list, $value = null, $options = [] )
+    {
+        $html = '';
+        foreach($list as $v){
+            $checked    = $v==$value ? 1 : '' ;
+            $checkbox   = parent::radio($name, $value, $checked, $options);
+            $html       .="<label style='padding-top: 0px;padding-left: 0px;' class='checkbox-inline'>{$checkbox} {$v}</label>" ;
+        }
+        return $html;
+    }
+
+    /**
+     * 多个复选
+     *
+     * @param  string  $name
+     * @param  array  $list
+     * @param  array  $value
+     * @param  array   $options
+     * @return string
+     */
+    public function checkboxs($name, $list, $value = [], $options = [] )
+    {
+        $html = '';
+        foreach($list as $k => $v){
+            $chacked    = array_search($k,(array)$value);
+            $checked    = $chacked !== false ? 1 : '' ;
+            $checkbox   = parent::checkbox($name.'[]', $k, $checked, ['style' => 'margin-top: 2px;' ]);
+            $html      .="<label style='padding-top: 0px; padding-left: 0px;' class='checkbox-inline'>{$checkbox}{$v}</label>" ;
+        }
+        return $html;
     }
 }

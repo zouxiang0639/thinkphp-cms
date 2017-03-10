@@ -1,6 +1,7 @@
 <?php
 namespace app\common\model;
 
+use think\Config;
 use think\Model;
 
 class BasicModel extends Model
@@ -50,26 +51,37 @@ class BasicModel extends Model
             }
 
             //重组数组
-            foreach(current($arr) as $k => $v){
-                foreach($keyName as $key){
+            if(!empty($arr)){
+                foreach(current($arr) as $k => $v){
+                    foreach($keyName as $key){
 
-                    $array[$k][$key] = $arr[$key][$k];
+                        $array[$k][$key] = $arr[$key][$k];
+                    }
                 }
-            }
-            unset($arr);
+                unset($arr);
 
-            //选择输出的类型
-            switch($type){
-                case 'json':
-                    $data[$name] = json_encode($array);
-                    break;
-                case 'array':
-                default:
-                $data[$name] = $array;
+
+                //选择输出的类型
+                switch($type){
+                    case 'json':
+                        $data[$name] = json_encode($array);
+                        break;
+                    case 'array':
+                    default:
+                    $data[$name] = $array;
+                }
+                unset($array);
             }
-            unset($array);
         }
         return $data;
+    }
+
+    public function defaultImage($value)
+    {
+        if(empty($value)){
+            return Config::get('basic.default_picture');
+        }
+        return $value;
     }
 
 }

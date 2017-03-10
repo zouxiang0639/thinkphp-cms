@@ -32,23 +32,9 @@ class Helper
             case 'select':
                 return Tool::get('form')->select($name, $list, $value, $options);
             case 'checkbox':
-
-                foreach($list as $v){
-                    $checked    = !empty($value[$v]) ? 1 : '' ;
-                    $checkbox   = Tool::get('form')->checkbox($name.'[]', $v, $checked, ['style' => 'margin-top: 2px;' ]);
-                    $html       .="<label style='padding-top: 0px;' class='checkbox-inline'>{$checkbox}{$v}</label>" ;
-                }
-                return $html;
-
+                return Tool::get('form')->checkboxs($name, $list, $value, ['style' => 'margin-top: 2px;' ]);
             case 'radio':
-                foreach($list as $v){
-
-                    $checked    = $v==$value ? 1 : '' ;
-                    $checkbox   = Tool::get('form')->radio($name, $v, $checked, ['style' => 'margin-top: 2px;' ]);
-                    $html       .="<label style='padding-top: 0px;' class='checkbox-inline'>{$checkbox} {$v}</label>" ;
-
-                }
-                return $html;
+                return Tool::get('form')->radios($name, $list, $value, ['style' => 'margin-top: 2px;' ]);
             case 'textarea':
                 return Tool::get('form')->textarea($name, $value,  array_merge(['clos' => '30', 'rows' => 3], $options));
             case 'password':

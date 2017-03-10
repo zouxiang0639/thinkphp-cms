@@ -150,8 +150,8 @@ return [
 
     // 视图输出字符串内容替换
     'view_replace_str'       => [
-        '__PublicAdmin__'   =>\think\Request::instance()->root(true).'/static/admin',
-        '__PublicDefault__' =>\think\Request::instance()->root(true).'/static/default',
+        //'__PublicAdmin__'   =>\think\Request::instance()->root(true).'/static/admin',
+        //'__ROOT__' => '/',
     ],
     // 默认跳转页面对应的模板文件
     'dispatch_success_tmpl'  => THINK_PATH . 'tpl' . DS . 'dispatch_jump.tpl',
@@ -260,7 +260,7 @@ return [
 
     //权限认证 https://github.com/zouxiang0639/thinkcms-auth
     'thinkcms' =>[
-        'style_directory' => \think\Request::instance()->root(true).'/static/admin/',
+        'style_directory' => '__ROOT__/static/admin/',
         'session_prefix'  => 'cms_',
     ]
 ];

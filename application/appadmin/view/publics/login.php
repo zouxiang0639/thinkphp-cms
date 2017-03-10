@@ -1,7 +1,7 @@
 <style>
     body {
         background-color: #c3cdda;
-        background: url(__PublicAdmin__/images/login_1.jpg) no-repeat center center fixed;
+        background: url(__STATIC__/admin/images/login_1.jpg) no-repeat center center fixed;
         -webkit-background-size: cover;
         -moz-background-size: cover;
         -o-background-size: cover;

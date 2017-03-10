@@ -26,7 +26,6 @@ class Configure extends BasicController
 
     public function __construct()
     {
-
         parent::__construct();
         $this->id       = !empty($this->request->param('id')) ? intval($this->request->param('id')) : $this->id;
         $this->validate = [

@@ -3,7 +3,7 @@ namespace app\appadmin\controller;
 
 use think\Cache;
 use think\Controller;
-use app\common\model\Adminmodel;
+use app\common\model\AdminModel;
 use thinkcms\auth\Auth;
 
 class Publics extends Controller

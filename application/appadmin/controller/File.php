@@ -28,15 +28,16 @@ class File extends BasicController
                     'msg'       => '请选择上传文件',
                 ];
             }
-
             //图片上传的途径
             switch($this->request->param('type')){
                 case 'editor': //编辑器
-                    return "<script type='text/javascript'>window.parent.CKEDITOR.tools.callFunction({$_REQUEST["CKEditorFuncNum"]},'".$data['saveName']."','');</script>";
+                    echo "<script type='text/javascript'>window.parent.CKEDITOR.tools.callFunction({$_REQUEST["CKEditorFuncNum"]},'".$data['path']."','');</script>";die;
                 case 'inputImgae': //单张图片
                     return json($data);
+                    break;
                 default:
                     return abort(404, lang('404 not found'));
+                    break;
             }
         }
         $this->view->engine->layout(false);

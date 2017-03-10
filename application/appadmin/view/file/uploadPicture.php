@@ -10,17 +10,17 @@
         //全局变量
         var GV = {
             ROOT: "/appadmin/",
-            WEB_ROOT: "/static",
+            WEB_ROOT: "__STATIC__",
             JS_ROOT: "/default/",
             APP:'Portal'/*当前应用名*/
         };
     </script>
-    <link href="__PublicAdmin__/css/bootstrap.min.css" rel="stylesheet">
-    <link href="__PublicAdmin__/css/site.css" rel="stylesheet">
-    <script src="__PublicAdmin__/js/jquery.min.js"></script>
-    <script src="__PublicDefault__/headjs.js"></script>
-    <script src="__PublicAdmin__/js/common.js"></script>
-    <script src="__PublicAdmin__/js/bootstrap.min.js"></script>
+    <link href="__STATIC__/admin/css/bootstrap.min.css" rel="stylesheet">
+    <link href="__STATIC__/admin/css/site.css" rel="stylesheet">
+    <script src="__STATIC__/admin/js/jquery.min.js"></script>
+    <script src="__STATIC__/default/headjs.js"></script>
+    <script src="__STATIC__/admin/js/common.js"></script>
+    <script src="__STATIC__/admin/js/bootstrap.min.js"></script>
 <style>
     .file-upload-btn-wrapper {
         margin-bottom: 10px;

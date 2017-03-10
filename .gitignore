@@ -5,3 +5,5 @@ thinkphp
 vendor
 runtime/
 public/uploads/
+.svn/
+web.config

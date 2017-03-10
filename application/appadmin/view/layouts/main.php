@@ -11,15 +11,16 @@
         //全局变量
         var GV = {
             ROOT: "/appadmin/",
-            WEB_ROOT: "/static",
+            WEB_ROOT: "__STATIC__",
             JS_ROOT: "/default/",
             APP:'Portal'/*当前应用名*/
         };
     </script>
-    <link href="__PublicAdmin__/css/bootstrap.min.css" rel="stylesheet">
-    <link href="__PublicAdmin__/css/site.css" rel="stylesheet">
-    <script src="__PublicAdmin__/js/jquery.min.js"></script>
-    <script src="__PublicDefault__/headjs.js"></script>
+    <link href="__STATIC__/admin/css/bootstrap.min.css" rel="stylesheet">
+    <link href="__STATIC__/admin/css/site.css" rel="stylesheet">
+    <link href="__STATIC__/default/artDialog/skins/default.css" rel="stylesheet" />
+    <script src="__STATIC__/admin/js/jquery.min.js"></script>
+    <script src="__STATIC__/default/headjs.js"></script>
 
 </head>
 
@@ -29,17 +30,14 @@
     .alert{
         position: fixed !important;z-index: 1000;width: 98%;top: 2%;
     }
-
 </style>
 <div class="container-fluid">
     <div id="alert"></div>
     [__REPLACE__]
 </div>
-<script src="__PublicAdmin__/js/common.js"></script>
-
-<script src="__PublicAdmin__/js/cmsinfo.js"></script>
-<script src="__PublicDefault__/js/jquery-form.js" type="text/javascript"></script>
-<script src="__PublicAdmin__/js/bootstrap.min.js"></script>
+<script src="__STATIC__/admin/js/common.js"></script>
+<script src="__STATIC__/admin/js/cmsinfo.js"></script>
+<script src="__STATIC__/admin/js/bootstrap.min.js"></script>
 </body>
 </html>
 
