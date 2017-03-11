@@ -7,8 +7,9 @@ use app\common\model\InfoModel;
 class Info extends BasicController
 {
     private $id;
-    private $terminal;
+    private $cid;
     private $recommendation = ['1'=>'最新推荐', '2'=>'热门推荐'];
+    private $display        = ['所有人可见' => '所有人可见', '不可见' => '不可见', '管理员可见' => '管理员可见'];  //枚举enum字段 如果有变动需要修改数据库;
     private $url            = 'info/index';
     private $validate = [
         ['title|标题', 'require']
@@ -19,20 +20,25 @@ class Info extends BasicController
         parent::__construct();
 
         $this->id       = intval(array_get($this->request->param(), 'id'));
+        $this->cid      = intval(array_get($this->request->param(), 'cid', $this->id));
         $nav = [
-            '信息列表' => ['url' => [$this->url, ['terminal' => $this->terminal]]],
-            '信息增加' => ['url' => ['info/add', ['terminal' => $this->terminal]]],
-            '信息修改' => ['url' => ['info/edit', ['id' => $this->id, 'terminal' => $this->terminal]], 'style' => "display: none;"],
+            '信息列表' => ['url' => [$this->url, ['cid' => $this->cid]]],
+            '信息增加' => ['url' => ['info/add', ['cid' => $this->cid]]],
+            '信息修改' => ['url' => ['info/edit', ['id' => $this->id, 'cid' => $this->cid]], 'style' => "display: none;"],
         ];
-        $this->assign('navTabs',  parent::navTabs($nav));
+
+        $this->assign([
+            'navTabs'   => parent::navTabs($nav),
+            'cid'       => $this->cid
+        ]);
     }
 
     public function index()
     {
         //条件判断
         $where          = [];
-        if($this->id) {
-            $where['info_model.category_id'] = $this->id;
+        if($this->cid) {
+            $where['info_model.category_id'] = $this->cid;
         }
 
         //模型join关联category查询数据
@@ -76,7 +82,7 @@ class Info extends BasicController
 
             //写入数据库
             if(InfoModel::create($post)){
-                return $this->success(lang('Add success'), url($this->url));
+                return $this->success(lang('Add success'), url($this->url, ['cid' => $this->cid]));
             }else{
                 return $this->error(lang('Add failed'));
             }
@@ -109,6 +115,7 @@ class Info extends BasicController
         if($this->request->isPost()){
 
             $post   = InfoModel::recombinantArray($this->request->post(), 'photos');
+
             //数据验证
             $result = $this->validate($post,$this->validate);
             if($result !== true){
@@ -121,9 +128,9 @@ class Info extends BasicController
                 return abort(404, lang('404 not found'));
             }
 
-            //修改数据库
+            //更新数据
             if($query->save($post)){
-                return $this->success(lang('Update success'),$this->url);
+                return $this->success(lang('Update success'), url($this->url, ['cid' => $this->cid]));
             }else{
                 return $this->error(lang('Update failed'));
             }
@@ -143,7 +150,7 @@ class Info extends BasicController
                 return abort(404, lang('404 not found'));
             }
             if($delete->delete()){
-                return $this->success(lang('delete success'), url($this->url));
+                return $this->success(lang('delete success'));
             }else{
                 return $this->error(lang('delete failed'));
             }
@@ -164,7 +171,7 @@ class Info extends BasicController
 
         //更新数据
         if($sort->save(['sort' => $order])){
-            return $this->success(lang('Sort success'),url($this->url));
+            return $this->success(lang('Sort success'));
         }else{
             return $this->error(lang('Sort failed'));
         }
@@ -178,9 +185,11 @@ class Info extends BasicController
      */
     private function enum($arr = [])
     {
+        $arr = array_merge(['category_id' => $this->cid], $arr);
         return [
             'recommendation'    => $this->recommendation,
-            'category'          => CategoryModel::treeCategory($arr['category_id'])
+            'category'          => CategoryModel::treeCategory($arr['category_id']),
+            'display'          => $this->display
         ];
     }
 }

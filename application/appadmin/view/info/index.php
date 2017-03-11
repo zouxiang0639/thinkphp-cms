@@ -22,7 +22,7 @@
                 <th>{$v.title}</th>
                 <th>{$v.category_title}</th>
                 <th>
-                    <a href="{:url('info/edit', ['id'=>$v['info_id']])}">编辑</a> |
+                    <a href="{:url('info/edit', ['id' => $v['info_id'], 'cid' => $cid])}">编辑</a> |
                     <a class="a-post" post-msg="你确定删除吗?" post-url="{:url('info/delete', ['id'=>$v['info_id']])}">删除</a>
                 </th>
             </tr>

@@ -10,7 +10,7 @@
     <script type="text/javascript">
         //全局变量
         var GV = {
-            ROOT: "/appadmin/",
+            ROOT: "__URL__/appadmin/",
             WEB_ROOT: "__STATIC__",
             JS_ROOT: "/default/",
             APP:'Portal'/*当前应用名*/

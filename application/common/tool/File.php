@@ -90,10 +90,12 @@ class File extends \think\File
         }else{
 
             $info = $file->validate(['ext' => $type['ext']])->move(ROOT_PATH . 'public'.$type['path']);
-
+            $base    = request()->root();
+            $root    = strpos($base, '.') ? ltrim(dirname($base), DS) : $base;
+            $path    = '/'.$root.$type['path'].$info->saveName;
             //图片写入数据库利于管理
             FileModel::create([
-                'path'      => $type['path'].$info->saveName,
+                'path'      => $path,
                 'name'      => $info->info['name'],
                 'type'      => 'image',
                 'hash'      => $hash,
@@ -104,7 +106,7 @@ class File extends \think\File
                 // 上传成功
                 return [
                     'code'      => 1,
-                    'path'      => $type['path'].$info->saveName,
+                    'path'      => $path,
                     'name'      => $info->info['name'],
                     'msg'       => '上传成功'
                 ];

@@ -7,6 +7,8 @@ use think\form\HtmlBuilder;
 
 class Form extends FormBuilder
 {
+    public $ckeditorJs  = 0;
+    public $dateJs      = 0;
 
     public function __construct(HtmlBuilder $html, $csrfToken)
     {
@@ -95,10 +97,37 @@ class Form extends FormBuilder
      */
     public function editor($name, $value = '', $options = [])
     {
-        return  "<textarea name='{$name}'  id='{$name}' class='form-control'>{$value}</textarea>
+        $html   = '';
+        if($this->ckeditorJs === 0){
+            $html .= '<script src="__STATIC__/default/ckeditor/ckeditor.js"></script>';
+        }
+        $html  .= "<textarea name='{$name}'  id='{$name}' class='form-control'>{$value}</textarea>
                 <script>
                     CKEDITOR.replace('{$name}');
                 </script>";
+        $this->ckeditorJs  +=1;
+        return  $html;
+    }
+
+    /**
+     * 编辑器
+     *
+     * @param  string  $name
+     * @param  string  $value
+     * @param  array   $options
+     * @return string
+     */
+    public function date($name, $value = '', $options = [])
+    {
+        $html   = '';
+        if($this->ckeditorJs === 0){
+            $html .= '<script src="__STATIC__/default/laydate/laydate.js"></script>';
+        }
+        $value  = empty($value) ? date('Y - m - d h:m:s') : $value;
+        $html  .= "<input onclick=\"laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})\"
+            type='text' class='form-control text' name='{$name}' value='{$value}'>";
+        $this->dateJs +=1;
+        return  $html;
     }
 
     /**

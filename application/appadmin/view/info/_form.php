@@ -1,7 +1,6 @@
 <?php
 use app\common\tool\Tool;
 ?>
-<script src="__STATIC__/default/ckeditor/ckeditor.js"></script>
 
 <div class="bs-example">
     <!--右侧-->
@@ -17,10 +16,16 @@ use app\common\tool\Tool;
             <tr>
                 <th width="150">分类</th>
                 <td>
-                    <select class="form-control text" name="category_id">
+                    <input type="hidden" name="category_id" value="{$info.category_id ?? ''}" />
+                    <select class="form-control text" name="category_id"  {$cid ? 'disabled="disabled"' : ''}>
                         {$enum.category}
                     </select>
-                    <span class="form-required">*</span>
+                </td>
+            </tr>
+            <tr>
+                <th width="150">可见性</th>
+                <td>
+                    <?=Tool::get('form')->select('display', $enum['display'], object_get($info, 'display'), ['class' => 'form-control text'])?>
                 </td>
             </tr>
             <tr>
@@ -72,7 +77,7 @@ use app\common\tool\Tool;
             </tr>
             <tr>
                 <th>
-                    <input type="text" class="form-control text" name="create_time" value="{$info.create_time ?? ''}">
+                    <?=Tool::get('form')->date('create_time', object_get($info, 'create_time'))?>
                 </th>
             </tr>
             <tr>
@@ -104,6 +109,7 @@ use app\common\tool\Tool;
             </tr>
         </table>
     </div>
+
 </div>
 <div class="form-actions col-sm-12">
     <button class="btn btn-primary js-ajax-submit" type="submit">提交</button>

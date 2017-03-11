@@ -2,6 +2,6 @@
     {$navTabs.nav}
 </ul>
 
-<form class="form-horizontal" action="{:url('info/create')}" method="post">
+<form class="form-horizontal" action="{:url('info/create', ['cid' => input('cid')])}" method="post">
     {include file="info/_form" /}
 </form>

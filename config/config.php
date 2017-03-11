@@ -149,9 +149,8 @@ return [
     ],
 
     // 视图输出字符串内容替换
-    'view_replace_str'       => [
-        //'__PublicAdmin__'   =>\think\Request::instance()->root(true).'/static/admin',
-        //'__ROOT__' => '/',
+    'view_replace_str'      => [
+       '__URL__'            => \think\Request::instance()->root(true)
     ],
     // 默认跳转页面对应的模板文件
     'dispatch_success_tmpl'  => THINK_PATH . 'tpl' . DS . 'dispatch_jump.tpl',
