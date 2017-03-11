@@ -18,9 +18,7 @@ class Info extends BasicController
     {
         parent::__construct();
 
-        $param          = $this->request->param();
-        $this->id       = intval(array_get($param, 'id'));
-        $this->terminal = array_get($param, 'terminal',current(Category::$terminal)); //默认Category控制器$terminal第一个数据
+        $this->id       = intval(array_get($this->request->param(), 'id'));
         $nav = [
             '信息列表' => ['url' => [$this->url, ['terminal' => $this->terminal]]],
             '信息增加' => ['url' => ['info/add', ['terminal' => $this->terminal]]],
@@ -32,7 +30,10 @@ class Info extends BasicController
     public function index()
     {
         //条件判断
-        $where['terminal']  = $this->terminal;
+        $where          = [];
+        if($this->id) {
+            $where['info_model.category_id'] = $this->id;
+        }
 
         //模型join关联category查询数据
         $list = InfoModel::with('category')
@@ -43,8 +44,7 @@ class Info extends BasicController
 
         return $this->fetch('',[
             'list'  => $list,
-            'page'  => $list->render(),
-            'enum'  => ['terminal' => Category::$terminal]
+            'page'  => $list->render()
         ]);
     }
 
@@ -154,7 +154,7 @@ class Info extends BasicController
     /**
      * 信息排序
      */
-    public function sort()
+        public function sort()
     {
         $sort   = InfoModel::get($this->id);
         $order  = isset($_POST['order']) ? intval($_POST['order']) : 0;
@@ -178,10 +178,9 @@ class Info extends BasicController
      */
     private function enum($arr = [])
     {
-        $arr['terminal']    = $this->terminal;
         return [
             'recommendation'    => $this->recommendation,
-            'category'          => CategoryModel::treeCategory($arr['category_id'], $arr['terminal']),
+            'category'          => CategoryModel::treeCategory($arr['category_id'])
         ];
     }
 }

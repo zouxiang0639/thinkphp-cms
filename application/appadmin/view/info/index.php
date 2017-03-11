@@ -1,23 +1,6 @@
-<script>
-    $(function(){
-        $("#navcid_select").change(function() {
-            $("#mainform").submit();
-        });
-    })
-</script>
 <ul class="nav nav-tabs">
     {$navTabs.nav}
 </ul>
-<form class="well form-search" id="mainform" action="{:url('info/index')}" method="get">
-    <div class="btn-group width2">
-        <?=\app\common\tool\Tool::get('form')->select(
-            'terminal',
-            $enum['terminal'],
-            input('terminal'),
-            ['class' => 'form-control', 'id' => 'navcid_select' ]
-        )?>
-    </div>
-</form>
 <form  method="post">
     <table class="table table-hover table-bordered table-list" id="menus-table">
         <thead>

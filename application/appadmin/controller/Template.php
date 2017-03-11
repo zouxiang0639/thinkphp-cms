@@ -12,6 +12,13 @@ class Template extends BasicController
         1 => '单页模型',
         2 => '信息模型'
     ];
+
+    static $builderMenu  = [
+        //生成菜单[ 组类型, menuID,   路由]
+        1   => ['单页模型', 62, 'category/edit'],
+        2   => ['信息模型', 62, 'info/index']
+    ];
+
     static $type    = [
         '分类页面'  => '分类页面',
         '信息内页'  => '信息内页',

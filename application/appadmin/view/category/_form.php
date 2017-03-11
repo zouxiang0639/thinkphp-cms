@@ -16,13 +16,6 @@ use app\common\tool\Tool;
                 </th>
             </tr>
             <tr>
-                <th width="150">前端</th>
-                <td>
-                    <?=Tool::get('form')->select('terminal', $enum['terminal'], object_get($info, 'terminal'), ['class' => 'form-control text'])?>
-                    <span class="form-required">*</span>
-                </td>
-            </tr>
-            <tr>
                 <th width="150">上级分类</th>
                 <td>
                     <select class="form-control text" name="parent_id">

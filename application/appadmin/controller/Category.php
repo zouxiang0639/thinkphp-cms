@@ -10,7 +10,6 @@ class Category extends BasicController
     private $id         = 0;
     private $url        = 'category/index';
     private $display    = ['所有人可见' => '所有人可见', '不可见' => '不可见', '管理员可见' => '管理员可见'];  //枚举enum字段 如果有变动需要修改数据库
-    public static $terminal   = ['电脑端' => '电脑端', '微信端' => '微信端'];  //加入一个选项,需要在数据库修改成terminal enum('电脑端','微信端')
     private $validate =[
         ['title|标题', 'require'],
     ];
@@ -18,7 +17,7 @@ class Category extends BasicController
     public function __construct()
     {
         parent::__construct();
-        $this->id       = !empty($this->request->param('id')) ? intval($this->request->param('id')) : $this->id;
+        $this->id       = intval(array_get($this->request->param(), 'id'));
         $nav = [
             '分类列表' => ['url' => $this->url],
             '分类增加' => ['url' => 'category/add'],
@@ -29,8 +28,7 @@ class Category extends BasicController
 
     public function index()
     {
-        $where['terminal']  = empty($this->request->get('terminal')) ? reset(self::$terminal) : $this->request->get('terminal');
-        $query     = CategoryModel::where($where)
+        $query     = CategoryModel::where('')
             ->order(["sort" => "asc",'category_id'=>'asc'])
             ->column('category_id, title, sort, parent_id', 'category_id');
 
@@ -67,12 +65,11 @@ class Category extends BasicController
 
         }else{//没有数据返回问候语
 
-            $html = "<tr><td colspan='4'>{$where['terminal']}没有数据</td></tr>";
+            $html = "<tr><td colspan='4'>没有数据</td></tr>";
         }
 
         return $this->fetch('', [
-            'html'      => $html,
-            'terminal'  => self::$terminal
+            'html'      => $html
         ]);
     }
 
@@ -190,7 +187,6 @@ class Category extends BasicController
         }
     }
 
-
     /**
      * 枚举数组
      *
@@ -204,7 +200,6 @@ class Category extends BasicController
             'template_group'     => Template::$groups,
             'template_default'   => TemplateModel::tplTypeLife(['分类页面', '通用页面']),
             'template_info'      => TemplateModel::tplTypeLife(['信息内页', '通用页面']),
-            'terminal'           => self::$terminal,
             'parent'             => CategoryModel::treeCategory($arr['parent_id'])
         ];
     }
