@@ -1,5 +1,5 @@
 <?php
-namespace app\appadmin\controller;
+namespace app\manage\controller;
 
 use thinkcms\auth\Auth;
 use thinkcms\auth\library\Tree;

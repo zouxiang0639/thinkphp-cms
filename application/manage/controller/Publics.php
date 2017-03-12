@@ -1,5 +1,5 @@
 <?php
-namespace app\appadmin\controller;
+namespace app\manage\controller;
 
 use think\Cache;
 use think\Controller;
@@ -34,7 +34,7 @@ class Publics extends Controller
                 return '用户名或者密码错误';
             }else{
                 //写入session
-                Auth::login($login->admin_id,$login->admin_name);
+                Auth::login($login['admin_id'],$login['admin_name']);
 
                 //记录最后登陆数据
                 $update =[

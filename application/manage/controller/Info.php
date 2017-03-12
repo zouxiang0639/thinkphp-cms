@@ -1,5 +1,5 @@
 <?php
-namespace app\appadmin\controller;
+namespace app\manage\controller;
 
 use app\common\model\CategoryModel;
 use app\common\model\InfoModel;
@@ -61,7 +61,7 @@ class Info extends BasicController
     {
         return $this->fetch('',[
             'info'  => '',
-            'enum'  => self::enum(['category_id' => intval($this->request->param('category_id'))])
+            'enum'  => self::enum()
         ]);
     }
 

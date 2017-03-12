@@ -1,5 +1,5 @@
 <?php
-namespace app\appadmin\controller;
+namespace app\manage\controller;
 
 use think\Config;
 use think\Controller;
@@ -13,7 +13,7 @@ abstract class BasicController extends Controller
     {
         parent::__construct();
         $auth                   = new Auth();
-        $auth->noNeedCheckRules = ['index/index/index','index/index/home'];
+        $auth->noNeedCheckRules = ['manage/index/index','appadmin/index/home'];
         $user                   = $auth::is_login();
 
         if($user){//用户登录状态

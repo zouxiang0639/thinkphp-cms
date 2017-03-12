@@ -91,8 +91,8 @@ class File extends \think\File
 
             $info = $file->validate(['ext' => $type['ext']])->move(ROOT_PATH . 'public'.$type['path']);
             $base    = request()->root();
-            $root    = strpos($base, '.') ? ltrim(dirname($base), DS) : $base;
-            $path    = '/'.$root.$type['path'].$info->saveName;
+            $root    = strpos($base, '.') ? DS.ltrim(dirname($base), DS) : $base;
+            $path    = $root.$type['path'].$info->saveName;
             //图片写入数据库利于管理
             FileModel::create([
                 'path'      => $path,
@@ -130,7 +130,7 @@ class File extends \think\File
      */
     public function fileType($type)
     {
-        $path   = '/uploads'.DS;
+        $path   = DS.'uploads'.DS;
         switch($type){
             case 'image':
                 return ['path' => $path.'img/', 'ext' => 'jpg,png'];

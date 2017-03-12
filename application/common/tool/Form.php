@@ -25,11 +25,11 @@ class Form extends FormBuilder
      */
     public function oneImage($name, $value = '', $options = [])
     {
-        $picture    = Config::get('basic.default_picture');
-        $value      = !empty($value) ? $value : $picture;
+        $picture    = !empty($value) ? $value : Config::get('basic.default_picture');;
+
         $html       ="  <input type='hidden' name='{$name}' id='{$name}' value='{$value}'>
                         <a href=\"javascript:upload_one_image('图片上传','#{$name}');\">
-                            <img src='{$value}' id='{$name}-preview' height='40' style='cursor: hand' />
+                            <img src='{$picture}' id='{$name}-preview' height='40' style='cursor: hand' />
                         </a>
                         <input type='button' class='btn btn-default active' onclick=\"
                             $('#{$name}-preview').attr('src','{$picture}');
@@ -123,7 +123,7 @@ class Form extends FormBuilder
         if($this->ckeditorJs === 0){
             $html .= '<script src="__STATIC__/default/laydate/laydate.js"></script>';
         }
-        $value  = empty($value) ? date('Y - m - d h:m:s') : $value;
+        $value  = empty($value) ? date('Y-m-d h:m:s') : $value;
         $html  .= "<input onclick=\"laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})\"
             type='text' class='form-control text' name='{$name}' value='{$value}'>";
         $this->dateJs +=1;

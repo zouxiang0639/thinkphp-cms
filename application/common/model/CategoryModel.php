@@ -1,7 +1,7 @@
 <?php
 namespace app\common\model;
 
-use app\appadmin\controller\Template;
+use app\manage\controller\Template;
 use thinkcms\auth\library\Tree;
 use thinkcms\auth\model\Menu;
 
@@ -54,6 +54,11 @@ class CategoryModel extends BasicModel
      */
     public function save($data = [], $where = [], $sequence = null)
     {
+        //层级关系
+        if(!empty($data['parent_id'])){
+            $quest          = $this->get($data['parent_id']);
+            $data['path']   = "{$quest['path']},{$quest['category_id']}";
+        }
 
         $category = parent::save($data, $where, $sequence);
 

@@ -1,5 +1,5 @@
 <?php
-namespace app\appadmin\controller;
+namespace app\manage\controller;
 
 use app\common\model\FileModel;
 use app\common\tool\Tool;
