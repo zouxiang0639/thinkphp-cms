@@ -1,11 +1,11 @@
 <?php
 namespace app\manage\controller;
 
+use app\common\base\BaseController;
 use think\Config;
-use think\Controller;
 use thinkcms\auth\Auth;
 
-abstract class BasicController extends Controller
+abstract class BasicController extends BaseController
 {
     public static $uid;
 

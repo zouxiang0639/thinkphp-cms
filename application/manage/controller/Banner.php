@@ -1,66 +1,52 @@
 <?php
 namespace app\manage\controller;
 
-use app\common\model\TemplateModel;
+use app\common\model\BannerModel;
 
-class Template extends BasicController
+class Banner extends BasicController
 {
 
     private $id     = 0;
-    private $url    = 'template/index';
-    static $groups  = [
-        1 => '单页模型',
-        2 => '信息模型',
-        3 => '产品模型'
-    ];
+    private $url    = 'banner/index';
+    private $groups  = [];  //请在语言包里设置
 
-    static $builderMenu  = [
-        //生成菜单[ 组类型, menuID,   路由]
-        1   => ['单页模型', 62, 'category/edit'],
-        2   => ['信息模型', 62, 'info/index'],
-        3   => ['产品模型', 109, 'products/index']
-    ];
-
-    static $type    = [
-        '分类页面'  => '分类页面',
-        '信息内页'  => '信息内页',
-        '通用页面'  => '通用页面'
-    ];
     private $validate =[
-        ['title|标题', 'require'],
-        ['template_file|模版文件', 'require|alphaDash'],
+        ['title|标题', 'require']
     ];
 
     public function __construct()
     {
+        $this->groups   = lang('banner groups');
+
         parent::__construct();
         $this->id       = !empty($this->request->param('id')) ? intval($this->request->param('id')) : $this->id;
         $nav = [
-            '模版文件列表' => ['url' => $this->url],
-            '模版文件增加' => ['url' => 'template/add'],
-            '模版文件修改' => ['url' => ['template/edit', ['id' => $this->id]], 'style' => "display: none;"],
+            '幻灯片列表' => ['url' => $this->url],
+            '幻灯片增加' => ['url' => 'banner/add'],
+            '幻灯片修改' => ['url' => ['banner/edit', ['id' => $this->id]], 'style' => "display: none;"],
         ];
         $this->assign('navTabs',  parent::navTabs($nav));
     }
 
     public function index()
     {
+
         $where  = [];
         $groups   = intval($this->request->get('groups'));
         if(!empty($groups)){
-            $where['group']  = array_get(self::$groups,$groups);
+            $where['group']  = $groups;
         }
 
-        $list = TemplateModel::where($where)->paginate();
+        $list = BannerModel::where($where)->paginate();
         return $this->fetch('',[
-            'list'  => $list,
-            'page'  => $list->render(),
-            'groups'  => self::$groups
+            'list'      => $list,
+            'page'      => $list->render(),
+            'groups'    => $this->groups
         ]);
     }
 
     /**
-     * 模版文件添加
+     * 幻灯片添加
      */
     public function add()
     {
@@ -75,7 +61,7 @@ class Template extends BasicController
             }
 
             //写入数据库
-            if(TemplateModel::create($post)){
+            if(BannerModel::create($post)){
                 return $this->success(lang('Add success'), url($this->url));
             }else{
                 return $this->error(lang('Add failed'));
@@ -85,31 +71,30 @@ class Template extends BasicController
 
         return $this->fetch('',[
             'info'  => [
-                'groups'    => self::$groups,
-                'types'     => self::$type
+                'groups'    => $this->groups,
+                'types'     =>[1]
             ]
         ]);
     }
 
     /**
-     * 模版文件修改
+     * 幻灯片修改
      */
     public function edit()
     {
 
-        $info = TemplateModel::get($this->id);
+        $info = BannerModel::get($this->id);
         if(empty($info)){
             return abort(404, lang('404 not found'));
         }
-        $info['groups'] = self::$groups;
-        $info['types']  = self::$type;
+        $info['groups'] = $this->groups;
         return $this->fetch('',[
            'info'   => $info
         ]);
     }
 
     /**
-     * 模版文件更新
+     * 幻灯片更新
      */
     public function update()
     {
@@ -124,7 +109,7 @@ class Template extends BasicController
             }
 
             //更新数据库
-            $update = TemplateModel::get($this->id);
+            $update = BannerModel::get($this->id);
             if(empty($update)){
                 return abort(404, lang('404 not found'));
             }
@@ -139,12 +124,12 @@ class Template extends BasicController
     }
 
     /**
-     * 模版文件删除
+     * 幻灯片删除
      */
     public function delete()
     {
         if($this->request->isPost() && !empty($this->id)){
-            $delete  = TemplateModel::get($this->id);
+            $delete  = BannerModel::get($this->id);
             if(empty($delete)){
                 return abort(404, lang('404 not found'));
             }

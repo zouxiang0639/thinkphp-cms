@@ -14,41 +14,50 @@ class File extends BasicController
     }
 
 
-    public function uploadPicture()
+    public function upload($data = 'json')
     {
+
+        $param            = $this->request->param();
+
         if($this->request->isPost()){
-            $data = [];
+            $file = [];
             foreach((array)$_FILES as $k => $v){
-               $data = Tool::get('file')->fileUpload($this->request, $k, 'image');
+                $file = Tool::get('file')->fileUpload($this->request, $k, $param['type']);
             }
 
-            if(empty($data)){
-                $data = [
+            if(empty($file)){
+                $file = [
                     'code'      => 0,
                     'msg'       => '请选择上传文件',
                 ];
             }
+
             //图片上传的途径
-            switch($this->request->param('type')){
-                case 'editor': //编辑器
-                    echo "<script type='text/javascript'>window.parent.CKEDITOR.tools.callFunction({$_REQUEST["CKEditorFuncNum"]},'".$data['path']."','');</script>";die;
-                case 'inputImgae': //单张图片
-                    return json($data);
+            switch($data){
+                case 'echo': //编辑器
+                    echo "<script type='text/javascript'>window.parent.CKEDITOR.tools.callFunction({$_REQUEST["CKEditorFuncNum"]},'".$file['path']."','');</script>";die;
+                case 'json': //单张图片
+                    return json($file);
                     break;
                 default:
                     return abort(404, lang('404 not found'));
                     break;
             }
         }
-        $this->view->engine->layout(false);
-        $get            = $this->request->get();
 
-        $extensions     = Tool::get('file')->fileType('image');
+    }
+
+    public function plupload()
+    {
+        $param            = $this->request->param();
+        $this->view->engine->layout(false);
+        $extensions     = Tool::get('file')->fileType($param['filetype']);
+
         $info   = [
-            'multi'                     => $get['multi'],
-            'mime_type'                 => "{'title':'Image files','extensions':'{$extensions['ext']}'}",
-            'upload_max_filesize_mb'    => 10,
-            'app'                       => $get['app']
+            'multi'                     => $param['multi'],
+            'mime_type'                 => "{'title':'{$extensions['title']}','extensions':'{$extensions['ext']}'}",
+            'upload_max_filesize_mb'    => $extensions['upload_max_filesize'],
+            'app'                       => $param['app']
         ];
         return $this->fetch('',[
             'info'  =>  $info

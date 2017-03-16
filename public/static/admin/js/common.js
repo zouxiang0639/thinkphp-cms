@@ -35,18 +35,20 @@ function upload_one_image(dialog_title, input_selector, extra_params, app) {
  * 打开文件上传对话框
  * @param dialog_title 对话框标题
  * @param callback 回调方法，参数有（当前dialog对象，选择的文件数组，你设置的extra_params）
+ * @param filetype 文件类型，image,video,audio,file
  * @param extra_params 额外参数，object
  * @param multi 是否可以多选
- * @param filetype 文件类型，image,video,audio,file
  * @param app  应用名，CMF的应用名
  */
-function open_upload_dialog(dialog_title,callback,extra_params,multi,filetype,app){
+function open_upload_dialog(dialog_title,callback,filetype,extra_params,multi,app){
     multi = multi?1:0;
+
     filetype = filetype?filetype:'image';
     app = app?app:GV.APP;
+
     var params = '?multi='+multi+'&filetype='+filetype+'&app='+app+'&type=inputImgae';
     Wind.use("artDialog","iframeTools",function(){
-        art.dialog.open(GV.ROOT+'file/uploadPicture'  + params, {
+        art.dialog.open(GV.ROOT+'file/plupload'  + params, {
             title: dialog_title,
             id: new Date().getTime(),
             width: '650px',

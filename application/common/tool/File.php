@@ -74,12 +74,12 @@ class File extends \think\File
             ];
         }
 
-        $type   = self::fileType($type);
-        $hash   = $file->hash();
+        $fileType   = self::fileType($type);
 
+        //根据文件hash值 去查询是否有这个文件
+        $hash   = $file->hash();
         $info = FileModel::where(['hash'=>$hash])->column(['0,path,name']);
         if($info){
-
             // 上传失败成功
             return [
                 'code'      => 1,
@@ -89,15 +89,17 @@ class File extends \think\File
             ];
         }else{
 
-            $info = $file->validate(['ext' => $type['ext']])->move(ROOT_PATH . 'public'.$type['path']);
+            $info = $file->validate(['ext' => $fileType['ext']])->move(ROOT_PATH . 'public'.$fileType['path']);
             $base    = request()->root();
             $root    = strpos($base, '.') ? DS.ltrim(dirname($base), DS) : $base;
-            $path    = $root.$type['path'].$info->saveName;
-            //图片写入数据库利于管理
+            $path    = $root.$fileType['path'].$info->saveName;
+
+
+            //文件写入数据库利于管理防止重复上传
             FileModel::create([
                 'path'      => $path,
                 'name'      => $info->info['name'],
-                'type'      => 'image',
+                'type'      => $type,
                 'hash'      => $hash,
             ]);
 
@@ -133,7 +135,13 @@ class File extends \think\File
         $path   = DS.'uploads'.DS;
         switch($type){
             case 'image':
-                return ['path' => $path.'img/', 'ext' => 'jpg,png'];
+                return ['path' => $path.'img/', 'ext' => 'jpg,jpeg,png,gif,bmp4', 'upload_max_filesize' => '10240' ,'title'=>'Image files'];
+            case 'file':
+                return ['path' => $path.'file/', 'ext' => 'txt,pdf,doc,docx,xls,xlsx,ppt,pptx,zip,rar', 'upload_max_filesize' => '10240' ,'title'=>'File files'];
+            case 'video':
+                return ['path' => $path.'video/', 'ext' => 'mp4,avi,wmv,rm,rmvb,mkv', 'upload_max_filesize' => '10240'];
+            case 'audio':
+                return ['path' => $path.'audio/', 'ext' => 'mp4,avi,wmv,rm,rmvb,mkv', 'upload_max_filesize' => '10240'];
         }
     }
 }

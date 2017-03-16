@@ -1,0 +1,48 @@
+<script>
+    $(function(){
+        $("#navcid_select").change(function() {
+            $("#mainform").submit();
+        });
+    })
+</script>
+<ul class="nav nav-tabs">
+    {$navTabs.nav}
+</ul>
+<form class="well form-search" id="mainform" action="{:url('banner/index')}" method="get">
+    <div class="btn-group width2">
+        <?=\app\common\tool\Tool::get('form')->select(
+            'groups',
+            array_merge([0 => '全部模型'], $groups),
+            input('groups'),
+            ['class' => 'form-control', 'id' => 'navcid_select' ]
+        )?>
+    </div>
+</form>
+<form  method="post">
+    <table class="table table-hover table-bordered table-list" id="menus-table">
+        <thead>
+        <tr>
+            <th width="50">ID</th>
+            <th>图片</th>
+            <th>标题</th>
+            <th>类型</th>
+            <th width="180">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {foreach name='$list' item='v' }
+            <tr>
+                <th width="50">{$v.banner_id}</th>
+                <th><img height="38" src="{$v.picture}"></th>
+                <th>{$v.title}</th>
+                <th>{$groups[$v['group']]}</th>
+                <th>
+                    <a href="{:url('banner/edit', ['id'=>$v['banner_id']])}">编辑</a> |
+                    <a class="a-post" post-msg="你确定删除吗?" post-url="{:url('banner/delete', ['id'=>$v['banner_id']])}">删除</a>
+                </th>
+            </tr>
+        {/foreach}
+        </tbody>
+    </table>
+</form>
+

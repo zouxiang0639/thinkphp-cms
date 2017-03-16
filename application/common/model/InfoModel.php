@@ -27,7 +27,7 @@ class InfoModel extends BasicModel
         return implode(',', $value);
     }
 
-    // picture修改器
+    // picture读取器
     protected function getPictureAttr($value)
     {
       return parent::defaultImage($value);

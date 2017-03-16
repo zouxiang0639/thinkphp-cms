@@ -166,7 +166,7 @@
         </div>
     </div>
 </div>
-
+{:dump($info)}
 <script>
     var multi={$info['multi']};
     var mime_type = {$info['mime_type']};
@@ -178,7 +178,7 @@
             runtimes : 'html5,flash,silverlight,html4',
             browse_button : 'select-files', // you can pass an id...
             container: document.getElementById('container'), // ... or DOM Element itself
-            url : "{:url('file/uploadPicture', ['type' => input('type')])}",
+            url : "{:url('file/upload', ['type' => input('filetype')])}",
             flash_swf_url : '__PUBLIC__/js/plupload/Moxie.swf',
             silverlight_xap_url : '__PUBLIC__/js/plupload/Moxie.xap',
             filters : {
@@ -229,7 +229,7 @@
                             .data('filepath',data.path)
                             .data('name',data.name);
 
-                        if(data.path.match(/\.(jpeg|gif|jpg|png|bmp|pic)$/gi)){
+                        if(data.path.match(/\.(gif|jpeg|jpg|png|bmp|pic)$/gi)){
                             var $img=$('<img/>');
                             $img.attr('src',data.path);
                             $file.find('.upload-percent')

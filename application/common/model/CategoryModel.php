@@ -1,6 +1,7 @@
 <?php
 namespace app\common\model;
 
+use app\common\tool\Tool;
 use app\manage\controller\Template;
 use thinkcms\auth\library\Tree;
 use thinkcms\auth\model\Menu;
@@ -9,13 +10,61 @@ class CategoryModel extends BasicModel
 {
     public $name = 'category';
 
-
+    //字段转型
+    protected $type = [
+        'extend' => 'array'
+    ];
 
     //关联一对一 后台菜单模型
     public function menu()
     {
         return $this->hasOne('thinkcms\auth\model\Menu','nav_id','category_id');
     }
+
+    //关联一对多 扩展字段
+    public function extended()
+    {
+        return $this->hasMany('app\common\model\ExtendedModel','parent_id','extended_id');
+    }
+
+    //关联一对多 后台信息
+    public function info()
+    {
+        return $this->hasMany('app\common\model\InfoModel','category_id','category_id');
+    }
+
+    // extendeds读取器
+    protected function getExtendedsAttr($value)
+    {
+        $html   = '';
+        //获取
+        $extend =  $this->extended;
+
+        if(empty($extend) && $this->parent_id != 0){
+            $extend = self::get($this->parent_id)->extended;
+        }
+        foreach($extend as $v){
+            $value  = isset($this->extend[$v['name']]) ? $this->extend[$v['name']] : '';
+           //使用表单枚举生成<form> 标签支持
+            $input  =  Tool::get('helper')->formEnum(
+                $v['input_type'],                               //表单类型
+                'extend['.$v['name'].']',                       //变量名称
+                $value,                      //置变量的值
+                ['class' => 'form-control text'],               //其他属性
+                json_decode($v['input_value'])                  //需要生成多个 如select
+            );
+
+            $html  .= "<tr>
+                            <th>{$v['title']}</th>
+                            <th>
+                                {$input}
+                            </th>
+                        </tr>";
+        }
+
+        return $html;
+    }
+
 
     /**
      * 树形导航option form 生成
@@ -120,6 +169,11 @@ class CategoryModel extends BasicModel
 
     }
 
+    /**
+     * 删除当前的记录
+     * @access public
+     * @return integer
+     */
     public function delete()
     {
        $result = parent::delete();

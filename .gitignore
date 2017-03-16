@@ -4,6 +4,7 @@ composer.lock
 thinkphp
 vendor
 runtime/
+config
 public/uploads/
 .svn/
 web.config

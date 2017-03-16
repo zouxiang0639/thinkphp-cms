@@ -60,7 +60,7 @@ class Info extends BasicController
     public function add()
     {
         return $this->fetch('',[
-            'info'  => '',
+            'info'  => ['category_id' => $this->cid],
             'enum'  => self::enum()
         ]);
     }
@@ -96,10 +96,11 @@ class Info extends BasicController
     public function edit()
     {
         $info    = InfoModel::get($this->id);
+
         if(empty($info)){
             return abort(404, lang('404 not found'));
         }
-
+      ;
         return $this->fetch('', [
             'info'  => $info,
             'enum'  => self::enum(['category_id' => $info['category_id']])

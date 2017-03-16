@@ -1,6 +1,13 @@
 <ul class="nav nav-tabs">
     {$navTabs.nav}
 </ul>
+<form class="well form-search" id="mainform" action="{:url('info/index')}" method="get">
+    <div class="btn-group width2">
+        {notempty name="$cid"}
+            <a class="btn btn-primary" href="{:url('category/edit', ['id' => $cid])}">编辑分类</a>
+        {/notempty}
+    </div>
+</form>
 <form  method="post">
     <table class="table table-hover table-bordered table-list" id="menus-table">
         <thead>

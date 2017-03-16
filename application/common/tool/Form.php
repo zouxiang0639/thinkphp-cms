@@ -18,16 +18,18 @@ class Form extends FormBuilder
     /**
      * 单张图片上传
      *
-     * @param  string  $name
+     * @param  string  $names
      * @param  string  $value
      * @param  array   $options
      * @return string
      */
-    public function oneImage($name, $value = '', $options = [])
+    public function oneImage($names, $value = '', $options = [])
     {
+        $name = str_replace("[", "-", $names);
+        $name = str_replace("]", "", $name);
         $picture    = !empty($value) ? $value : Config::get('basic.default_picture');;
 
-        $html       ="  <input type='hidden' name='{$name}' id='{$name}' value='{$value}'>
+        $html       ="  <input type='hidden' name='{$names}' id='{$name}' value='{$value}'>
                         <a href=\"javascript:upload_one_image('图片上传','#{$name}');\">
                             <img src='{$picture}' id='{$name}-preview' height='40' style='cursor: hand' />
                         </a>
@@ -47,12 +49,13 @@ class Form extends FormBuilder
      * @param  array   $options
      * @return string
      */
-    public function multiImage($name, $value = '', $options = [])
+    public function multiImage($names, $value = '', $options = [])
     {
         if(!is_array($value)){
             $value = json_decode($value, true);
         }
-
+        $name = str_replace("[", "-", $names);
+        $name = str_replace("]", "", $name);
 
         $html       = "<script type='text/html' id='{$name}-item-wrapper'>
                             <li id='{$name}{id}'>

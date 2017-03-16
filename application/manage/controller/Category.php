@@ -9,15 +9,20 @@ class Category extends BasicController
 {
     private $id         = 0;
     private $url        = 'category/index';
-    private $display    = ['所有人可见' => '所有人可见', '不可见' => '不可见', '管理员可见' => '管理员可见'];  //枚举enum字段 如果有变动需要修改数据库
-    private $validate =[
+    private $display    = [];  //请到语言包里修改 template groups
+    private $groups     = [];   //请到语言包里修改 display
+    private $validate   =[
         ['title|标题', 'require'],
     ];
 
     public function __construct()
     {
         parent::__construct();
-        $this->id       = intval(array_get($this->request->param(), 'id'));
+
+        $this->groups       = lang('template groups');
+        $this->display      = lang('display');
+        $this->id           = intval(array_get($this->request->param(), 'id'));
+
         $nav = [
             '分类列表' => ['url' => $this->url],
             '分类增加' => ['url' => 'category/add'],
@@ -107,11 +112,10 @@ class Category extends BasicController
     public function edit()
     {
         $info = CategoryModel::get($this->id);
+        $info->extendeds;
         if(empty($info)){
             return abort(404, lang('404 not found'));
         }
-        $info['template_group'] = array_search($info['template_group'], Template::$groups);
-
         return $this->fetch('',[
             'enum' => self::enum(['parent_id' => $info['parent_id']]),
             'info' => $info
@@ -197,7 +201,7 @@ class Category extends BasicController
     {
       return  [
             'display'            => $this->display,
-            'template_group'     => Template::$groups,
+            'template_group'     => $this->groups,
             'template_default'   => TemplateModel::tplTypeLife(['分类页面', '通用页面']),
             'template_info'      => TemplateModel::tplTypeLife(['信息内页', '通用页面']),
             'parent'             => CategoryModel::treeCategory($arr['parent_id'])

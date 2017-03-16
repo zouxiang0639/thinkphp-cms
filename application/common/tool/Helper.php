@@ -39,6 +39,12 @@ class Helper
                 return Tool::get('form')->textarea($name, $value,  array_merge(['clos' => '30', 'rows' => 3], $options));
             case 'password':
                 return Tool::get('form')->password($name, $options);
+            case 'oneimage':
+                return Tool::get('form')->oneImage($name, $value);
+            case 'multiimage':
+                return Tool::get('form')->multiImage($name, $value);
+            case 'editor':
+                return Tool::get('form')->editor($name, $value);
             default:
                 return '没有这个表单类型';
         }

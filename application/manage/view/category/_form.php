@@ -42,7 +42,7 @@ use app\common\tool\Tool;
             <tr class="template_info">
                 <th width="150">详情模板</th>
                 <td>
-                    <?=Tool::get('form')->select('template_info', $enum['template_info'], '', ['class' => 'form-control text'])?>
+                    <?=Tool::get('form')->select('template_info', $enum['template_info'],  object_get($info, 'template_info'), ['class' => 'form-control text'])?>
                 </td>
             </tr>
             <tr class="template_info">
@@ -105,6 +105,7 @@ use app\common\tool\Tool;
     </div>
     <div class="col-sm-12"> <!--底部-->
         <table class="table table-bordered" >
+            {$info.Extendeds ?? ''}
             <tr>
                 <th width="150">文章内容</th>
                 <th>
@@ -127,7 +128,7 @@ use app\common\tool\Tool;
             var tr,num;
             num = $(this).val();
             tr  = $('.template_info');
-            if(num == 2){
+            if(num >= 2){
                 tr.show();
             }else {
                 tr.hide();

@@ -20,7 +20,7 @@ class Publics extends Controller
             $validate = [
                 ['admin_name|用户名','require|max:25'],
                 ['admin_password|密码','require'],
-                [ 'verify|验证码','require|captcha']
+                //[ 'verify|验证码','require|captcha']
             ];
 
             //数据验证
@@ -30,6 +30,7 @@ class Publics extends Controller
             }
 
             $login  = AdminModel::login($post);
+
             if($login === false){
                 return '用户名或者密码错误';
             }else{

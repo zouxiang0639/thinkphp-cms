@@ -104,7 +104,7 @@ use app\common\tool\Tool;
             <tr>
                 <th width="150">文章内容</th>
                 <th>
-                    <?=Tool::get('form')->editor('content')?>
+                    <?=Tool::get('form')->editor('content', object_get($info, 'content'))?>
                 </th>
             </tr>
         </table>
