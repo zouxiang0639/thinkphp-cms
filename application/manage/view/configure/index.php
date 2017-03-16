@@ -11,9 +11,9 @@
 <form class="well form-search" id="mainform" action="{:Url('configure/index')}" method="get">
     <div class="btn-group width2">
         <?=\app\common\tool\Tool::get('form')->select(
-            'type',
-            array_merge([0 => '全部配置'], $class),
-            input('type'),
+            'groups',
+            array_merge([0 => '全部配置'], lang('configure groups')),
+            input('groups'),
             ['class' => 'form-control', 'id' => 'navcid_select' ]
         )?>
     </div>
@@ -35,7 +35,7 @@
             <th width="50">{$v.configure_id}</th>
             <th>{$v.title}</th>
             <th>{$v.configure_name}</th>
-            <th>{$v.type}</th>
+            <th>{$v.groups_name}</th>
             <th>{$v.comment}</th>
             <th>
                 <a href="{:url('configure/edit',['id'=>$v['configure_id']])}">编辑</a> |

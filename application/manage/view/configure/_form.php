@@ -14,7 +14,7 @@ use \app\common\tool\Tool;
         <tr>
             <th width="150">所属分组</th>
             <td>
-                <?=Tool::get('form')->select('type', $info['class'], object_get($info,'type'), ['class'=>"form-control text"] )?>
+                <?=Tool::get('form')->select('type', lang('configure groups'), object_get($info,'groups'), ['class'=>"form-control text"] )?>
             </td>
         </tr>
         <tr>
@@ -24,10 +24,12 @@ use \app\common\tool\Tool;
                 <span class="form-required">*</span><span class="span-text">只能是英文命名</span>
             </th>
         </tr>
+
         <tr>
             <th>渲染类型</th>
             <td>
-                <?=Tool::get('form')->select('input_type', $info['inputType'], object_get($info,'input_type'), ['class'=>"form-control text"] )?>
+                <?=Tool::get('form')->select('form_type', lang('form type'), object_get($info,'form_type'), ['class'=>"form-control
+                text"] )?>
             </td>
         </tr>
         <tr>

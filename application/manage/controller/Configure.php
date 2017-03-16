@@ -10,19 +10,6 @@ class Configure extends BasicController
     private $id;
     private $validate;
     private $url        = 'configure/index';
-    private $inputType  = [
-        'text'      => 'text',
-        'select'    => 'select',
-        'checkbox'  => 'checkbox',
-        'radio'     => 'radio',
-        'password'  => 'password',
-        'textarea'  => 'textarea',
-        'file'      => 'file'
-    ];
-    private $class      = [
-        1  => '基本配置',
-        2  => '邮箱配置',
-    ];
 
     public function __construct()
     {
@@ -47,17 +34,17 @@ class Configure extends BasicController
     public function index()
     {
         $where  = [];
-        $type   = intval($this->request->get('type'));
-        if(!empty($type)){
-            $where['type']  = array_get($this->class,$type);
+        $groups   = intval($this->request->get('groups'));
+
+        if(!empty($groups)){
+            $where['groups']  = $groups;
         }
 
-        $list = ConfigureModel::where($where)->paginate(20);
-       ;
+        $list = ConfigureModel::where($where)->paginate();
+
         return $this->fetch('',[
             'list'  => $list,
-            'page'  => $list->render(),
-            'class'  => $this->class
+            'page'  => $list->render()
         ]);
     }
 
@@ -85,10 +72,7 @@ class Configure extends BasicController
         }
 
         return $this->fetch('',[
-            'info'  => [
-                'inputType' => $this->inputType,
-                'class'      => $this->class
-            ]
+            'info'  => ''
         ]);
     }
 
@@ -101,10 +85,6 @@ class Configure extends BasicController
         if(empty($info)){
             return abort(404, lang('404 not found'));
         }
-
-        $info['class']      = $this->class;
-        $info['inputType']  = $this->inputType;
-        $info['type']       = array_search($info['type'], $this->class);
 
         return $this->fetch('',[
             'info'  => $info
@@ -166,13 +146,14 @@ class Configure extends BasicController
      */
     public function basicSettings()
     {
-        $list       = ConfigureModel::where(['type' => $this->class[1]])->select();
+        $groups     = lang('configure groups');
+        $list       = ConfigureModel::where(['type' => $groups[1]])->select();
         $fileName   = 'basic';
 
         return $this->fetch('config',[
             'html'  => self::htmlBuilder($list,$fileName),
             'info'  => [
-                'class_name'    => $this->class[1],
+                'class_name'    => $groups[1],
                 'file_name'     => $fileName
             ]
         ]);
@@ -183,13 +164,14 @@ class Configure extends BasicController
      */
     public function emailSettings()
     {
-        $list       = ConfigureModel::where(['type' => $this->class[2]])->select();
+        $groups     = lang('configure groups');
+        $list       = ConfigureModel::where(['type' => $groups[2]])->select();
         $fileName   = 'email';
 
         return $this->fetch('config',[
             'html'  => self::htmlBuilder($list,$fileName),
             'info'  => [
-                'class_name'    => $this->class[2],
+                'class_name'    => $groups[2],
                 'file_name'     => $fileName
             ]
         ]);

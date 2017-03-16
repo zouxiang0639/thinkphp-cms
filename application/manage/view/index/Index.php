@@ -37,7 +37,7 @@
             <ul class="nav simplewind-nav pull-right">
                 <li class="light-blue">
                     <a data-toggle="dropdown" href="#" class="dropdown-toggle">
-                        <img class="nav-user-photo" width="30" height="30" src="__PublicAdmin__/images/logo-18.png" alt="admin">
+                        <img class="nav-user-photo" width="30" height="30" src="__STATIC__/admin/images/logo-18.png" alt="admin">
                         <span class="user-info"> 欢迎, admin </span>
                         <i class="fa fa-caret-down"></i>
                     </a>

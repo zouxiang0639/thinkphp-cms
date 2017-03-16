@@ -9,10 +9,12 @@ return [
     //模版控制器
     'template groups'           => [1 => '单页模型', 2 => '信息模型', 3 => '产品模型'],
 
+    //配置控制器
+    'configure groups'           => [1 => '基本配置', 2 => '邮箱配置'],
+
     //公共
     'display'                   => [1 => '所有人可见', 2 => '不可见', 3 => '管理员可见'],
-
-
+    'form type'                 => [1 => 'text', 2 => 'select', 3 => 'checkbox', 4 => 'radio', 5 => 'password', 6 =>'textarea', 7 => 'file'],
 
     // 错误提示
     '404 not found'             => '页面不存在!',
