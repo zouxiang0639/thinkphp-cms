@@ -13,7 +13,7 @@
 
 if (! function_exists('object_get')) {
     /**
-     * Get an item from an array using "dot" notation.
+     * Get an item from an object using "dot" notation.
      *
      * @param  object  $object
      * @param  string  $key
@@ -32,3 +32,20 @@ if (! function_exists('object_get')) {
     }
 }
 
+if (! function_exists('thumb_get')) {
+    /**
+     * 获取缩略图
+     *
+     * @param  string  $path
+     * @return mixed
+     */
+    function thumb_get($path)
+    {
+        $thumbPath = str_replace("img", "thumb", $path);
+        if(file_exists(ROOT_PATH.'public'.$thumbPath)){
+            return $thumbPath;
+        }else{
+            return $path;
+        }
+    }
+}

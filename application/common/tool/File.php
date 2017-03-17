@@ -55,72 +55,87 @@ class File extends \think\File
     /**
      * 文件上传
      *
-     * @param  object  $request
-     * @param  string  $arr
-     * @param  string  $type
+     * @param  object   $request
+     * @param  string   $arr
+     * @param  string   $type
+     * @param  int      $id
      * @return array
      */
-    public function fileUpload($request, $name, $type)
+    public function fileUpload($request, $name, $type, $id = null)
     {
 
         // 获取表单上传文件
-        $file = $request->file($name);
+        $file           = $request->file($name);
+        $filePath       = false;    //替换文件的路由
 
         //没有文件返回错误
         if (empty($file)) {
-            return [
-                'code'      => 0,
-                'msg'       => '请选择上传文件',
-            ];
+            return $this->result(0, '请选择上传文件');
         }
 
-        $fileType   = self::fileType($type);
 
-        //根据文件hash值 去查询是否有这个文件
-        $hash   = $file->hash();
-        $info = FileModel::where(['hash'=>$hash])->column(['0,path,name']);
-        if($info){
-            // 上传失败成功
-            return [
-                'code'      => 1,
-                'msg'       => '上传成功',
-                'path'      => $info[0]['path'],
-                'name'      => $info[0]['name'],
-            ];
-        }else{
-
-            $info = $file->validate(['ext' => $fileType['ext']])->move(ROOT_PATH . 'public'.$fileType['path']);
-            $base    = request()->root();
-            $root    = strpos($base, '.') ? DS.ltrim(dirname($base), DS) : $base;
-            $path    = $root.$fileType['path'].$info->saveName;
+        if(!empty($id)){
+            $replaceFile = FileModel::get($id);
+            $filePath  = explode(DS, $replaceFile['path']);
+            $count      = count($filePath);
+            $filePath  = implode(DS, [$filePath[$count-2], $filePath[$count-1]]);
+        }
 
 
-            //文件写入数据库利于管理防止重复上传
-            FileModel::create([
-                'path'      => $path,
-                'name'      => $info->info['name'],
-                'type'      => $type,
-                'hash'      => $hash,
-            ]);
 
-            if ($info) {
+        //如果不是替换文件 就根据hash查找文件库是否有上传过
+        if(!$filePath){
+            $hash   = $file->hash();
+            $info = FileModel::where(['hash'=>$hash])->column(['0,path,name']);
 
-                // 上传成功
-                return [
-                    'code'      => 1,
-                    'path'      => $path,
-                    'name'      => $info->info['name'],
-                    'msg'       => '上传成功'
-                ];
-            } else {
-
-                // 上传失败获取错误信息
-                return [
-                    'code'      => 0,
-                    'msg'       => $file->getError(),
-                ];
+            //如果查找成功就返回数据库里面的数据
+            if(!empty($info)) {
+                return $this->result(1, '上传成功', $info[0]['path'], $info[0]['name']);
             }
         }
+
+        //尽然不是替换数据库里面也没有那就上传咯
+        $fileType   = self::fileType($type); //得到上传的类型
+        $info = $file->validate(['ext' => $fileType['ext']])->move(ROOT_PATH . 'public'.$fileType['path'],$filePath);
+        $base    = request()->root();
+        $root    = strpos($base, '.') ? DS.ltrim(dirname($base), DS) : $base;
+        $path    = $root.$fileType['path'].$info->saveName;
+
+        //生成缩略图
+        if($type == 'image') {
+            $thumbImage = str_replace("img", "thumb", $info->filename);
+
+            //缩略图路径生成
+            $thumbPath = explode(DS, $thumbImage);
+            array_pop($thumbPath);
+            $thumbPath = implode(DS, $thumbPath);
+            $this->checkPath($thumbPath);
+
+            //处理图片并保存
+            $image = \think\Image::open($info->filename);
+            $image->thumb(300, 300, \think\Image::THUMB_SCALING)->save($thumbImage);
+        }
+
+        //如果是替换图片的话写入数据库也么有意思,不是话那就写入咯
+        if(!$filePath) {
+
+            FileModel::create([
+                'path' => $path,
+                'name' => $info->info['name'],
+                'type' => $type,
+                'hash' => $hash,
+            ]);
+        }
+
+        //文件上传返回信息
+        if ($info) {
+            // 上传成功
+            return $this->result(1, '上传成功', $path, $info->info['name']);
+        } else {
+            // 上传失败获取错误信息
+            return $this->result(0,$file->getError());
+        }
+
     }
 
 
@@ -141,7 +156,18 @@ class File extends \think\File
             case 'video':
                 return ['path' => $path.'video/', 'ext' => 'mp4,avi,wmv,rm,rmvb,mkv', 'upload_max_filesize' => '10240'];
             case 'audio':
-                return ['path' => $path.'audio/', 'ext' => 'mp4,avi,wmv,rm,rmvb,mkv', 'upload_max_filesize' => '10240'];
+                return ['path' => $path.'audio/', 'ext' => 'mp3,wma,wav', 'upload_max_filesize' => '10240'];
         }
+    }
+
+    public function result($code, $msg, $path = '', $name = '')
+    {
+        return [
+            'code'      => $code,
+            'msg'       => $msg,
+            'path'      => $path,
+            'name'      => $name
+
+        ];
     }
 }

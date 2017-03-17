@@ -21,14 +21,18 @@ if ($('a.js-dialog').length) {
  * @param dialog_title 上传对话框标题
  * @param input_selector 图片容器
  * @param extra_params 额外参数，object
+ * @param filetype 文件类型
+ * @param id 文件ID
  * @param app  应用名,CMF的应用名
  */
-function upload_one_image(dialog_title, input_selector, extra_params, app) {
+function upload_one_file(dialog_title, input_selector, filetype, extra_params, app, id) {
+
+    filetype = filetype?filetype:'image';
     open_upload_dialog(dialog_title, function (dialog, files) {
         $(input_selector).val(files[0].filepath);
         $(input_selector + '-preview').attr('src', files[0].preview_url);
         $(input_selector + '-name').val(files[0].name);
-    }, extra_params, 0, 'image', app);
+    }, filetype, extra_params, 0, app, id);
 }
 
 /**
@@ -40,13 +44,13 @@ function upload_one_image(dialog_title, input_selector, extra_params, app) {
  * @param multi 是否可以多选
  * @param app  应用名，CMF的应用名
  */
-function open_upload_dialog(dialog_title,callback,filetype,extra_params,multi,app){
+function open_upload_dialog(dialog_title,callback,filetype,extra_params,multi,app,id){
     multi = multi?1:0;
 
     filetype = filetype?filetype:'image';
     app = app?app:GV.APP;
 
-    var params = '?multi='+multi+'&filetype='+filetype+'&app='+app+'&type=inputImgae';
+    var params = '?multi='+multi+'&filetype='+filetype+'&app='+app+'&type=inputImgae&id='+id;
     Wind.use("artDialog","iframeTools",function(){
         art.dialog.open(GV.ROOT+'file/plupload'  + params, {
             title: dialog_title,

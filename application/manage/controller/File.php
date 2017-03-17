@@ -13,6 +13,28 @@ class File extends BasicController
         parent::__construct();
     }
 
+    public function index()
+    {
+        $groups = ['image' => '图片', 'file' => '文件', 'video' => '视屏', 'audio' => '音频'];
+        $get    = $this->request->get();
+        $where  = '';
+
+        if(!empty($get['groups'])){
+            $where['groups']  = $get['groups'];
+        }
+        if(!empty($get['name'])){
+            $where['name|path'] =['like',"%{$get['name']}%"];
+        }
+
+        $list   = FileModel::where($where)->paginate(18, '' , ['query' => $get]);
+
+        return $this->fetch('',[
+            'navTabs'   => parent::navTabs(['文件列表' => ['url' => 'file/index']]),
+            'list'      => $list,
+            'groups'    => $groups,
+            'page'  => $list->render(),
+        ]);
+    }
 
     public function upload($data = 'json')
     {
@@ -22,7 +44,7 @@ class File extends BasicController
         if($this->request->isPost()){
             $file = [];
             foreach((array)$_FILES as $k => $v){
-                $file = Tool::get('file')->fileUpload($this->request, $k, $param['type']);
+                $file = Tool::get('file')->fileUpload($this->request, $k, $param['type'], array_get($param, 'id', '0'));
             }
 
             if(empty($file)){
@@ -49,12 +71,14 @@ class File extends BasicController
 
     public function plupload()
     {
-        $param            = $this->request->param();
+
+        $param              = $this->request->param();
         $this->view->engine->layout(false);
-        $extensions     = Tool::get('file')->fileType($param['filetype']);
+        $extensions         = Tool::get('file')->fileType($param['filetype']);
 
         $info   = [
             'multi'                     => $param['multi'],
+            'extensions'                => $extensions['ext'],
             'mime_type'                 => "{'title':'{$extensions['title']}','extensions':'{$extensions['ext']}'}",
             'upload_max_filesize_mb'    => $extensions['upload_max_filesize'],
             'app'                       => $param['app']

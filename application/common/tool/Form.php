@@ -30,7 +30,7 @@ class Form extends FormBuilder
         $picture    = !empty($value) ? $value : Config::get('basic.default_picture');;
 
         $html       ="  <input type='hidden' name='{$names}' id='{$name}' value='{$value}'>
-                        <a href=\"javascript:upload_one_image('图片上传','#{$name}');\">
+                        <a href=\"javascript:upload_one_file('图片上传','#{$name}');\">
                             <img src='{$picture}' id='{$name}-preview' height='40' style='cursor: hand' />
                         </a>
                         <input type='button' class='btn btn-default active' onclick=\"
@@ -64,21 +64,23 @@ class Form extends FormBuilder
                                 class='form-control text' name='{$name}_1name[]' value='{name}' title='图片名称'>
                                 <img id='{$name}-{id}-preview' src='{filepath}' style='height:36px;width: 36px;'
                                 onclick=\"parent.image_preview_dialog(this.src);\">
-                                <a class='btn btn-primary' href=\"javascript:upload_one_image('图片上传','#{$name}-{id}');\">替换</a>
+                                <a class='btn btn-primary' href=\"javascript:upload_one_file('图片上传','#{$name}-{id}');\">替换</a>
                                 <a class='btn btn-default active' onclick=\"javascript:$('#{$name}{id}').remove();return false\">移除</a>
                             </li>
                       </script><ul id='{$name}' class='pic - list unstyled'>";
 
         if(is_array($value)){
             foreach ($value as $k => $v){
+                $path = array_get($v, 'path');
+                $name = array_get($v, 'name');
                 $html  .= "<li id='{$name}{$k}'>
-                                    <input id='{$name}-{$k}' type='hidden' name='{$name}_1path[]' value='{$v['path']}'>
+                                    <input id='{$name}-{$k}' type='hidden' name='{$name}_1path[]' value='{$path}'>
                                     <input id='{$name}-{$k}-name' type='text' class='form-control text' name='{$name}_1name[]'
-                                    value='{$v['name']}'
+                                    value='{$name}'
                                      title='图片名称'>
-                                    <img id='{$name}-{$k}-preview' src='{$v['path']}' style='height:36px;width: 36px;'
+                                    <img id='{$name}-{$k}-preview' src='{$path}' style='height:36px;width: 36px;'
                                     onclick=\"parent.image_preview_dialog(this . src);\">
-                                    <a class='btn btn-primary' href=\"javascript:upload_one_image('图片上传', '#{$name}-{$k}');\">替换</a>
+                                    <a class='btn btn-primary' href=\"javascript:upload_one_file('图片上传', '#{$name}-{$k}');\">替换</a>
                                     <a class='btn btn-default active' onclick=\"javascript:$('#{$name}{$k}') . remove();return false\">移除</a>
                                 </li>";
             }

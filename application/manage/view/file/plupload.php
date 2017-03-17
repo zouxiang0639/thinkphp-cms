@@ -9,7 +9,7 @@
     <script type="text/javascript">
         //全局变量
         var GV = {
-            ROOT: "/appadmin/",
+            ROOT: "/manage/",
             WEB_ROOT: "__STATIC__",
             JS_ROOT: "/default/",
             APP:'Portal'/*当前应用名*/
@@ -149,10 +149,10 @@
                 </div>
 					<span class="num">
 						{empty name="$info['multi']"}
-                            最多上传<em>1</em>个附件,
+                            最多上传<em>{$info.multi}</em>个附件,
                         {/empty}
 						单文件最大<em>{$info['upload_max_filesize_mb']}MB</em>,
-						<em style="cursor: help;" title="可上传格式：jpg,jpeg,png,gif,bmp4{//$extensions}" data-toggle="tooltip">支持格式？</em>
+						<em style="cursor: help;" title="可上传格式：{$info.extensions}" data-toggle="tooltip">支持格式？</em>
 					</span>
             </div>
             <div class="files-wrapper">
@@ -178,7 +178,7 @@
             runtimes : 'html5,flash,silverlight,html4',
             browse_button : 'select-files', // you can pass an id...
             container: document.getElementById('container'), // ... or DOM Element itself
-            url : "{:url('file/upload', ['type' => input('filetype')])}",
+            url : "{:url('file/upload', ['type' => input('filetype'), 'id'=>input('id')])}",
             flash_swf_url : '__PUBLIC__/js/plupload/Moxie.swf',
             silverlight_xap_url : '__PUBLIC__/js/plupload/Moxie.xap',
             filters : {
