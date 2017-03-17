@@ -8,24 +8,9 @@ class Template extends BasicController
 
     private $id     = 0;
     private $url    = 'template/index';
-    static $groups  = [
-        1 => '单页模型',
-        2 => '信息模型',
-        3 => '产品模型'
-    ];
-
-    static $builderMenu  = [
-        //生成菜单[ 组类型, menuID,   路由]
-        1   => ['单页模型', 62, 'category/edit'],
-        2   => ['信息模型', 62, 'info/index'],
-        3   => ['产品模型', 109, 'products/index']
-    ];
-
-    static $type    = [
-        '分类页面'  => '分类页面',
-        '信息内页'  => '信息内页',
-        '通用页面'  => '通用页面'
-    ];
+    private $type   = [];       //修改请到语言包template type修改
+    private $groups = [];       //修改请到语言包template groups修改
+    private $builderMenu  = []; //修改请到语言包template builder menu修改
     private $validate =[
         ['title|标题', 'require'],
         ['template_file|模版文件', 'require|alphaDash'],
@@ -33,6 +18,9 @@ class Template extends BasicController
 
     public function __construct()
     {
+        $this->groups       = lang('template groups');
+        $this->type         = lang('template type');
+        $this->builderMenu  = lang('template builder menu');
         parent::__construct();
         $this->id       = !empty($this->request->param('id')) ? intval($this->request->param('id')) : $this->id;
         $nav = [
@@ -48,14 +36,15 @@ class Template extends BasicController
         $where  = [];
         $groups   = intval($this->request->get('groups'));
         if(!empty($groups)){
-            $where['group']  = array_get(self::$groups,$groups);
+            $where['group']  = $groups;
         }
 
         $list = TemplateModel::where($where)->paginate();
         return $this->fetch('',[
-            'list'  => $list,
-            'page'  => $list->render(),
-            'groups'  => self::$groups
+            'list'      => $list,
+            'page'      => $list->render(),
+            'groups'    => $this->groups,
+            'type'      => $this->type
         ]);
     }
 
@@ -85,8 +74,8 @@ class Template extends BasicController
 
         return $this->fetch('',[
             'info'  => [
-                'groups'    => self::$groups,
-                'types'     => self::$type
+                'groups'    => $this->groups,
+                'types'     => $this->type
             ]
         ]);
     }
@@ -101,8 +90,8 @@ class Template extends BasicController
         if(empty($info)){
             return abort(404, lang('404 not found'));
         }
-        $info['groups'] = self::$groups;
-        $info['types']  = self::$type;
+        $info['groups'] = $this->groups;
+        $info['types']  = $this->type;
         return $this->fetch('',[
            'info'   => $info
         ]);

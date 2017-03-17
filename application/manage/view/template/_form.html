@@ -18,7 +18,7 @@ use app\common\tool\Tool;
             </td>
         </tr>
         <tr>
-            <th width="150">所属分类</th>
+            <th width="150">所属类型</th>
             <td>
                <?=Tool::get('form')->select('type', $info['types'], object_get($info,'type'), ['class' => 'form-control text'])?>
                 <span class="form-required">*</span>
@@ -29,7 +29,7 @@ use app\common\tool\Tool;
             <th>
                 <div class="input-group text">
                     <input type="text" class="form-control" name="template_file"  value="{$info.template_file ?? ''}">
-                    <span class="input-group-addon">.php</span>
+                    <span class="input-group-addon">.html</span>
                 </div>
                 <span class="form-required">*</span>
                 <span class="span-text">只能是英文名 数字 下划线</span>
@@ -39,12 +39,10 @@ use app\common\tool\Tool;
 </div>
 
 <div class="form-actions col-sm-12">
-    <button class="btn btn-primary js-ajax-submit" type="submit">提交</button>
     <button type="button" class="btn btn-primary ajax-post " autocomplete="off">
         保存
     </button>
     <a class="btn btn-default active" href="JavaScript:history.go(-1)">返回</a>
-
 </div>
 
 

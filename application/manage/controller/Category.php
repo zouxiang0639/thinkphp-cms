@@ -202,8 +202,8 @@ class Category extends BasicController
       return  [
             'display'            => $this->display,
             'template_group'     => $this->groups,
-            'template_default'   => TemplateModel::tplTypeLife(['分类页面', '通用页面']),
-            'template_info'      => TemplateModel::tplTypeLife(['信息内页', '通用页面']),
+            'template_default'   => TemplateModel::tplTypeLife(['1', '3']),//分类页面 and 通用页面
+            'template_info'      => TemplateModel::tplTypeLife(['2', '3']),//信息内页 and 通用页面
             'parent'             => CategoryModel::treeCategory($arr['parent_id'])
         ];
     }

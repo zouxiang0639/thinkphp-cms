@@ -6,12 +6,20 @@ return [
     //幻灯片控制器
     'banner groups'             => [1 => "首页banner", 2 => "底部相册"],
 
+    //配置控制器
+    'configure groups'          => [1 => '基本配置', 2 => '邮箱配置'],
+
+    //信息控制器
+    'info recommendation'       => ['1'=>'最新推荐', '2'=>'热门推荐'],
+
     //模版控制器
     'template groups'           => [1 => '单页模型', 2 => '信息模型', 3 => '产品模型'],
-
-    //配置控制器
-    'configure groups'           => [1 => '基本配置', 2 => '邮箱配置'],
-
+    'template type'             => [1 => '分类页面', 2 => '信息内页', 3 => '通用页面'],
+    'template builder menu'     => [ //生成菜单[ 组类型, menuID,   路由]
+                                        1   => ['单页模型', 62, 'category/edit'],
+                                        2   => ['信息模型', 62, 'info/index'],
+                                        3   => ['产品模型', 109, 'products/index']
+                                    ],
     //公共
     'display'                   => [1 => '所有人可见', 2 => '不可见', 3 => '管理员可见'],
     'form type'                 => [1 => 'text', 2 => 'select', 3 => 'checkbox', 4 => 'radio', 5 => 'password', 6 =>'textarea', 7 => 'file'],

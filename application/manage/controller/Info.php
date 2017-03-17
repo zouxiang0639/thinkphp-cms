@@ -8,8 +8,8 @@ class Info extends BasicController
 {
     private $id;
     private $cid;
-    private $recommendation = ['1'=>'最新推荐', '2'=>'热门推荐'];
-    private $display        = ['所有人可见' => '所有人可见', '不可见' => '不可见', '管理员可见' => '管理员可见'];  //枚举enum字段 如果有变动需要修改数据库;
+    private $recommendation = [];
+    private $display        = [];  //修改请到语音包display里修改;
     private $url            = 'info/index';
     private $validate = [
         ['title|标题', 'require']
@@ -17,6 +17,8 @@ class Info extends BasicController
 
     public function __construct()
     {
+        $this->display          = lang('display');
+        $this->recommendation   = lang('info recommendation');
         parent::__construct();
 
         $this->id       = intval(array_get($this->request->param(), 'id'));
