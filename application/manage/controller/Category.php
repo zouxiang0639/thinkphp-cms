@@ -85,7 +85,7 @@ class Category extends BasicController
 
 
         if($this->request->isPost()){
-            $post   = CategoryModel::recombinantArray($this->request->post(), 'pictures');
+            $post   = CategoryModel::recombinantArray($this->request->post(), 'photos');
 
             //数据验证
             $result = $this->validate($post, $this->validate);

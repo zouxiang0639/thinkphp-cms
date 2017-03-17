@@ -10,9 +10,13 @@ class Configure extends BasicController
     private $id;
     private $validate;
     private $url        = 'configure/index';
+    private $groups     = '';
 
     public function __construct()
     {
+        $this->groups   = lang('configure groups');
+
+
         parent::__construct();
         $this->id       = !empty($this->request->param('id')) ? intval($this->request->param('id')) : $this->id;
         $this->validate = [
@@ -146,14 +150,14 @@ class Configure extends BasicController
      */
     public function basicSettings()
     {
-        $groups     = lang('configure groups');
-        $list       = ConfigureModel::where(['type' => $groups[1]])->select();
+
+        $list       = ConfigureModel::where(['groups' =>1])->select();
         $fileName   = 'basic';
 
         return $this->fetch('config',[
             'html'  => self::htmlBuilder($list,$fileName),
             'info'  => [
-                'class_name'    => $groups[1],
+                'class_name'    =>array_get($this->groups , 1),
                 'file_name'     => $fileName
             ]
         ]);
@@ -164,14 +168,14 @@ class Configure extends BasicController
      */
     public function emailSettings()
     {
-        $groups     = lang('configure groups');
-        $list       = ConfigureModel::where(['type' => $groups[2]])->select();
+
+        $list       = ConfigureModel::where(['groups' => 2])->select();
         $fileName   = 'email';
 
         return $this->fetch('config',[
             'html'  => self::htmlBuilder($list,$fileName),
             'info'  => [
-                'class_name'    => $groups[2],
+                'class_name'    => array_get($this->groups , 2),
                 'file_name'     => $fileName
             ]
         ]);
@@ -193,7 +197,10 @@ class Configure extends BasicController
 
         ';
 
-            $list   = ConfigureModel::where(['type'=>$post['class_name']])->select();
+            $list   = ConfigureModel::where(['groups'=>array_search($post['class_name'], $this->groups)])->select();
+            if(empty($list)){
+                return $this->error('配置属性组数据找不到');
+            }
             $tool   = Tool::get('file');
 
             //重组数组阵列
@@ -233,14 +240,15 @@ return ['.$txt.'];
      */
     private function htmlBuilder($list, $name)
     {
-        $html = '';
+        $html       = '';
+        $formType   = lang('form type');
 
         //循环每个配置变量 生成html
         foreach($list as $v){
 
             //使用表单枚举生成<form> 标签支持
             $input  =  Tool::get('helper')->formEnum(
-                $v['input_type'],                               //表单类型
+                array_get($formType, $v['form_type']),          //表单类型
                 $v['configure_name'],                           //配置变量名称
                 Config::get($name.'.'.$v['configure_name']),    //读取配置变量的值
                 ['class' => 'form-control text'],               //其他属性

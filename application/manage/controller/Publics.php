@@ -32,14 +32,14 @@ class Publics extends Controller
             $login  = AdminModel::login($post);
 
             if($login === false){
-                return '用户名或者密码错误';
+                return $this->error('用户名或者密码错误');
             }else{
                 //写入session
                 Auth::login($login['admin_id'],$login['admin_name']);
-
+                $ip = empty($this->request->ip(1)) ? $this->request->ip(1) : 0 ;
                 //记录最后登陆数据
                 $update =[
-                    'last_login_ip'     => $this->request->ip(1),
+                    'last_login_ip'     => $ip,
                     'last_login_time'   => date('Y-m-d H:i:s')
                 ];
                 $login->save($update);

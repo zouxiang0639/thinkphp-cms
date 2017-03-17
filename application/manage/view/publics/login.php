@@ -22,12 +22,12 @@
             <div class="form-group ">
                 <input type="password" class="form-control" name="admin_password" placeholder="密码">
             </div>
-            <div class="form-group ">
+           <!-- <div class="form-group ">
                 <input  type="text" class="form-control" name="verify" placeholder="验证码" >
             </div>
             <div class="form-group ">
                 <img  width="300" height="39" src="{:captcha_src()}" alt="captcha" onclick="this.src='{:captcha_src()}?time='+Math.random();" />
-            </div>
+            </div>-->
             <div class="form-group">
                 <button type="submit" class="btn btn-primary">登录</button>
             </div>
