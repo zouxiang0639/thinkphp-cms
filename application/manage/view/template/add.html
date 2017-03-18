@@ -1,7 +1,16 @@
-<ul class="nav nav-tabs">
-    {$navTabs.nav}
-</ul>
+<!DOCTYPE html>
+<head>
+    {include file='public_file/header' /}
+</head>
+<body>
+<div class="container-fluid">
+    {include file='public_file/nav_tabs' /}
 
-<form class="form-horizontal" action="{:url('template/add')}" method="post">
-    {include file="template/_form" /}
-</form>
+    <form class="form-horizontal" action="{:url('template/add')}" method="post">
+        {include file="template/_form" /}
+    </form>
+
+</div>
+{include file='public_file/footer' /}
+</body>
+</html>

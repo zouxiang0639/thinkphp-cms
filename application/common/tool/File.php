@@ -74,11 +74,13 @@ class File extends \think\File
         }
 
 
-        if(!empty($id)){
+        if(!empty($id) && $id !='undefined'){
             $replaceFile = FileModel::get($id);
-            $filePath  = explode(DS, $replaceFile['path']);
-            $count      = count($filePath);
-            $filePath  = implode(DS, [$filePath[$count-2], $filePath[$count-1]]);
+            if($replaceFile){
+                $filePath  = explode(DS, $replaceFile['path']);
+                $count      = count($filePath);
+                $filePath  = implode(DS, [$filePath[$count-2], $filePath[$count-1]]);
+            }
         }
 
 
@@ -93,7 +95,6 @@ class File extends \think\File
                 return $this->result(1, '上传成功', $info[0]['path'], $info[0]['name']);
             }
         }
-
         //尽然不是替换数据库里面也没有那就上传咯
         $fileType   = self::fileType($type); //得到上传的类型
         $info = $file->validate(['ext' => $fileType['ext']])->move(ROOT_PATH . 'public'.$fileType['path'],$filePath);

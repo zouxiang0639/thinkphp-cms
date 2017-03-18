@@ -14,7 +14,6 @@ class Index extends BasicController
 
     public function index()
     {
-        $this->view->engine->layout('layouts/index','[__REPLACE__]');
         $this->assign([
             'menu'      => self::menu(),
         ]);

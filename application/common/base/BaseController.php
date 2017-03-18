@@ -8,7 +8,8 @@ class BaseController extends Controller
 
     public function __construct()
     {
-        ini_set("error_reporting","E_ALL & ~E_NOTICE");
+        // 关闭错误报告
+        // error_reporting(0);
         parent::__construct();
     }
 }

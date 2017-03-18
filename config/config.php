@@ -137,9 +137,9 @@ return [
         // 标签库标签结束标记
         'taglib_end'   => '}',
         // 是否开启模板布局
-        'layout_on'         =>  true,
+        'layout_on'         =>  false,
         // 默认布局模版
-        'layout_name'       =>  'layouts/main',
+        'layout_name'       =>  'layout/main',
         // 项目载入
         'layout_item'       =>  '[__REPLACE__]',
         //定义为内置标签库
