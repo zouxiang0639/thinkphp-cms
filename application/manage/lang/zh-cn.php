@@ -10,7 +10,14 @@ return [
     'configure groups'          => [1 => '基本配置', 2 => '邮箱配置'],
 
     //信息控制器
-    'info recommendation'       => ['1'=>'最新推荐', '2'=>'热门推荐'],
+    'info recommendation'       => [1 => '最新推荐', 2 => '热门推荐'],
+
+    //信息控制器
+    'mysql fields type'         => [1 => 'tinyint', 2 => 'int', 3 => 'mediumtext', 4 => 'timestamp' , 5 => 'float'],
+
+    //扩展控制器
+
+    'extended groups'           => [1 => '字段类型', 2 => '数据库类型'],
 
     //模版控制器
     'template groups'           => [1 => '单页模型', 2 => '信息模型', 3 => '产品模型'],
