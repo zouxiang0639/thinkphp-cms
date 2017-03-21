@@ -72,11 +72,12 @@ class Form extends FormBuilder
         if(is_array($value)){
             foreach ($value as $k => $v){
                 $path = array_get($v, 'path');
-                $name = array_get($v, 'name');
+                $names = array_get($v, 'name');
+
                 $html  .= "<li id='{$name}{$k}'>
                                     <input id='{$name}-{$k}' type='hidden' name='{$name}_1path[]' value='{$path}'>
                                     <input id='{$name}-{$k}-name' type='text' class='form-control text' name='{$name}_1name[]'
-                                    value='{$name}'
+                                    value='{$names}'
                                      title='图片名称'>
                                     <img id='{$name}-{$k}-preview' src='{$path}' style='height:36px;width: 36px;'
                                     onclick=\"parent.image_preview_dialog(this . src);\">
