@@ -1,13 +1,11 @@
 <?php
 use app\common\tool\Tool;
 ?>
-<script src="__STATIC__/default/ckeditor/ckeditor.js"></script>
 
 <div class="bs-example">
     <!--右侧-->
     <div class="col-sm-8">
         <table class="table table-bordered">
-
             <tr>
                 <th>标题</th>
                 <th>
@@ -43,6 +41,18 @@ use app\common\tool\Tool;
                 <th width="150">详情模板</th>
                 <td>
                     <?=Tool::get('form')->select('template_info', $enum['template_info'],  object_get($info, 'template_info'), ['class' => 'form-control text'])?>
+                </td>
+            </tr>
+            <tr>
+                <th>导航字段扩展</th>
+                <td>
+                    <?=Tool::get('form')->select('fields_extended_id', $enum['fields_extended'], object_get($info, 'fields_extended_id'), ['class' => 'form-control text'])?>
+            </tr>
+
+            <tr>
+                <th>信息扩展</th>
+                <td>
+                    <?=Tool::get('form')->select('data_extended_id', $enum['data_extended'], object_get($info, 'data_extended_id'), ['class' => 'form-control text'])?>
                 </td>
             </tr>
             <tr class="template_info">
@@ -94,18 +104,19 @@ use app\common\tool\Tool;
                 </th>
             </tr>
             <tr>
-                <th>描述</th>
-            </tr>
+            <th>描述</th>
+        </tr>
             <tr>
                 <th>
                     <textarea name="description" class="form-control text" clos="30" rows="2">{$info.description ?? ''}</textarea>
                 </th>
             </tr>
+
         </table>
     </div>
     <div class="col-sm-12"> <!--底部-->
         <table class="table table-bordered" >
-            {$info.Extendeds ?? ''}
+            {$info.extendeds ?? ''}
             <tr>
                 <th width="150">文章内容</th>
                 <th>

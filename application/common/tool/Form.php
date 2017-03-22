@@ -147,7 +147,7 @@ class Form extends FormBuilder
     public function radios($name, $list, $value = null, $options = [] )
     {
         $html = '';
-        foreach($list as $v){
+        foreach((array)$list as $v){
             $checked    = $v==$value ? 1 : '' ;
             $checkbox   = parent::radio($name, $value, $checked, $options);
             $html       .="<label style='padding-top: 0px;padding-left: 0px;' class='checkbox-inline'>{$checkbox} {$v}</label>" ;
@@ -167,7 +167,7 @@ class Form extends FormBuilder
     public function checkboxs($name, $list, $value = [], $options = [] )
     {
         $html = '';
-        foreach($list as $k => $v){
+        foreach((array)$list as $k => $v){
             $chacked    = array_search($k,(array)$value);
             $checked    = $chacked !== false ? 1 : '' ;
             $checkbox   = parent::checkbox($name.'[]', $k, $checked, ['style' => 'margin-top: 2px;' ]);

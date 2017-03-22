@@ -2,6 +2,7 @@
 namespace app\manage\controller;
 
 use app\common\model\CategoryModel;
+use app\common\model\ExtendedModel;
 use app\common\model\TemplateModel;
 use thinkcms\auth\library\Tree;
 
@@ -82,8 +83,6 @@ class Category extends BasicController
      * 分类增加
      */
     public function add(){
-
-
         if($this->request->isPost()){
             $post   = CategoryModel::recombinantArray($this->request->post(), 'photos');
 
@@ -100,9 +99,18 @@ class Category extends BasicController
                 return $this->error(lang('Add failed'));
             }
         }
+
+        //获取父级的扩展ID
+        $parent_id          = intval($this->request->param('parent_id'));
+        $parentCategory     = CategoryModel::where(['category_id'=>$parent_id])
+            ->field('data_extended_id,fields_extended_id,parent_id,extend,template_group,template_default,template_info')
+            ->find();
+        //扩展数据form生成
+        $parentCategory['extendeds']  = ExtendedModel::formBuilder($parentCategory['fields_extended_id']);
+
         return $this->fetch('',[
-            'enum' => self::enum(['parent_id' => intval($this->request->param('parent_id'))]),
-            'info' => []
+            'enum' => self::enum(['parent_id' => $parent_id]),
+            'info' => $parentCategory
         ]);
     }
 
@@ -112,10 +120,12 @@ class Category extends BasicController
     public function edit()
     {
         $info = CategoryModel::get($this->id);
-        $info->extendeds;
         if(empty($info)){
             return abort(404, lang('404 not found'));
         }
+
+        //扩展数据form生成
+        $info['extendeds'] = ExtendedModel::formBuilder($info['fields_extended_id'], $info->extend);
         return $this->fetch('',[
             'enum' => self::enum(['parent_id' => $info['parent_id']]),
             'info' => $info
@@ -199,9 +209,12 @@ class Category extends BasicController
      */
     private function enum($arr)
     {
-      return  [
+        $extendedGroup   = ExtendedModel::extendedGroup();
+        return  [
             'display'            => $this->display,
             'template_group'     => $this->groups,
+            'fields_extended'    => $extendedGroup[1],  //字段扩展
+            'data_extended'      => $extendedGroup[0],  //所有的扩展
             'template_default'   => TemplateModel::tplTypeLife(['1', '3']),//分类页面 and 通用页面
             'template_info'      => TemplateModel::tplTypeLife(['2', '3']),//信息内页 and 通用页面
             'parent'             => CategoryModel::treeCategory($arr['parent_id'])
