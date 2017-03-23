@@ -2,7 +2,10 @@
 namespace app\manage\controller;
 
 use app\common\model\CategoryModel;
+use app\common\model\EmptyModel;
+use app\common\model\ExtendedModel;
 use app\common\model\InfoModel;
+use app\manage\model\SadfasModel;
 
 class Info extends BasicController
 {
@@ -61,8 +64,10 @@ class Info extends BasicController
      */
     public function add()
     {
+        $category   = CategoryModel::get($this->cid);
+        $extendeds  = ExtendedModel::formBuilder($category['data_extended_id']);
         return $this->fetch('',[
-            'info'  => ['category_id' => $this->cid],
+            'info'  => ['category_id' => $this->cid, 'extendeds' => $extendeds],
             'enum'  => self::enum()
         ]);
     }
@@ -82,6 +87,7 @@ class Info extends BasicController
                 return $this->error($result);
             }
 
+            dump(InfoModel::checkExtended($post['category_id']));
             //写入数据库
             if(InfoModel::create($post)){
                 return $this->success(lang('Add success'), url($this->url, ['cid' => $this->cid]));
@@ -98,11 +104,11 @@ class Info extends BasicController
     public function edit()
     {
         $info    = InfoModel::get($this->id);
-
         if(empty($info)){
             return abort(404, lang('404 not found'));
         }
-      ;
+        $category   = CategoryModel::get($info['category_id']);
+        $info['extendeds']  = ExtendedModel::formBuilder($category['data_extended_id']);
         return $this->fetch('', [
             'info'  => $info,
             'enum'  => self::enum(['category_id' => $info['category_id']])
@@ -114,8 +120,18 @@ class Info extends BasicController
      */
     public function update(){
 
+        $user           = new InfoModel;
+        $user->name     = 'thinkphp';
+        $user->password = '123456';
+        $user->nickname = '流年';
+        if ($user->save()) {
+
+        } else {
+            return $user->getError();
+        }
+
         //edit_post 数据处理
-        if($this->request->isPost()){
+        /*if($this->request->isPost()){
 
             $post   = InfoModel::recombinantArray($this->request->post(), 'photos');
 
@@ -132,12 +148,12 @@ class Info extends BasicController
             }
 
             //更新数据
-            if($query->save($post)){
+            if($query->checkExtended()->save($post)){
                 return $this->success(lang('Update success'), url($this->url, ['cid' => $this->cid]));
             }else{
                 return $this->error(lang('Update failed'));
             }
-        }
+        }*/
         return abort(404, lang('404 not found'));
     }
 

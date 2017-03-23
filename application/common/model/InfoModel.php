@@ -4,7 +4,7 @@ namespace app\common\model;
 class InfoModel extends BasicModel
 {
     public $name = 'info';
-
+    public $extendMysqlName;
     //关联一对一 分类
     public function category()
     {
@@ -33,5 +33,22 @@ class InfoModel extends BasicModel
       return parent::defaultImage($value);
     }
 
+    // 检查扩展
+    public function checkExtended($id = '')
+    {
+        $extended = CategoryModel::get($this->category_id)->dataFieldsExtended;
+        if($extended['group'] == 2){
+            $this->extendMysqlName  = $extended['mysql_name'];
+        }
+        return $this;
+    }
+
+    public function save($data = [], $where = [], $sequence = null)
+    {
+        if($this->extendMysqlName){
+            unset($data['extend']);
+        }
+        return parent::save($data, $where, $sequence);
+    }
 
 }

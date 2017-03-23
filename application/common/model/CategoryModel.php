@@ -33,6 +33,12 @@ class CategoryModel extends BasicModel
         return $this->hasMany('app\common\model\InfoModel','category_id','category_id');
     }
 
+    //关联一对一
+    public function dataFieldsExtended()
+    {
+        return $this->hasOne('app\common\model\ExtendedModel','extended_id','data_extended_id');
+    }
+
     /**
      * data_extended_id读取器
      * 如果本级data_extended_id=0 就获取上级data_extended_id
