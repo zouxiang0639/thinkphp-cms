@@ -33,38 +33,46 @@ class CategoryModel extends BasicModel
         return $this->hasMany('app\common\model\InfoModel','category_id','category_id');
     }
 
-    // extendeds读取器
-    protected function getExtendedsAttr($value)
+    //关联一对一
+    public function dataFieldsExtended()
     {
-        $html   = '';
-        //获取
-        $extend =  $this->extended;
-
-        if(empty($extend) && $this->parent_id != 0){
-            $extend = self::get($this->parent_id)->extended;
-        }
-        foreach($extend as $v){
-            $value  = isset($this->extend[$v['name']]) ? $this->extend[$v['name']] : '';
-           //使用表单枚举生成<form> 标签支持
-            $input  =  Tool::get('helper')->formEnum(
-                $v['input_type'],                               //表单类型
-                'extend['.$v['name'].']',                       //变量名称
-                $value,                      //置变量的值
-                ['class' => 'form-control text'],               //其他属性
-                json_decode($v['input_value'])                  //需要生成多个 如select
-            );
-
-            $html  .= "<tr>
-                            <th>{$v['title']}</th>
-                            <th>
-                                {$input}
-                            </th>
-                        </tr>";
-        }
-
-        return $html;
+        return $this->hasOne('app\common\model\ExtendedModel','extended_id','data_extended_id');
     }
 
+    /**
+     * data_extended_id读取器
+     * 如果本级data_extended_id=0 就获取上级data_extended_id
+     *
+     * @param  int      $value
+     * @param  array   $data
+     * @return int
+     */
+    protected function getDataExtendedIdAttr($value, $data)
+    {
+        if($value){
+            return $value;
+        }else if(!empty($data['parent_id'])){
+            return CategoryModel::where(['category_id'=>$data['parent_id']])->value('data_extended_id');
+        }
+        return '';
+    }
+    /**
+     * fields_extended_id读取器
+     * 如果本级fields_extended_id=0 就获取上级fields_extended_id
+     *
+     * @param  int      $value
+     * @param  array   $data
+     * @return int
+     */
+    protected function getFieldsExtendedIdAttr($value, $data)
+    {
+        if($value){
+            return $value;
+        }else if(empty($data['parent_id'])){
+            return CategoryModel::where(['category_id'=>$data['parent_id']])->value('fields_extended_id');
+        }
+        return '';
+    }
 
     /**
      * 树形导航option form 生成
@@ -113,14 +121,14 @@ class CategoryModel extends BasicModel
 
         //生成后台菜单数据
         if(array_get($data, 'template_group')){
-            $builderMenu    = Template::$builderMenu[$data['template_group']];
+            $builderMenu    = lang('template builder menu');
+            $builderMenu    = $builderMenu[$data['template_group']];
             $path           =  explode('/', $builderMenu[2]);
             if(empty($data['parent_id'])){
                 $menuId     = $builderMenu[1];
             }else{
                 $menuId     = Menu::where(['nav_id' => $data['parent_id']])->value('id');
             }
-
         }
 
         //判断菜单是否存在,如果存在更新否则创建

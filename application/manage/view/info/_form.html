@@ -101,6 +101,7 @@ use app\common\tool\Tool;
     <!--底部-->
     <div class="col-sm-12">
         <table class="table table-bordered" >
+            {$info.extendeds ?? ''}
             <tr>
                 <th width="150">文章内容</th>
                 <th>
@@ -109,7 +110,6 @@ use app\common\tool\Tool;
             </tr>
         </table>
     </div>
-
 </div>
 <div class="form-actions col-sm-12">
     <button type="button" class="btn btn-primary ajax-post " autocomplete="off">
