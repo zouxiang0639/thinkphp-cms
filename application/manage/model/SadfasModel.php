@@ -6,5 +6,9 @@ use think\Model;
 
 class SadfasModel extends Model
 {
-    private $name = 'sadfas';
+    public $name = 'sadfas';
+
+    protected $type = [
+        'asfas' => 'array'
+    ];
 }

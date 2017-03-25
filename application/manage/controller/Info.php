@@ -2,10 +2,8 @@
 namespace app\manage\controller;
 
 use app\common\model\CategoryModel;
-use app\common\model\EmptyModel;
 use app\common\model\ExtendedModel;
 use app\common\model\InfoModel;
-use app\manage\model\SadfasModel;
 
 class Info extends BasicController
 {
@@ -87,9 +85,17 @@ class Info extends BasicController
                 return $this->error($result);
             }
 
-            dump(InfoModel::checkExtended($post['category_id']));
-            //写入数据库
-            if(InfoModel::create($post)){
+            $infoModel      = new InfoModel($post);
+
+            //检查是否有数据库扩展
+            $infoModel      =  $infoModel->checkExtended();
+            if($infoModel->extendedsModel){
+                $extendedsModel         = new $infoModel->extendedsModel($post['extend']);
+                $infoModel->extendeds   = $extendedsModel;
+            }
+
+            //关联数据库扩展模型数据更新
+            if($infoModel->save($post)){
                 return $this->success(lang('Add success'), url($this->url, ['cid' => $this->cid]));
             }else{
                 return $this->error(lang('Add failed'));
@@ -103,12 +109,25 @@ class Info extends BasicController
      */
     public function edit()
     {
+
         $info    = InfoModel::get($this->id);
+
         if(empty($info)){
             return abort(404, lang('404 not found'));
         }
-        $category   = CategoryModel::get($info['category_id']);
-        $info['extendeds']  = ExtendedModel::formBuilder($category['data_extended_id']);
+        $category           = CategoryModel::get($info['category_id']);
+
+        //检查是否有数据扩展
+        $extendModel        = $info->checkExtended(false);
+        $extendeds          = [];
+        if(!empty($extendModel->extendedsModel)){
+            $extendeds      = $extendModel->extendeds;
+        }else{
+            $extendeds      = $info['extend'];
+        }
+
+        $info['extendeds']  = ExtendedModel::formBuilder($category['data_extended_id'], $extendeds);
+
         return $this->fetch('', [
             'info'  => $info,
             'enum'  => self::enum(['category_id' => $info['category_id']])
@@ -120,18 +139,8 @@ class Info extends BasicController
      */
     public function update(){
 
-        $user           = new InfoModel;
-        $user->name     = 'thinkphp';
-        $user->password = '123456';
-        $user->nickname = '流年';
-        if ($user->save()) {
-
-        } else {
-            return $user->getError();
-        }
-
         //edit_post 数据处理
-        /*if($this->request->isPost()){
+        if($this->request->isPost()){
 
             $post   = InfoModel::recombinantArray($this->request->post(), 'photos');
 
@@ -147,13 +156,22 @@ class Info extends BasicController
                 return abort(404, lang('404 not found'));
             }
 
-            //更新数据
-            if($query->checkExtended()->save($post)){
+            //检查是否有数据库扩展
+            $update = $query->checkExtended();
+            if($update->extendedsModel){
+                foreach($post['extend'] as $k=>$v){
+                    $update->extendeds->$k  = $v;
+                }
+                unset($post['extend']);
+            }
+
+            //关联数据库扩展模型数据更新
+            if($update->save($post)){
                 return $this->success(lang('Update success'), url($this->url, ['cid' => $this->cid]));
             }else{
                 return $this->error(lang('Update failed'));
             }
-        }*/
+        }
         return abort(404, lang('404 not found'));
     }
 
@@ -168,7 +186,9 @@ class Info extends BasicController
             if(empty($delete)){
                 return abort(404, lang('404 not found'));
             }
-            if($delete->delete()){
+
+            //关联数据库扩展模型数据删除
+            if($delete->checkExtended()->delete()){
                 return $this->success(lang('delete success'));
             }else{
                 return $this->error(lang('delete failed'));
