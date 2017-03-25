@@ -2,6 +2,7 @@
 namespace app\common\model;
 
 use app\common\tool\Tool;
+use think\Config;
 use think\Db;
 
 class ExtendedModel extends BasicModel
@@ -15,17 +16,40 @@ class ExtendedModel extends BasicModel
     public function createTabel()
     {
         if($this->group == 2){
-            $sql = "CREATE TABLE `{$this->mysql_name}` (
-                      `id` int(10) NOT NULL AUTO_INCREMENT,
+            $mysqlName      = Config::get('database.prefix').$this->data['name'];
+            $sql = "CREATE TABLE `{$mysqlName}` (
                       `extended_id` int(10) NOT NULL,
-                      PRIMARY KEY (`id`)
+                      PRIMARY KEY (`extended_id`)
                     ) ENGINE=MyISAM CHARSET=utf8 COMMENT='{$this->title}'";
             try{
                 Db::execute($sql);
+
             } catch (\Exception $e) {
                 $this->delete();
                 dump($sql);
                 dump($e);
+            }
+
+            //生成模型
+            $mysqlName  = explode('_', $this->data['name'].'_Model');
+            $modelName  = array_map(function($arr){
+                return ucfirst($arr);
+            }, $mysqlName);
+            $modelName  = implode('', $modelName);
+            $modelPath  = APP_PATH.'manage'.DS.'model'.DS.$modelName.EXT;
+            $content = '<?php
+namespace app\manage\model;
+
+use think\Model;
+
+class '.$modelName.' extends Model
+{
+    public $name = "'.$this->data['name'].'";
+}';
+
+            $modelBuilder = Tool::get('file')->writeFile($modelPath,$content);
+            if(!$modelBuilder){
+                dump('没有权限生成'.$modelName.'模型');
             }
 
             return $this;
@@ -43,9 +67,10 @@ class ExtendedModel extends BasicModel
         $parent = ExtendedModel::get($this->parent_id);
 
         if($this->group == 2){
+            $mysqlName      = Config::get('database.prefix').$parent['name'];
             $type   = lang('mysql fields type');
             $type   = $type[$this->mysql_fields_type];
-            $sql    = "alter table {$parent['mysql_name']} add `{$this->data['name']}` ";
+            $sql    = "alter table {$mysqlName} add `{$this->data['name']}` ";
 
             //设置字段长度 过滤不需要字段长度类型
             if(in_array($type, ['timestamp','mediumtext','longtext','text','tinytext','datetime'])){
@@ -88,8 +113,10 @@ class ExtendedModel extends BasicModel
      */
     public function fieldsDelete()
     {
+
         $parent = ExtendedModel::get($this->parent_id);
-        $sql    = "alter table `{$parent['mysql_name']}` drop column {$this->data['name']}";
+        $mysqlName      = Config::get('database.prefix').$parent['name'];
+        $sql    = "alter table `{$mysqlName}` drop column {$this->data['name']}";
         try{
             Db::execute($sql);
         } catch (\Exception $e) {
@@ -108,7 +135,8 @@ class ExtendedModel extends BasicModel
      */
     public function showCreateTabel()
     {
-        $table  = Db::query("SHOW CREATE TABLE {$this->mysql_name}");
+        $mysqlName      = Config::get('database.prefix').$this->data['name'];
+        $table          = Db::query("SHOW CREATE TABLE {$mysqlName}");
         return explode(',',$table[0]['Create Table']);
     }
 
@@ -128,7 +156,8 @@ class ExtendedModel extends BasicModel
     public function deleteTabel()
     {
         if($this->group == 2) {
-            $sql = "DROP TABLE {$this->mysql_name}";
+            $mysqlName      = Config::get('database.prefix').$this->data['name'];
+            $sql = "DROP TABLE {$mysqlName}";
             try {
                 Db::execute($sql);
             } catch (\Exception $e) {
@@ -153,15 +182,16 @@ class ExtendedModel extends BasicModel
 
         $html   = '';
         //获取
-        $extend     = self::all(['parent_id'=>$id]);
+        $extend     = self::where(['parent_id'=>$id])
+            ->order(["sort" => "desc", 'extended_id' => 'asc'])
+            ->select();
         $input_type = lang('form type');
         foreach((object)$extend as $v){
-            $value  = isset($data[$v['name']]) ? $data[$v['name']] : '';
             //使用表单枚举生成<form> 标签支持
             $input  =  Tool::get('helper')->formEnum(
-                $input_type[$v['input_type']],                  //表单类型
+                array_get($input_type,$v['input_type']),        //表单类型
                 'extend['.$v['name'].']',                       //变量名称
-                $value,                                         //置变量的值
+                array_get($data,$v['name']),                    //置变量的值
                 ['class' => 'form-control text'],               //其他属性
                 json_decode($v['input_value'])                  //需要生成多个 如select
             );
@@ -170,6 +200,7 @@ class ExtendedModel extends BasicModel
                             <th>{$v['title']}</th>
                             <th>
                                 {$input}
+                                <span style='padding-left: 10px'>{$v['comment']}</span>
                             </th>
                         </tr>";
         }

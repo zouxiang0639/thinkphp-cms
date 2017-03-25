@@ -54,7 +54,7 @@ class InfoModel extends BasicModel
         if($extended['group'] == 2){
 
             //拼接扩展的模型命名空间
-            $mysqlName  = explode('_', $extended['mysql_name'].'_Model');
+            $mysqlName  = explode('_', $extended['name'].'_Model');
             $modelName  = array_map(function($arr){
                                 return ucfirst($arr);
                           }, $mysqlName);

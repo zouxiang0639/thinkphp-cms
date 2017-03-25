@@ -53,12 +53,14 @@ class Extended extends BasicController
             //数据验证
             $validate =[
                 ['title|标题', 'require'],
-                ['mysql_name|数据库名', 'requireIf:group,2|unique:extended,mysql_name|alphaDash']
+                ['name|数据库名', 'requireIf:group,2|unique:extended,name|alphaDash']
             ];
             $result = $this->validate($post, $validate);
             if($result !== true){
                 return $this->error($result);
             }
+
+            $post['name'] = empty($post['name']) ? '' : 'ex_'.$post['name'];
 
             //写入数据 如果是数据类型就创建数据库
             if(ExtendedModel::create($post)->createTabel()){
@@ -114,7 +116,7 @@ class Extended extends BasicController
     public function delete()
     {
         if($this->request->isPost() && !empty($this->id)){
-            $delete  = BannerModel::get($this->id);
+            $delete  = ExtendedModel::get($this->id);
             if(empty($delete)){
                 return abort(404, lang('404 not found'));
             }
@@ -195,7 +197,9 @@ class Extended extends BasicController
         if(empty($info)){
             return abort(404, lang('404 not found'));
         }
-        $list = ExtendedModel::where(['parent_id' => $this->id])->select();
+        $list = ExtendedModel::where(['parent_id' => $this->id])
+            ->order(["sort" => "desc", 'extended_id' => 'asc'])
+            ->select();
         $info['group'] = $this->groups[$info['group']];
 
         return $this->fetch('',[
@@ -267,7 +271,9 @@ class Extended extends BasicController
         if(empty($info)){
             return abort(404, lang('404 not found'));
         }
-        $list = ExtendedModel::where(['parent_id' => $this->id])->select();
+        $list = ExtendedModel::where(['parent_id' => $this->id])
+            ->order(["sort" => "desc", 'extended_id' => 'asc'])
+            ->select();
         $info['group'] = $this->groups[$info['group']];
 
         return $this->fetch('',[
