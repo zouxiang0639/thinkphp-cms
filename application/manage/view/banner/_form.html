@@ -13,7 +13,7 @@ use app\common\tool\Tool;
         <tr>
             <th width="150">所属模型</th>
             <td>
-               <?=Tool::get('form')->select('group', $info['groups'], object_get($info,'group'), ['class' => 'form-control text'])?>
+               <?=Tool::get('form')->select('group', $info['group'], object_get($info,'groups'), ['class' => 'form-control text'])?>
                 <span class="form-required">*</span>
             </td>
         </tr>

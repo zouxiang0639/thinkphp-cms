@@ -15,7 +15,7 @@ class File extends BasicController
 
     public function index()
     {
-        $groups = ['image' => '图片', 'file' => '文件', 'video' => '视屏', 'audio' => '音频'];
+        $groups = lang('file groups');
         $get    = $this->request->get();
         $where  = '';
 

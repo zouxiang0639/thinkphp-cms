@@ -40,7 +40,7 @@
                 <th width="50">{$v.banner_id}</th>
                 <th><img height="38" src="{$v.picture}"></th>
                 <th>{$v.title}</th>
-                <th>{$groups[$v['group']]}</th>
+                <th>{$groups[$v['groups']]}</th>
                 <th>
                     <a href="{:url('banner/edit', ['id'=>$v['banner_id']])}">编辑</a> |
                     <a class="a-post" post-msg="你确定删除吗?" post-url="{:url('banner/delete', ['id'=>$v['banner_id']])}">删除</a>

@@ -40,7 +40,7 @@ class AdminModel extends BasicModel
         if(!empty($result)){
             $password   = Tool::get('helper')->getMd5($param['admin_password']);
 
-            if($password === $result->admin_password && $result->login_priv == 'Y'){
+            if($password === $result->admin_password && $result->login_priv == '1'){
                 return $result;
             }
         }

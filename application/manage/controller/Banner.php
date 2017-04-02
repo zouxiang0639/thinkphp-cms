@@ -34,7 +34,7 @@ class Banner extends BasicController
         $where  = [];
         $groups   = intval($this->request->get('groups'));
         if(!empty($groups)){
-            $where['group']  = $groups;
+            $where['groups']  = $groups;
         }
 
         $list = BannerModel::where($where)->paginate();
@@ -71,7 +71,7 @@ class Banner extends BasicController
 
         return $this->fetch('',[
             'info'  => [
-                'groups'    => $this->groups,
+                'group'    => $this->groups,
                 'types'     =>[1]
             ]
         ]);
@@ -87,7 +87,7 @@ class Banner extends BasicController
         if(empty($info)){
             return abort(404, lang('404 not found'));
         }
-        $info['groups'] = $this->groups;
+        $info['group'] = $this->groups;
         return $this->fetch('',[
            'info'   => $info
         ]);

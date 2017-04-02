@@ -248,7 +248,7 @@ return ['.$txt.'];
 
             //使用表单枚举生成<form> 标签支持
             $input  =  Tool::get('helper')->formEnum(
-                array_get($formType, $v['form_type']),          //表单类型
+                $v['form_type'],          //表单类型
                 $v['configure_name'],                           //配置变量名称
                 Config::get($name.'.'.$v['configure_name']),    //读取配置变量的值
                 ['class' => 'form-control text'],               //其他属性

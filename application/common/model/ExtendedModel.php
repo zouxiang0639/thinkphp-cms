@@ -185,11 +185,10 @@ class '.$modelName.' extends Model
         $extend     = self::where(['parent_id'=>$id])
             ->order(["sort" => "desc", 'extended_id' => 'asc'])
             ->select();
-        $input_type = lang('form type');
         foreach((object)$extend as $v){
             //使用表单枚举生成<form> 标签支持
             $input  =  Tool::get('helper')->formEnum(
-                array_get($input_type,$v['input_type']),        //表单类型
+                $v['input_type'],        //表单类型
                 'extend['.$v['name'].']',                       //变量名称
                 array_get($data,$v['name']),                    //置变量的值
                 ['class' => 'form-control text'],               //其他属性

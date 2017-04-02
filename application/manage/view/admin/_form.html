@@ -42,7 +42,7 @@
         <td>
             <?=\app\common\tool\Tool::get('form')->select(
                 'sex',
-                ['请选择', '男' => '男', '女' => '女'],
+                ['请选择', '1' => '男', '2' => '女'],
                 object_get($info,'sex'),
                 ['class'=>'form-control text']
             )?>
