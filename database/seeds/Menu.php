@@ -557,7 +557,73 @@ class Menu extends \Phinx\Seed\AbstractSeed
                             'status'    => 0
                         ]
                     )
-            ]
+            ],
+                [
+                    'name'      => '数据库管理',
+                    'app'       => 'manage',
+                    'model'     => 'backups',
+                    'action'    => 'default',
+                    'type'      => '0',
+                    'child'     => array(
+                        [
+                            'name'      => '数据库列表',
+                            'app'       => 'manage',
+                            'model'     => 'backups',
+                            'action'    => 'index',
+                            'type'      => 1,
+                            'status'    => 1
+
+                        ],
+                        [
+                            'name'      => '数据库还原',
+                            'app'       => 'manage',
+                            'model'     => 'backups',
+                            'action'    => 'import',
+                            'type'      => 1,
+                            'status'    => 1
+                        ],
+                        [
+                            'name'      => '数据库备份',
+                            'app'       => 'manage',
+                            'model'     => 'backups',
+                            'action'    => 'export',
+                            'type'      => 1,
+                            'status'    => 0
+                        ],
+                        [
+                            'name'      => '数据库优化',
+                            'app'       => 'manage',
+                            'model'     => 'backups',
+                            'action'    => 'optimize',
+                            'type'      => 1,
+                            'status'    => 0
+                        ],
+                        [
+                            'name'      => '数据表修复',
+                            'app'       => 'manage',
+                            'model'     => 'backups',
+                            'action'    => 'repair',
+                            'type'      => 1,
+                            'status'    => 0
+                        ],
+                        [
+                            'name'      => '还原数据库',
+                            'app'       => 'manage',
+                            'model'     => 'backups',
+                            'action'    => 'restore',
+                            'type'      => 1,
+                            'status'    => 0
+                        ],
+                        [
+                            'name'      => '删除备份文件',
+                            'app'       => 'manage',
+                            'model'     => 'backups',
+                            'action'    => 'delete',
+                            'type'      => 1,
+                            'status'    => 0
+                        ]
+                    )
+                ]
             )
         ];
         return $arr;

@@ -19,7 +19,7 @@
                     $("#rechargeLog").html(html);
                 },
                 error:function(xhr){          //上传失败
-                    $('#alert').html(alertDanger(xhr.responseText));
+                    alertError(xhr.responseText);
 
                 },
                 beforeSend:function(){
@@ -47,19 +47,19 @@
                 {
                     if(json.code == 1){
 
-                        $('#alert').html(alertSuccess(json.msg));
-                        setTimeout(function() {
-                            window.location.href=json.url;
-                        },1000);
+                        alertSuccess(json.msg);
+                        if(json.url){
+                            setTimeout(function() {
+                                window.location.href=json.url;
+                            },1000);
+                        }
+
                     }else if(json.code == 0){
-                        $('#alert').html(alertDanger(json.msg));
+                        alertError(json.msg);
                     }
-                    setTimeout(function() {
-                        $('.close').click();
-                    },3e3);
                 },
                 error:function(xhr){          //上传失败
-                    $('#alert').html(alertDanger(xhr.responseText));
+                    alertError(xhr.responseText);
 
                 }
             });
@@ -91,22 +91,20 @@
             success: function(json) {
                 if(json.code == 1){
 
-                    $('#alert').html(alertSuccess(json.msg));
+                    alertSuccess(json.msg);
                     if (confirm('是否离开此页')){
                         window.location.href=json.url;
                     }
 
                 }else if(json.code == 0){
-                    $('#alert').html(alertDanger(json.msg));
+                    alertError(json.msg);
 
                 }
-                setTimeout(function() {
-                    $('.close').click();
-                },3e3);
+
             },
             error:function(xhr){          //上传失败
 
-                $('#alert').html(alertDanger(xhr.responseText));
+              alertError(xhr.responseText);
             }
         });
     });
@@ -126,7 +124,7 @@
 
     $(".listOrder").focus(function ()
         {
-            $('#alert').html(alertDanger('输入一个数字来更改排序'));
+            alertError('输入一个数字来更改排序');
             $(this).css("background-color", "#E93333");
         }
     );
@@ -147,14 +145,11 @@
                 data : 'id=' + id + '&order=' + order,
                 success : function (json)
                 {
-                    $('#alert').html(alertSuccess('保存成功'));
-                    setTimeout(function() {
-                        $('.close').click();
-                    },3e3);
+                    alertSuccess('保存成功');
                 },
                 error:function(xhr){          //上传失败
 
-                    $('#alert').html(alertDanger(xhr.responseText));
+                    alertError(xhr.responseText);
                 }
             });
     });
@@ -178,11 +173,11 @@ function toggles(obj,act,id){
                     $(obj).attr('src',imgsrc);
 
                 }else if(json.code == 0){
-                    $('#alert').html(alertDanger(json.msg));
+                    alertError(json.msg);
                 }
             },
             error:function(xhr){
-                $('#alert').html(alertDanger(xhr.responseText));
+                alertError(xhr.responseText);
 
             }
         });
@@ -198,13 +193,28 @@ function check_all(obj, cName)
     }
 }
 
+function alertClick()
+{
+    setTimeout(function() {
+        $('.close').click();
+    },3e3);
+}
 
 function alertSuccess(data){
-    return '<div class="alert alert-success" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>'+data+'</div>';
+    var msg = '<div class="alert alert-success" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>'+data+'</div>';
+    $('#alert').html(msg);
+
+    //关闭
+    alertClick();
+}
+
+function alertError(data){
+    var msg = '<div class="alert alert-danger" role="alert" style="overflow-y: auto;max-height: 600px;"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>'+data+'</div>';
+    $('#alert').html(msg);
+
+    //关闭
+    alertClick();
 }
 
 
-function alertDanger(data){
-    return '<div class="alert alert-danger" role="alert" style="overflow-y: auto;max-height: 600px;"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>'+data+'</div>';
-}
 
