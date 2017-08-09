@@ -1,0 +1,110 @@
+{extend name="layouts/master" /}
+
+{block name="php"}
+<?php
+use app\common\tool\Tool;
+use app\common\consts\category\CategoryStatusConst;
+use app\common\consts\category\CategoryBindPageConst;
+use app\common\consts\category\CategoryGroupConst;
+?>
+{/block}
+
+
+{block name="style"}
+<link rel="stylesheet" href="__STATIC__/default/select2/select2.min.css" media="all">
+{/block}
+
+{block name="content"}
+    {include file='public_file/nav_tabs' /}
+
+    <form class="form-horizontal" action="{:empty(input('id')) ? url('create') : url('update',['id'=>input('id')])}" method="post">
+
+        <table class="table table-bordered ">
+            <tr>
+                <th>导航分类</th>
+                <th>
+                    {:Tool::get('form')->select('group', CategoryGroupConst::desc(), isset($info) ? $info->group : input('group'), ['class'=>'form-control
+                    text','lay-ignore','disabled'])}
+                    <input type="hidden" name="group" value="{$info->group ?? input('group')}">
+                    <span class="form-required">*</span>
+                </th>
+            </tr>
+            <tr>
+                <th width="150">标题</th>
+                <td>
+                    <input type="text" name="title" value="{$info->title ?? ''}" placeholder="请输入标题" class="form-control text">
+                </td>
+            </tr>
+            <tr>
+                <th>状态</th>
+                <td>
+                    {:Tool::get('form')->select('status', CategoryStatusConst::desc(), isset($info) ? $info->status : '', ['class'=>'form-control text']) }
+                </td>
+            </tr>
+            <tr>
+                <th width="150">父级导航</th>
+                <td>
+                    {:Tool::get('form')->select('parent_id', array_merge([0=>'/'], $category), isset($info) ? $info->parent_id : '', ['class'=>'form-control text', 'id'=>'select2-parent-id']) }
+                </td>
+            </tr>
+            <tr>
+                <th width="150">绑定页面</th>
+                <td>
+                    {:Tool::get('form')->select('bind_page', array_merge([''=>'请选择'], CategoryBindPageConst::desc()), isset($info) ? $info->bind_page : '', ['class'=>'form-control text']) }
+                </td>
+            </tr>
+            <tr id="page">
+                <th width="150">本地链接</th>
+                <td>
+                    {:Tool::get('form')->select('page_id', $page, isset($info) ? $info->page_id : '', ['class'=>'form-control text', 'id'=>'select2-page']) }
+                </td>
+            </tr>
+            <tr id="template_info">
+                <th width="150">外部链接</th>
+                <td>
+                    <input type="text" name="links" value="{$info->links ?? ''}" placeholder="请输入外部链接" class="form-control text">
+                </td>
+            </tr>
+
+        </table>
+        <div class="form-actions col-sm-12">
+            <button type="button" class="btn btn-primary ajax-post " autocomplete="off">
+                保存
+            </button>
+            <a class="btn btn-default active" href="JavaScript:history.go(-1)">返回</a>
+        </div>
+    </form>
+{/block}
+
+
+{block name="script"}
+
+<script src="__STATIC__/default/select2/select2.min.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $("#select2-page").select2({
+            placeholder: "请选择",
+            allowClear: true
+        });
+
+        $("#select2-parent-id").select2({
+            placeholder: "请选择",
+            allowClear: true
+        });
+
+        $("select[name='bind_page']").on({
+            change:function(){
+                var page = '{:CategoryBindPageConst::PAGE}';
+                if ($(this).val() == page) {
+                    $('#template_info').hide();
+                    $('#page').show();
+                } else {
+                    $('#template_info').show();
+                    $('#page').hide();
+                }
+            }
+        }).trigger("change");
+    })
+
+</script>
+{/block}

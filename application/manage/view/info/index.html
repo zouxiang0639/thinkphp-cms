@@ -1,11 +1,6 @@
-<!DOCTYPE html>
-<head>
-    {include file='public_file/header' /}
-</head>
-<body >
+{extend name="layouts/master" /}
 
-<div class="container-fluid">
-
+{block name="content"}
 
     {include file='public_file/nav_tabs' /}
 
@@ -50,10 +45,4 @@
     </div>
     <input type="hidden" value="{:url('info/sort')}" class="listOrderUrl">
 
-
-</div>
-
-{include file='public_file/footer' /}
-
-</body>
-</html>
+{/block}

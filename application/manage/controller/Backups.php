@@ -1,7 +1,7 @@
 <?php
 namespace app\manage\controller;
 
-use app\common\Bls\Backups\BackupsBls;
+use app\common\bls\backups\BackupsBls;
 
 class Backups extends BasicController
 {
@@ -9,7 +9,6 @@ class Backups extends BasicController
     public function __construct()
     {
         parent::__construct();
-        $this->id       = !empty($this->request->param('id')) ? intval($this->request->param('id')) : $this->id;
         $nav = [
             '数据库列表' => ['url' => 'backups/index'],
             '数据库还原' => ['url' => 'backups/import'],

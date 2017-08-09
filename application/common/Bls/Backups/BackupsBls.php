@@ -1,5 +1,5 @@
 <?php
-namespace app\common\Bls\Backups;
+namespace app\common\bls\backups;
 
 
 class BackupsBls

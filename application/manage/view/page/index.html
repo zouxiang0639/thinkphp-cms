@@ -1,0 +1,30 @@
+{extend name="layouts/master" /}
+
+{block name="content"}
+    {include file='public_file/nav_tabs' /}
+    <table class="table table-hover table-bordered table-list" id="menus-table">
+        <thead>
+        <tr>
+            <th width="50">ID</th>
+            <th>菜单名称</th>
+            <th width="100">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {foreach name='$list' item='value' }
+            <tr>
+                <td>{$value->page_id}</td>
+                <td>{$value->title} </td>
+                <td>
+                    <a href="{:url('edit', ['id' => $value->page_id])}">编辑</a> |
+                    <a class="a-post" post-msg="你确定要删除吗" post-url="{:url('delete', ['id' => $value->page_id])}">删除</a>
+                </td>
+            </tr>
+        {/foreach}
+        </tbody>
+    </table>
+
+    <div class="text-center">
+        {$list->render()}
+    </div>
+{/block}

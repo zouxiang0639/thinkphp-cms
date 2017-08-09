@@ -1,224 +1,169 @@
 <?php
 namespace app\manage\controller;
 
-use app\common\model\CategoryModel;
-use app\common\model\ExtendedModel;
-use app\common\model\TemplateModel;
-use thinkcms\auth\library\Tree;
+use app\common\bls\category\CategoryBls;
+use app\common\bls\category\Traits\CategoryTrait;
+use app\common\bls\page\PageBls;
+use app\common\library\trees\Tree;
+
 
 class Category extends BasicController
 {
-    private $id         = 0;
-    private $url        = 'category/index';
-    private $display    = [];  //请到语言包里修改 template groups
-    private $groups     = [];   //请到语言包里修改 display
-    private $validate   =[
-        ['title|标题', 'require'],
-    ];
+
+    use CategoryTrait;
+
+    private $id;
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->groups       = lang('template groups');
-        $this->display      = lang('display');
-        $this->id           = intval(array_get($this->request->param(), 'id'));
+        $this->id       = intval(array_get($this->request->param(), 'id'));
 
         $nav = [
-            '分类列表' => ['url' => $this->url],
-            '分类增加' => ['url' => 'category/add'],
-            '分类修改' => ['url' => ['category/edit', ['id' => $this->id]], 'style' => "display: none;"],
+            '导航列表' => ['url' => 'category/index'],
+            '导航添加' => ['url' => 'category/add'],
+            '导航修改' => ['url' => ['category/edit',['id'=> $this->id]],'style' => "display: none;"]
         ];
         $this->assign('navTabs',  parent::navTabs($nav));
+
+        if(empty(input('group'))) {
+            $_GET['group'] = 1;
+        }
+
     }
 
     public function index()
     {
-        $query     = CategoryModel::where('')
-            ->order(["sort" => "asc",'category_id'=>'asc'])
-            ->column('category_id, title, sort, parent_id', 'category_id');
+        $model = CategoryBls::getNavigateList();
+        $this->formatNavigate($model->getCollection());
 
-        if(!empty($query)){ //有数据处理数据
+        $html = (new Tree('parent_id'))->create($model->getCollection(), function($date) {
+            function recursion($date){
 
-            $tree       = new Tree();
-            $tree->nbsp = '&nbsp;&nbsp;&nbsp;';
+                $html = '';
+                foreach ($date as $value) {
+                    $html .= '<li id="list_'.$value->navigate_id.'"><div>
+                        <span class="disclose"><span>
+                        </span></span>
+                        '.$value->titleName.'
+                        <span style="float: right">
+                            <a href="'.url('manage/navigate/edit', ['id' => $value->navigate_id]).'" class="layui-btn layui-btn-normal layui-btn-mini">编辑</a>
+                            <a href="javascript:;" date='.$value->navigate_id.' class="layui-btn layui-btn-danger layui-btn-mini category-delete">删除</a>
+                        </span>
+                    </div>';
 
-            //前端分类树形处理
-            foreach ($query as $n=> $r) {
-                $query[$n]['level'] = $tree->get_level($r['category_id'], $query);
-                $query[$n]['parent_id_node'] = ($r['parent_id']) ? ' class="child-of-node-' . $r['parent_id'] . '"' : '';
-
-                $query[$n]['child_add'] = checkPath('category/add', ["parent_id" => $r['category_id']]) ?
-                    url("category/add", ["parent_id" => $r['category_id']]) : '';
-                $query[$n]['str_manage'] = checkPath('category/edit',["id" => $r['category_id']]) ?
-                    '<a href="'.url("category/edit", ["id" => $r['category_id']]).'">编辑</a> |' : '';
-                $query[$n]['str_manage'] .= checkPath('category/delete',["id" => $r['category_id']]) ?
-                    '<a class="a-post" post-msg="你确定要删除吗" post-url="'.url("category/delete", ["id" => $r['category_id']]).'">删除</a>' : '';
-            }
-            $tree->init($query);
-            unset($result); //释放内存
-
-            //树形菜单html生成
-            $str = "<tr id='node-\$id' \$parent_id_node>
-                    <td style='padding-left:20px;'>
-                        <input name='sort[\$id]' type='text' size='3' value='\$sort' data='\$id' class='listOrder'>
-                    </td>
-                    <td>\$category_id</td>
-                    <td>\$spacer \$title <a href='\$child_add'>【✚】</td>
-                    <td>\$str_manage</td>
-                </tr>";
-            $html = $tree->get_tree(0, $str);
-
-        }else{//没有数据返回问候语
-
-            $html = "<tr><td colspan='4'>没有数据</td></tr>";
-        }
-
-        return $this->fetch('', [
-            'html'      => $html
+                    $child = count($value->child);
+                    if($child > 0) {
+                        $html .= '<ol>';
+                        $html .= recursion($value->child);
+                        $html .= '</ol>';
+                    }
+                    $html .= '</li>';
+                }
+                return $html;
+            };
+            return recursion($date->getItems());
+        });
+        return $this->fetch('',[
+            'html' => $html
         ]);
     }
 
-    /**
-     * 分类增加
-     */
-    public function add(){
-        if($this->request->isPost()){
-            $post   = CategoryModel::recombinantArray($this->request->post(), 'photos');
+    public function add()
+    {
+        return $this->fetch('navigate', [
+            'category'  => CategoryBls::getTreeCategory(input('group')),
+            'page'      => PageBls::getAllPage()
+        ]);
+    }
 
-            //数据验证
-            $result = $this->validate($post, $this->validate);
-            if($result !== true){
+    public function create()
+    {
+        if($this->request->isPost()){
+            $data = $this->request->post();
+            $result = $this->validate($data,'app\common\bls\category\validate\CategoryValidate.category');
+            if(true !== $result){
+                // 验证失败 输出错误信息
                 return $this->error($result);
             }
 
-            //写入数据库
-            if(CategoryModel::create($post)){
-                return $this->success(lang('Add success'), url($this->url));
-            }else{
-                return $this->error(lang('Add failed'));
+            if(CategoryBls::createNavigate($data)){
+                return $this->success(lang('success'), url('index'));
+            }else {
+                return $this->error(lang('failed'));
             }
         }
 
-        //获取父级的扩展ID
-        $parent_id          = intval($this->request->param('parent_id'));
-        $parentCategory     = CategoryModel::where(['category_id'=>$parent_id])
-            ->field('data_extended_id,fields_extended_id,parent_id,extend,template_group,template_default,template_info')
-            ->find();
-        //扩展数据form生成
-        $parentCategory['extendeds']  = ExtendedModel::formBuilder($parentCategory['fields_extended_id']);
-
-        return $this->fetch('',[
-            'enum' => self::enum(['parent_id' => $parent_id]),
-            'info' => $parentCategory
-        ]);
+        return $this->error('参数错误');
     }
 
-    /**
-     * 分类修改
-     */
     public function edit()
     {
-        $info = CategoryModel::get($this->id);
-        if(empty($info)){
-            return abort(404, lang('404 not found'));
-        }
-
-        //扩展数据form生成
-        $info['extendeds'] = ExtendedModel::formBuilder($info['fields_extended_id'], $info->extend);
-        return $this->fetch('',[
-            'enum' => self::enum(['parent_id' => $info['parent_id']]),
-            'info' => $info
+        $model = CategoryBls::getOneNavigate(['navigate_id'=>input('id')]);
+        return $this->fetch('navigate', [
+            'category'  => CategoryBls::getTreeCategory($model->group),
+            'page'      => PageBls::getAllPage(),
+            'info'      => $model
         ]);
     }
 
-    /**
-     * 分类更新
-     */
-    public function update(){
-
-        //edit_post 数据处理
+    public function update()
+    {
         if($this->request->isPost()){
-
-            $post   = CategoryModel::recombinantArray($this->request->post(), 'photos');
-            //数据验证
-            $result = $this->validate($post,$this->validate);
-            if($result !== true){
+            $data = $this->request->post();
+            $result = $this->validate($data,'app\common\bls\navigate\validate\CategoryValidate.category');
+            if(true !== $result){
+                // 验证失败 输出错误信息
                 return $this->error($result);
             }
+            $model = CategoryBls::getOneNavigate(['navigate_id' => $this->id]);
 
-            //查询数据
-            $query  = CategoryModel::get($this->id);
-            if(empty($query)){
-                return abort(404, lang('404 not found'));
+            if(empty($model)){
+                return $this->error('参数错误');
             }
 
-            //修改数据库
-            if($query->save($post)){
-                return $this->success(lang('Update success'),$this->url);
-            }else{
-                return $this->error(lang('Update failed'));
+            if($model->save($data)) {
+                return $this->success(lang('update success'), url('index'));
+            }else {
+                return $this->error(lang('update failed'));
             }
+
         }
-        return abort(404, lang('404 not found'));
+
     }
 
-    /**
-     * 分类删除
-     */
     public function delete()
     {
-        $delete = CategoryModel::get($this->id);
+        if($this->request->isDelete()) {
+            $model = CategoryBls::getOneNavigate(['navigate_id' => input('id')]);
 
-        if(!$this->request->isPost() || empty($delete)){
-            return abort(404, lang('404 not found'));
+            if (!$model) {
+                return $this->error('参数错误');
+            }
+
+            if ($model->subsetNum() > 0) {
+                return $this->error('请先删除子集导航');
+            }
+
+            if($model->delete()){
+                $this->success(lang('delete success'));
+            }
         }
 
-        //数据删除
-        if($delete->delete()){
-            return $this->success(lang('Delete success'),url($this->url));
-        }else{
-            return $this->error(lang('Delete failed'));
-        }
+        return $this->error(lang('delete failed'));
     }
 
-    /**
-     * 分类排序
-     */
     public function sort()
     {
-        $sort   = CategoryModel::get($this->id);
-        $order  = isset($_POST['order']) ? intval($_POST['order']) : 0;
-        if(!$this->request->isPost() || empty($sort)){
-            return abort(404, lang('404 not found'));
-        }
+        $request = $this->request->post();
 
-        //数据删除
-        if($sort->save(['sort' => $order])){
-            return $this->success(lang('Sort success'),url($this->url));
-        }else{
-            return $this->error(lang('Sort failed'));
+        if(CategoryBls::NavigateSort($request['date'])){
+            return $this->success(lang('success'));
+        }else {
+            return $this->error(lang('failed'));
         }
     }
 
-    /**
-     * 枚举数组
-     *
-     * @param  array      $arr
-     * @return array
-     */
-    private function enum($arr)
-    {
-        $extendedGroup   = ExtendedModel::extendedGroup();
-        return  [
-            'display'            => $this->display,
-            'template_group'     => $this->groups,
-            'fields_extended'    => $extendedGroup[1],  //字段扩展
-            'data_extended'      => $extendedGroup[0],  //所有的扩展
-            'template_default'   => TemplateModel::tplTypeLife(['1', '3']),//分类页面 and 通用页面
-            'template_info'      => TemplateModel::tplTypeLife(['2', '3']),//信息内页 and 通用页面
-            'parent'             => CategoryModel::treeCategory($arr['parent_id'])
-        ];
-    }
 
 }

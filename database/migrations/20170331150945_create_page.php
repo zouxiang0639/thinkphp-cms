@@ -10,11 +10,11 @@ class CreateCategory extends Migrator
      */
     public function up()
     {
-        $table = $this->table('category', ['id' => 'category_id', 'engine'=>'MyISAM', 'comment' => '导航表']);
+        $table = $this->table('page', ['id' => 'category_id', 'engine'=>'MyISAM', 'comment' => '导航表']);
         $table->addColumn('title', 'string', ['limit' => 100, 'comment' => '标题'])
-            ->addColumn('parent_id', 'integer', ['limit' => MysqlAdapter::INT_SMALL, 'comment' => '父级ID', 'signed'=>false])
-            ->addColumn('template_group', 'integer', ['limit' => MysqlAdapter::INT_TINY, 'default' => 1, 'comment' => '模版模型'])
-            ->addColumn('template_default', 'string', ['limit' => '100', 'comment' => '默认模版'])
+            ->addColumn('page_id', 'integer', ['limit' => MysqlAdapter::INT_SMALL, 'comment' => '父级ID', 'signed'=>false])
+            ->addColumn('template_type', 'integer', ['limit' => MysqlAdapter::INT_TINY, 'default' => 1, 'comment' => '模版模型'])
+            ->addColumn('template_page', 'string', ['limit' => '100', 'comment' => '默认模版'])
             ->addColumn('template_info', 'string', ['limit' => '100', 'comment' => '详情模板'])
             ->addColumn('display', 'boolean', ['default' => 1, 'comment' => '显示: 0,删除, 1,所有人可见 2,不可见 3,管理员可见'])
             ->addColumn('list_row', 'integer', ['limit' => MysqlAdapter::INT_TINY, 'comment' => '每页行数'])

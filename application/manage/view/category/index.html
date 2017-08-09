@@ -1,30 +1,118 @@
-<!DOCTYPE html>
-<head>
-    {include file='public_file/header' /}
-</head>
-<body >
+{extend name="layouts/master" /}
 
-<div class="container-fluid">
+{block name="php"}
+<?php
+use app\common\tool\Tool;
+use app\common\consts\category\CategoryGroupConst
+?>
+{/block}
+
+{block name="style"}
+<link rel="stylesheet" href="__STATIC__/default/nestable_lists/nestedSortable.css" media="all"/>
+{/block}
+
+{block name="content"}
+
 
     {include file='public_file/nav_tabs' /}
 
-    <table class="table table-hover table-bordered table-list" id="menus-table">
-        <thead>
-        <tr>
-            <th width="80">排序</th>
-            <th width="50">ID</th>
-            <th>菜单名称</th>
-            <th width="100">操作</th>
-        </tr>
-        </thead>
-        <tbody>
+    <form class="well form-search" id="mainform" action="{:url('index')}" method="get">
+        <div class="btn-group ">
+            <a href="javascript:;" class="btn btn-primary" id="category-sort" >排序 </a>
+        </div>
+        <div class="btn-group">
+            {:Tool::get('form')->select('group', CategoryGroupConst::desc(), input('group'), ['class' => 'form-control text'])}
+        </div>
+    </form>
+
+    <ol class="sortable">
         {$html}
-        </tbody>
-    </table>
-    <input type="hidden" value="{:url('category/sort')}" class="listOrderUrl">
-</div>
+    </ol>
+{/block}
 
-{include file='public_file/footer' /}
+{block name="script"}
+<script src="__STATIC__/default/jquery/1.8.16/jquery-ui.min.js"></script>
+<script src="__STATIC__/default/jquery/1.8.16/jquery.ui.touch-punch.js"></script>
+<script src="__STATIC__/default/nestable_lists/jquery.nestedSortable.js"></script>
+<script>
+    $(document).ready(function(){
 
-</body>
-</html>
+        $('#category-sort').click(function(e){
+            hiered = $('ol.sortable').nestedSortable('toHierarchy', {startDepthCount: 0});
+
+            var data = {
+                'date':hiered
+            };
+
+            $.ajax({
+                url: '{:url("sort")}',
+                data: data,
+                type:'POST',
+                cache: false,
+                dataType:'json',
+                success:function(res) {
+                    if(res.code = 0) {
+                        alertError(res.msg);
+                    }
+                    else {
+                        alertSuccess(res.msg);
+                        window.location.href = '{:url("index")}';
+                    }
+                }
+            });
+
+        });
+
+        $("select[name=group]").change(function(){
+            $('.form-search').submit();
+        });
+
+        $('ol.sortable').nestedSortable({
+            forcePlaceholderSize: true,
+            handle: 'div',
+            helper: 'clone',
+            items: 'li',
+            opacity: .6,
+            placeholder: 'placeholder',
+            revert: 250,
+            tabSize: 25,
+            tolerance: 'pointer',
+            toleranceElement: '> div',
+            maxLevels: 3,
+            isTree: true,
+            expandOnHover: 700,
+            startCollapsed: true
+        });
+
+        $('.disclose').on('click', function() {
+            $(this).closest('li').toggleClass('mjs-nestedSortable-collapsed').toggleClass('mjs-nestedSortable-expanded');
+        });
+
+        $('.category-delete').click(function () {
+
+            var data = {
+                'id': $(this).attr('date'),
+                '_method':'DELETE'
+            };
+
+            $.ajax({
+                url: '{:url("delete")}',
+                data: data,
+                type:'POST',
+                cache: false,
+                dataType:'json',
+                success:function(res) {
+                    if(res.code == 0) {
+                        alertError(res.msg);
+                    } else {
+                        alertSuccess(res.msg);
+                        window.location.href = '{:url("index")}' ;
+                    }
+                }
+            });
+
+        });
+    });
+
+</script>
+{/block}

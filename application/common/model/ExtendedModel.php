@@ -176,6 +176,7 @@ class '.$modelName.' extends Model
      */
     public static function formBuilder($id, $data='')
     {
+
         if($id==0){
             return '';
         }
@@ -185,6 +186,7 @@ class '.$modelName.' extends Model
         $extend     = self::where(['parent_id'=>$id])
             ->order(["sort" => "desc", 'extended_id' => 'asc'])
             ->select();
+
         foreach((object)$extend as $v){
             //使用表单枚举生成<form> 标签支持
             $input  =  Tool::get('helper')->formEnum(
