@@ -42,6 +42,16 @@ class page extends BasicController
      */
     public function add(){
 
+        //扩展数据form生成
+        $parentCategory['extendeds']  = ExtendedModel::formBuilder(0);
+        return $this->fetch('page', [
+            'enum' => self::enum(),
+            'info' => $parentCategory
+        ]);
+    }
+
+    public function create()
+    {
         if($this->request->isPost()){
             $post   = Helper::recombinantArray($this->request->post(), 'photos');
 
@@ -53,19 +63,11 @@ class page extends BasicController
 
             //写入数据库
             if(PageBls::createPage($post)){
-                return $this->success(lang('Add success'), url($this->url));
+                return $this->success(lang('Add success'), url('index'));
             }else{
                 return $this->error(lang('Add failed'));
             }
         }
-
-
-        //扩展数据form生成
-        $parentCategory['extendeds']  = ExtendedModel::formBuilder(0);
-        return $this->fetch('page', [
-            'enum' => self::enum(),
-            'info' => $parentCategory
-        ]);
     }
 
     /**

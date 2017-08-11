@@ -1,16 +1,25 @@
+{extend name="layouts/master" /}
+
+{block name="php"}
 <?php
 use app\common\tool\Tool;
+use app\common\consts\extended\ExtendedTypeConst;
 ?>
-<!DOCTYPE html>
-<head>
-    {include file='public_file/header' /}
-</head>
-<body>
-<div class="container-fluid">
-    {include file='public_file/nav_tabs' /}
+{/block}
 
-    <form class="form-horizontal" action="{:url('extended/update',['id'=>$info['extended_id']])}" method="post">
-        <div class="well form-search" id="mainform" action="{:url('banner/index')}" method="get">
+{block name="style"}
+<style>
+    body {min-width:790px;}
+    .alert{
+        position: fixed !important;z-index: 1000;width: 98%;top: 2%;
+    }
+</style>
+{/block}
+
+{block name="content"}
+    {include file='public_file/nav_tabs' /}
+    <form class="form-horizontal" action="{:url('update', ['id'=>$info['extended_id']])}" method="post">
+        <div class="well form-search">
             <div class="btn-group width2">
                 <input class="form-control" type="text" name="title" value="{$info.title ?? ''}">
             </div>
@@ -18,7 +27,7 @@ use app\common\tool\Tool;
                 <textarea class="form-control text" style="height: 34px" placeholder="描述" name="comment" >{$info.comment ?? ''}</textarea>
             </div>
             <div class="btn-group width2">
-                <input class="form-control" type="text" disabled value="{$info.group ?? ''}">
+                <input class="form-control" type="text" disabled value="{:ExtendedTypeConst::getDesc($info->type)}">
             </div>
             <div class="btn-group width2">
                 <button type="button" class="btn btn-primary fields" data-toggle="modal" onclick="fields('',1,'','',0,'')"
@@ -38,19 +47,19 @@ use app\common\tool\Tool;
             </tr>
             </thead>
             <tbody>
-            {foreach name='$list' item='v' }
-                <tr>
-                    <th width="50">{$v.extended_id}</th>
-                    <th>{$v.sort}</th>
-                    <th>{$v.title}</th>
-                    <th>{$v.name}</th>
-                    <th>{:array_get(lang('form type'), $v['input_type'])}</th>
-                    <th>
-                        <a class="fields"   data-target=".bs-example-modal-lg" data-toggle="modal"
-                           onclick="fields('{$v.title}', '{$v.input_type}' ,'{$v.input_value}' ,'{$v.comment}', '{$v.sort}', '{$v.extended_id}')" href="#">编辑</a>
-                        <a class="a-post" post-msg="你确定删除吗?" post-url="{:url('extended/fieldsDelete', ['id'=>$v['extended_id']])}">删除</a>
-                    </th>
-                </tr>
+            {foreach name='$info->extendedChild' item='v' }
+            <tr>
+                <th width="50">{$v.extended_id}</th>
+                <th>{$v.sort}</th>
+                <th>{$v.title}</th>
+                <th>{$v.name}</th>
+                <th>{:array_get(lang('form type'), $v['input_type'])}</th>
+                <th>
+                    <a class="fields"   data-target=".bs-example-modal-lg" data-toggle="modal"
+                       onclick="fields('{$v.title}', '{$v.input_type}' ,'{$v.input_value}' ,'{$v.comment}', '{$v.sort}', '{$v.extended_id}')" href="#">编辑</a>
+                    <a class="a-post" post-msg="你确定删除吗?" post-url="{:url('extended/fieldsDelete', ['id'=>$v['extended_id']])}">删除</a>
+                </th>
+            </tr>
             {/foreach}
             </tbody>
         </table>
@@ -61,97 +70,129 @@ use app\common\tool\Tool;
             <a class="btn btn-default active" href="JavaScript:history.go(-1)">返回</a>
         </div>
     </form>
-</div>
+{/block}
 
-<!-- 数据库字段添加 -->
-<div style="display: none;" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
-    <div class="modal-dialog modal-lg">
-        <form class="form-horizontal" action="{:url('extended/fieldsTypeEdit',['id'=>$info['extended_id']])}" method="post">
-            <input class="form-control text" type="text" name="id"  value="">
-            <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h4 class="modal-title">字段修改</h4>
-            </div>
-            <div class="modal-body">
-                <table class="table table-bordered">
-                    <tr>
-                        <th width="120">标题</th>
-                        <td>
-                            <input class="form-control text" type="text" name="title"  value="">
-                            <span class="form-required">*</span>
-                        </td>
-                    </tr>
-                    <tbody id="display">
-                    <tr>
-                        <th>
-                            字段名称
-                        </th>
-                        <td>
-                            <input class="form-control text" type="text"  name="name"  value="">
-                            <span class="form-required">*</span>
-                        </td>
-                    </tr>
-                    </tbody>
-                    <tr>
-                        <th>
-                            排序
-                        </th>
-                        <td>
-                            <input class="form-control text" type="text"  name="sort"  value="0">
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>描述</th>
-                        <th>
-                            <textarea class="form-control text"  name="comment" >{$info.comment ?? ''}</textarea>
-                        </th>
-                    </tr>
-                    <tr>
-                        <th>
-                            输出类型
-                        </th>
-                        <td>
-                            <?=Tool::get('form')->select('input_type', lang('form type'), object_get($info,'input_type'), ['class' =>
-                            'form-control text'])?>
-                            <span class="form-required">*</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>输出默认值</th>
-                        <th>
-                            <textarea class="form-control text"  name="input_value" >{$info.input_value ?? ''}</textarea>
-                            <span class="span-text">如果你是select这种类型的设置<br>{"key1":"value1","key2":"value2"}</span>
-                        </th>
-                    </tr>
-                </table>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary ajax-post" autocomplete="off">
-                    提交
-                </button>
-            </div>
+{block name="script"}
+    <!-- 数据库字段添加 -->
+    <div style="display: none;" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+        <div class="modal-dialog modal-lg">
+            <form class="form-horizontal" action="{:url('fieldsTypeEdit',['id'=>$info['extended_id']])}" method="post">
+                <input class="form-control text" type="text" name="id"  value="">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <h4 class="modal-title">字段修改</h4>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-bordered">
+                            <tr>
+                                <th width="120">标题</th>
+                                <td>
+                                    <input class="form-control text" type="text" name="title"  value="">
+                                    <span class="form-required">*</span>
+                                </td>
+                            </tr>
+                            <tbody id="display">
+                            <tr>
+                                <th>
+                                    字段名称
+                                </th>
+                                <td>
+                                    <input class="form-control text" type="text"  name="name"  value="">
+                                    <span class="form-required">*</span>
+                                </td>
+                            </tr>
+                            </tbody>
+                            <tr>
+                                <th>
+                                    排序
+                                </th>
+                                <td>
+                                    <input class="form-control text" type="text"  name="sort"  value="0">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>描述</th>
+                                <th>
+                                    <textarea class="form-control text"  name="comment" >{$info.comment ?? ''}</textarea>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>
+                                    输出类型
+                                </th>
+                                <td>
+                                    <?=Tool::get('form')->select('input_type', lang('form type'), object_get($info,'input_type'), ['class' =>
+                                    'form-control text'])?>
+                                    <span class="form-required">*</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>输出默认值</th>
+                                <th>
+                                    <textarea class="form-control text"  name="input_value" >{$info.input_value ?? ''}</textarea>
+                                    <span class="span-text">如果你是select这种类型的设置<br>{"key1":"value1","key2":"value2"}</span>
+                                </th>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary fields-type-edit" autocomplete="off">
+                            提交
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
-        </form>
     </div>
-</div>
-<script>
-   function fields(title, input_type, input_value, comment, sort, id)
-   {
-       if(!id){
-           $('.modal-title').html('字段添加');
-           $('#display').show();
-       } else {
-           $('[name=id]').val(id);
-           $('#display').hide();
-       }
-       $('.modal-body [name=comment] ').val(comment);
-       $('.modal-body [name=sort] ').val(sort);
-       $('.modal-body [name=input_value] ').val(input_value);
-       $('.modal-body [name=input_type] ').val(input_type);
-       $('.modal-body [name=title]').val(title);
-   }
-</script>
-{include file='public_file/footer' /}
-</body>
-</html>
+
+    <script>
+        function fields(title, input_type, input_value, comment, sort, id)
+        {
+            if(!id){
+                $('.modal-title').html('字段添加');
+                $('#display').show();
+            } else {
+                $('[name=id]').val(id);
+                $('#display').hide();
+            }
+            $('.modal-body [name=comment] ').val(comment);
+            $('.modal-body [name=sort] ').val(sort);
+            $('.modal-body [name=input_value] ').val(input_value);
+            $('.modal-body [name=input_type] ').val(input_type);
+            $('.modal-body [name=title]').val(title);
+        }
+
+        $(function(){
+            $('.fields-type-edit').click(function(){
+                var form = $(this).parents('.form-horizontal');
+
+                $.ajax({
+                    url : form.attr('action'),
+                    type : 'post',
+                    dataType : 'json',
+                    data : form.serialize(),
+                    success: function(json) {
+                        if(json.code == 1){
+
+                            alertSuccess(json.msg);
+                            if (confirm('是否离开此页')){
+                                window.location.href=json.url;
+                            }
+
+                        }else if(json.code == 0){
+                            alertError(json.msg);
+
+                        }
+
+                    },
+                    error:function(xhr){          //上传失败
+
+                        alertError(xhr.responseText);
+                    }
+                });
+            })
+        })
+
+    </script>
+{/block}

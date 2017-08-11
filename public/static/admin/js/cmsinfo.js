@@ -196,12 +196,12 @@ function check_all(obj, cName)
 function alertClick()
 {
     setTimeout(function() {
-        $('.close').click();
+        $('#alert').html('');
     },3e3);
 }
 
 function alertSuccess(data){
-    var msg = '<div class="alert alert-success" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>'+data+'</div>';
+    var msg = '<div class="alert alert-success" role="alert" style="z-index: 1051;"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>'+data+'</div>';
     $('#alert').html(msg);
 
     //关闭
@@ -209,7 +209,7 @@ function alertSuccess(data){
 }
 
 function alertError(data){
-    var msg = '<div class="alert alert-danger" role="alert" style="overflow-y: auto;max-height: 600px;"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>'+data+'</div>';
+    var msg = '<div class="alert alert-danger" role="alert" style="overflow-y: auto;max-height: 600px;z-index: 1051"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>'+data+'</div>';
     $('#alert').html(msg);
 
     //关闭

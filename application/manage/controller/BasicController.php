@@ -33,7 +33,7 @@ abstract class BasicController extends BaseController
      * @param bool      $scene
      * @return string
      */
-    public function navTabs($data,$scene = false)
+    public function navTabs($data, $scene = false)
     {
         //开启场景模式
         if($scene){
@@ -50,24 +50,20 @@ abstract class BasicController extends BaseController
         //生成菜单html
         $HtmlBuilder = new \think\form\HtmlBuilder();
         $nav        = ['nav'=>''];
-        $controller = $this->request->module();
-        $dispatch   = $this->request->dispatch();
-        $path       = strtolower(implode('/',$dispatch['module']));
 
         foreach($data as $k=>$v){
-
+            $this->request->action();
             //路由匹配
             $url = $v['url'];
             if(is_array($url)){
-                $urls        = url($url[0],$url[1]);
-                $v['url']   = $url[0];
+                $urls   = url($url[0],$url[1]);
+                $url    = $url[0];
             }else{
-                $urls        = url($url);
+                $urls   = url($url);
             }
-            $navPath = strtolower("{$controller}/{$v['url']}");
 
             //生成html
-            if($path == $navPath){
+            if($this->request->action() == $url){
                 unset($v['url'],$v['style']);
                 $options = $HtmlBuilder->attributes(array_merge($v,['class'=>'active']));
                 $nav['title'] = $k;

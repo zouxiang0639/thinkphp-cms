@@ -2,7 +2,7 @@
 namespace app\manage\controller;
 
 use app\common\bls\category\CategoryBls;
-use app\common\bls\category\Traits\CategoryTrait;
+use app\common\bls\category\traits\CategoryTrait;
 use app\common\bls\page\PageBls;
 use app\common\library\trees\Tree;
 
@@ -21,9 +21,9 @@ class Category extends BasicController
         $this->id       = intval(array_get($this->request->param(), 'id'));
 
         $nav = [
-            '导航列表' => ['url' => 'category/index'],
-            '导航添加' => ['url' => 'category/add'],
-            '导航修改' => ['url' => ['category/edit',['id'=> $this->id]],'style' => "display: none;"]
+            '导航列表' => ['url' => 'index'],
+            '导航添加' => ['url' => 'add'],
+            '导航修改' => ['url' => ['edit',['id'=> $this->id]],'style' => "display: none;"]
         ];
         $this->assign('navTabs',  parent::navTabs($nav));
 
@@ -35,21 +35,21 @@ class Category extends BasicController
 
     public function index()
     {
-        $model = CategoryBls::getNavigateList();
-        $this->formatNavigate($model->getCollection());
+        $model = CategoryBls::getCategoryList();
+        $this->formatCategory($model->getCollection());
 
         $html = (new Tree('parent_id'))->create($model->getCollection(), function($date) {
             function recursion($date){
 
                 $html = '';
                 foreach ($date as $value) {
-                    $html .= '<li id="list_'.$value->navigate_id.'"><div>
+                    $html .= '<li id="list_'.$value->category_id.'"><div>
                         <span class="disclose"><span>
                         </span></span>
                         '.$value->titleName.'
                         <span style="float: right">
-                            <a href="'.url('manage/navigate/edit', ['id' => $value->navigate_id]).'" class="layui-btn layui-btn-normal layui-btn-mini">编辑</a>
-                            <a href="javascript:;" date='.$value->navigate_id.' class="layui-btn layui-btn-danger layui-btn-mini category-delete">删除</a>
+                            <a href="'.url('edit', ['id' => $value->category_id]).'" class="layui-btn layui-btn-normal layui-btn-mini">编辑</a>
+                            <a href="javascript:;" date='.$value->category_id.' class="layui-btn layui-btn-danger layui-btn-mini category-delete">删除</a>
                         </span>
                     </div>';
 
@@ -65,7 +65,7 @@ class Category extends BasicController
             };
             return recursion($date->getItems());
         });
-        return $this->fetch('',[
+        return $this->fetch('', [
             'html' => $html
         ]);
     }
@@ -88,7 +88,7 @@ class Category extends BasicController
                 return $this->error($result);
             }
 
-            if(CategoryBls::createNavigate($data)){
+            if(CategoryBls::createCategory($data)){
                 return $this->success(lang('success'), url('index'));
             }else {
                 return $this->error(lang('failed'));
@@ -100,7 +100,7 @@ class Category extends BasicController
 
     public function edit()
     {
-        $model = CategoryBls::getOneNavigate(['navigate_id'=>input('id')]);
+        $model = CategoryBls::getOneCategory(['category_id'=>input('id')]);
         return $this->fetch('navigate', [
             'category'  => CategoryBls::getTreeCategory($model->group),
             'page'      => PageBls::getAllPage(),
@@ -117,7 +117,7 @@ class Category extends BasicController
                 // 验证失败 输出错误信息
                 return $this->error($result);
             }
-            $model = CategoryBls::getOneNavigate(['navigate_id' => $this->id]);
+            $model = CategoryBls::getOneCategory(['category_id' => $this->id]);
 
             if(empty($model)){
                 return $this->error('参数错误');
@@ -136,7 +136,7 @@ class Category extends BasicController
     public function delete()
     {
         if($this->request->isDelete()) {
-            $model = CategoryBls::getOneNavigate(['navigate_id' => input('id')]);
+            $model = CategoryBls::getOneCategory(['category_id' => input('id')]);
 
             if (!$model) {
                 return $this->error('参数错误');
@@ -158,7 +158,7 @@ class Category extends BasicController
     {
         $request = $this->request->post();
 
-        if(CategoryBls::NavigateSort($request['date'])){
+        if(CategoryBls::categorySort($request['date'])){
             return $this->success(lang('success'));
         }else {
             return $this->error(lang('failed'));

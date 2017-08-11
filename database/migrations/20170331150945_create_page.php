@@ -3,19 +3,18 @@
 use think\migration\Migrator;
 use Phinx\Db\Adapter\MysqlAdapter;
 
-class CreateCategory extends Migrator
+class CreatePage extends Migrator
 {
     /**
      * Migrate Up.
      */
     public function up()
     {
-        $table = $this->table('page', ['id' => 'category_id', 'engine'=>'MyISAM', 'comment' => '导航表']);
+        $table = $this->table('page', ['id' => 'page_id', 'engine'=>'MyISAM', 'comment' => '页面表']);
         $table->addColumn('title', 'string', ['limit' => 100, 'comment' => '标题'])
-            ->addColumn('page_id', 'integer', ['limit' => MysqlAdapter::INT_SMALL, 'comment' => '父级ID', 'signed'=>false])
             ->addColumn('template_type', 'integer', ['limit' => MysqlAdapter::INT_TINY, 'default' => 1, 'comment' => '模版模型'])
-            ->addColumn('template_page', 'string', ['limit' => '100', 'comment' => '默认模版'])
-            ->addColumn('template_info', 'string', ['limit' => '100', 'comment' => '详情模板'])
+            ->addColumn('template_page', 'string', ['limit' => MysqlAdapter::INT_TINY, 'default' => 1, 'comment' => '默认模版'])
+            ->addColumn('template_info', 'string', ['limit' => MysqlAdapter::INT_TINY, 'default' => 1, 'comment' => '详情模板'])
             ->addColumn('display', 'boolean', ['default' => 1, 'comment' => '显示: 0,删除, 1,所有人可见 2,不可见 3,管理员可见'])
             ->addColumn('list_row', 'integer', ['limit' => MysqlAdapter::INT_TINY, 'comment' => '每页行数'])
             ->addColumn('sort', 'integer', ['limit' => 10, 'comment' => '排序'])
@@ -31,7 +30,6 @@ class CreateCategory extends Migrator
             ->addColumn('data_extended_id', 'integer', ['limit' => MysqlAdapter::INT_SMALL, 'comment' => '数据扩展ID'])
             ->addColumn('fields_extended_id', 'integer', ['limit' => MysqlAdapter::INT_SMALL, 'comment' => '字段扩展ID'])
             ->addTimestamps('create_time', 'update_time')
-            ->addIndex(['parent_id'])
             ->save();
     }
 
@@ -41,6 +39,6 @@ class CreateCategory extends Migrator
      */
     public function down()
     {
-        $this->dropTable('category');
+        $this->dropTable('page');
     }
 }

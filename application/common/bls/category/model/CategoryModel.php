@@ -2,13 +2,14 @@
 namespace app\common\bls\category\model;
 
 
-use app\common\model\BasicModel;
+
+use app\common\base\BasicModel;
 
 class CategoryModel extends BasicModel
 {
     // 设置完整的数据表（包含前缀）
-    protected $name         = 'navigate';
-    public $primaryKey      = 'navigate_id';
+    protected $name         = 'category';
+    public $primaryKey      = 'category_id';
 
 
     /**

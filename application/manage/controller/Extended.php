@@ -1,26 +1,25 @@
 <?php
 namespace app\manage\controller;
 
-use app\common\model\ExtendedModel;
-use think\Db;
+use app\common\bls\extended\ExtendedBls;
+use app\common\bls\extended\traits\ExtendedTrait;
 
 class Extended extends BasicController
 {
 
+    use ExtendedTrait;
+
     private $id     = 0;
-    private $url    = 'extended/index';
 
     public function __construct()
     {
-        $this->groups   = lang('extended groups');
-
         parent::__construct();
         $this->id       = !empty($this->request->param('id')) ? intval($this->request->param('id')) : $this->id;
         $nav = [
-            '数据扩展列表' => ['url' => $this->url],
-            '数据扩展增加' => ['url' => 'extended/add'],
-            '数据类型修改' => ['url' => ['extended/dataTypeEdit', ['id' => $this->id]], 'style' => "display: none;"],
-            '字段类型修改' => ['url' => ['extended/fieldsTypeEdit', ['id' => $this->id]], 'style' => "display: none;"],
+            '数据扩展列表' => ['url' => 'index'],
+            '数据扩展增加' => ['url' => 'add'],
+            '数据类型修改' => ['url' => ['dataTypeEdit', ['id' => $this->id]], 'style' => "display: none;"],
+            '字段类型修改' => ['url' => ['fieldsTypeEdit', ['id' => $this->id]], 'style' => "display: none;"],
         ];
         $this->assign('navTabs',  parent::navTabs($nav));
     }
@@ -28,16 +27,15 @@ class Extended extends BasicController
     public function index()
     {
         $where  = ['parent_id' => 0];
-        $groups   = intval($this->request->get('groups'));
+        $groups   = intval($this->request->get('type'));
         if(!empty($groups)){
-            $where['group']  = $groups;
+            $where['type']  = $groups;
         }
 
-        $list = ExtendedModel::where($where)->paginate();
+        $model = ExtendedBls::getExtendedList($where);
+        $this->formatExtended($model->getCollection());
         return $this->fetch('',[
-            'list'      => $list,
-            'page'      => $list->render(),
-            'groups'    => $this->groups
+            'list'      => $model,
         ]);
     }
 
@@ -48,34 +46,26 @@ class Extended extends BasicController
     {
         //createExtended_post 数据处理
         if($this->request->isPost()){
-            $post   = $this->request->post();
 
-            //数据验证
-            $validate =[
-                ['title|标题', 'require'],
-                ['name|数据库名', 'requireIf:group,2|unique:extended,name|alphaDash']
-            ];
-            $result = $this->validate($post, $validate);
-            if($result !== true){
+            $post = $this->request->post();
+            $result = $this->validate($post, 'app\common\bls\extended\validate\ExtendedValidate.create');
+            if(true !== $result){
+                // 验证失败 输出错误信息
                 return $this->error($result);
             }
 
             $post['name'] = empty($post['name']) ? '' : 'ex_'.$post['name'];
 
             //写入数据 如果是数据类型就创建数据库
-            if(ExtendedModel::create($post)->createTabel()){
-                return $this->success(lang('Add success'), url($this->url));
+            if(ExtendedBls::createExtended($post)){
+                return $this->success(lang('Add success'), url('index'));
             }else{
                 return $this->error(lang('Add failed'));
             }
 
         }
 
-        return $this->fetch('',[
-            'info'  => [
-                'groups'    => $this->groups,
-            ]
-        ]);
+        return $this->fetch('');
     }
 
     /**
@@ -86,21 +76,18 @@ class Extended extends BasicController
         if($this->request->isPost() && !empty($this->id)){
             $post       = $this->request->post();
 
-            //数据验证
-            $validate   = [
-                ['title|标题', 'require']
-            ];
-            $result = $this->validate($post, $validate);
-            if($result !== true){
+            $result = $this->validate($post, 'app\common\bls\extended\validate\ExtendedValidate.update');
+            if(true !== $result){
+                // 验证失败 输出错误信息
                 return $this->error($result);
             }
 
             //更新数据库
-            $update = ExtendedModel::get($this->id);
+            $update = ExtendedBls::getOneExtended(['extended_id'=>$this->id]);
             if(empty($update)){
-                return abort(404, lang('404 not found'));
+                return $this->error('参数错误');
             }
-            if($update->allowField(['title','comment'])->save($post)){
+            if($update->save($post)){
                 return $this->success(lang('Update success'), url($this->url));
             }else{
                 return $this->error(lang('Update failed'));
@@ -116,17 +103,18 @@ class Extended extends BasicController
     public function delete()
     {
         if($this->request->isPost() && !empty($this->id)){
-            $delete  = ExtendedModel::get($this->id);
-            if(empty($delete)){
-                return abort(404, lang('404 not found'));
+            $model  = ExtendedBls::getOneExtended(['extended_id'=>$this->id]);
+            if(empty($model)){
+                return $this->error('参数错误');
             }
-            if(ExtendedModel::get($this->id)->deleteChild()->deleteTabel()->delete()){
+
+            if(ExtendedBls::deleteExtended($model)){
                 return $this->success(lang('delete success'), url($this->url));
             }else{
                 return $this->error(lang('delete failed'));
             }
         }
-        return abort(404, lang('404 not found'));
+        return $this->error('请求错误');
 
     }
 
@@ -138,53 +126,39 @@ class Extended extends BasicController
 
         if($this->request->isPost()){
             $post               = $this->request->post();
-            $post['group']      = 2;
             $post['parent_id']  = $this->id;
             $post['id']         = intval($post['id']);
 
 
-            if(empty($post['id'])){
-                /**
-                 * 创建数据库字段
-                 */
+            if(empty($post['id'])){ //创建数据库字段
 
                 //数据验证
-                $validate =[
-                    ['title|标题', 'require'],
-                    ['name|字段名称', "require|alphaDash|unique:extended,parent_id={$this->id}&name={$post['name']}"],
-                    ['mysql_fields_length|字段值长度', 'regex:^\d+(\,\d+)?$'.$this->checkFieldsType($post['mysql_fields_type'])]
-                ];
-                $result = $this->validate($post, $validate);
-                if($result !== true){
+                $result = $this->validate($post, 'app\common\bls\extended\validate\ExtendedValidate.dataTypeCreate');
+                if(true !== $result){
+                    // 验证失败 输出错误信息
                     return $this->error($result);
                 }
 
-                //创建字段
-                unset($post['id']);
-                if(ExtendedModel::create($post)->createFields()){
+                if(ExtendedBls::createDataType($post)){
                     return $this->success(lang('Add success'));
                 }else{
                     return $this->error(lang('Add failed'));
                 }
-            }else{
-                /**
-                 * 修改字段
-                 */
+            }else{//修改字段
 
-                //数据验证
-                $validate =[
-                    ['title|标题', 'require'],
-                    ['id|字段ID', 'require']
-                ];
-                $result = $this->validate($post, $validate);
-                if($result !== true){
+                $result = $this->validate($post, 'app\common\bls\extended\validate\ExtendedValidate.dataTypeUpdate');
+                if(true !== $result){
+                    // 验证失败 输出错误信息
                     return $this->error($result);
                 }
 
-                $update = ExtendedModel::get($post['id']);
+                $model = ExtendedBls::getOneExtended(['extended_id'=>$post['id']]);
+                if(empty($model)){
+                    return $this->error('参数错误');
+                }
 
                 //更新扩展数据库
-                if($update->allowField(['title','comment','input_type','input_value','sort'])->save($post)){
+                if($model->allowField(['title','comment','input_type','input_value','sort'])->save($post)){
                     return $this->success(lang('Update success'));
                 }else{
                     return $this->error(lang('Update failed'));
@@ -192,20 +166,36 @@ class Extended extends BasicController
             }
         }
 
-        $info = ExtendedModel::get($this->id);
-
-        if(empty($info)){
-            return abort(404, lang('404 not found'));
+        $model = ExtendedBls::getOneExtended(['extended_id'=>$this->id]);
+        if(empty($model)){
+            return $this->error('参数错误');
         }
-        $list = ExtendedModel::where(['parent_id' => $this->id])
-            ->order(["sort" => "desc", 'extended_id' => 'asc'])
-            ->select();
-        $info['group'] = $this->groups[$info['group']];
 
         return $this->fetch('',[
-            'info'   => $info,
-            'list'   => $list
+            'info'   => $model,
+            'showCreateTabel' => ExtendedBls::showCreateTabel($model)
         ]);
+    }
+
+    /**
+     * 删除数据库字段
+     */
+    public function mysqlFieldsDelete()
+    {
+        if($this->request->isPost() && !empty($this->id)){
+
+            $model  = ExtendedBls::getOneExtended(['extended_id'=>$this->id]);
+            if(empty($model)){
+                return abort(404, lang('404 not found'));
+            }
+
+            if(ExtendedBls::mysqlFieldsDelete($model)){
+                return $this->success(lang('delete success'));
+            }else{
+                return $this->error(lang('delete failed'));
+            }
+        }
+        return $this->error('请求错误');
     }
 
     /**
@@ -216,47 +206,36 @@ class Extended extends BasicController
 
         if($this->request->isPost()){
             $post               = $this->request->post();
-            $post['group']      = 1;
             $post['parent_id']  = $this->id;
             $post['id']         = intval($post['id']);
 
-            if(empty($post['id'])){
-                /**
-                 * 创建字段
-                 */
 
-                //数据验证
-                $validate =[
-                    ['title|标题', 'require'],
-                    ['name|字段名称', "require|alphaDash|unique:extended,parent_id={$this->id}&name={$post['name']}"]
-                ];
-                $result = $this->validate($post, $validate);
-                if($result !== true){
+
+            if(empty($post['id'])){ // 创建字段
+
+                $result = $this->validate($post, 'app\common\bls\extended\validate\ExtendedValidate.fieldsTypeCreate');
+                if(true !== $result){
+                    // 验证失败 输出错误信息
                     return $this->error($result);
                 }
-
                 unset($post['id']);
-                if(ExtendedModel::create($post)->createFields()){
+                if(ExtendedBls::createExtendedFields($post)){
                     return $this->success(lang('Add success'));
                 }else{
                     return $this->error(lang('Add failed'));
                 }
-            }else{
-                /**
-                 * 修改字段
-                 */
+            }else{ //修改字段
 
                 //数据验证
-                $validate =[
-                    ['title|标题', 'require']
-                ];
-                $result = $this->validate($post, $validate);
-                if($result !== true){
+                $result = $this->validate($post, 'app\common\bls\extended\validate\ExtendedValidate.fieldsTypeUpdate');
+                if(true !== $result){
+                    // 验证失败 输出错误信息
                     return $this->error($result);
                 }
 
 
-                $update = ExtendedModel::get($post['id']);
+                $update = ExtendedBls::getOneExtended(['extended_id'=>$post['id']]);
+
                 //更新扩展数据库
                 if($update->save($post)){
                     return $this->success(lang('Update success'));
@@ -266,88 +245,36 @@ class Extended extends BasicController
             }
         }
 
-        $info = ExtendedModel::get($this->id);
-
-        if(empty($info)){
-            return abort(404, lang('404 not found'));
+        $model = ExtendedBls::getOneExtended(['extended_id'=>$this->id]);
+        if(empty($model)){
+            return $this->error('参数错误');
         }
-        $list = ExtendedModel::where(['parent_id' => $this->id])
-            ->order(["sort" => "desc", 'extended_id' => 'asc'])
-            ->select();
-        $info['group'] = $this->groups[$info['group']];
 
         return $this->fetch('',[
-            'info'   => $info,
-            'list'   => $list
+            'info'   => $model,
         ]);
     }
 
     /**
-     * 删除数据库字段
+     * 删除字段
      */
-    public function mysqlFieldsDelete()
+    public function fieldsDelete()
     {
         if($this->request->isPost() && !empty($this->id)){
-            $delete  = ExtendedModel::get($this->id);
-            if(empty($delete)){
-                return abort(404, lang('404 not found'));
+            $model = ExtendedBls::getOneExtended(['extended_id' => $this->id]);
+            if(empty($model)) {
+                return $this->error('参数错误');
             }
 
-            if($delete->fieldsDelete()->delete()){
+            if($model->delete()) {
                 return $this->success(lang('delete success'));
-            }else{
+            } else {
                 return $this->error(lang('delete failed'));
             }
         }
-        return abort(404, lang('404 not found'));
+
+        return $this->error('请求错误');
     }
 
-
-    /**
-     * 数据库不同的类型做不同的长度判断
-     *
-     * @param  string    $type
-     * @return string
-     */
-    private function checkFieldsType($type)
-    {
-        $validate   = '';
-        $typeArray   = lang('mysql fields type');
-
-        //根据不同的类型做长度判断
-        switch($typeArray[$type]){
-            case 'tinyint':         //存储大小为 1 字节。
-                $validate   = '|require|between:1,4';
-                break;
-            case 'smallint':        //存储大小为 2 个字节。
-                $validate   = '|require|between:1,6';
-                break;
-            case 'int':             //存储大小为 4 个字节。
-                $validate   = '|require|between:1,11';
-                break;
-            case 'bigint':          //存储大小为 8 个字节。
-                $validate   = '|require|between:1,20';
-                break;
-            case 'varchar':         //存储大小为 1 个字节, 大于 255 为2个字节
-                $validate   = '|require|between:1,65535';
-                break;
-            case 'char':            //存储大小为 1 个字节, 建议存储固定长度的字符串
-                $validate   = '|require|between:1,255';
-                break;
-            case 'float':
-                $validate   = '|require';
-                break;
-            case 'decimal':
-                $validate   = '|require';
-                break;
-            default:
-        }
-
-        if($validate){
-            return $validate;
-        }
-
-        return '';
-    }
 
 }

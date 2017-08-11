@@ -435,64 +435,6 @@ class Menu extends \Phinx\Seed\AbstractSeed
                     )
                 ],
                 [
-                    'name'      => '前端分类管理',
-                    'app'       => 'manage',
-                    'model'     => 'category',
-                    'action'    => 'default',
-                    'type'      => 1,
-                    'status'    => 1,
-                    'child'     => array(
-                        [
-                            'name'      => '分类列表',
-                            'app'       => 'manage',
-                            'model'     => 'category',
-                            'action'    => 'index',
-                            'type'      => 1,
-                            'status'    => 1
-                        ],
-                        [
-                            'name'      => '分类增加',
-                            'app'       => 'manage',
-                            'model'     => 'category',
-                            'action'    => 'add',
-                            'type'      => 1,
-                            'status'    => 1
-                        ],
-                        [
-                            'name'      => '分类修改',
-                            'app'       => 'manage',
-                            'model'     => 'category',
-                            'action'    => 'edit',
-                            'type'      => 1,
-                            'status'    => 0
-                        ],
-                        [
-                            'name'      => '分类删除',
-                            'app'       => 'manage',
-                            'model'     => 'category',
-                            'action'    => 'delete',
-                            'type'      => 1,
-                            'status'    => 0
-                        ],
-                        [
-                            'name'      => '分类更新',
-                            'app'       => 'manage',
-                            'model'     => 'category',
-                            'action'    => 'update',
-                            'type'      => 1,
-                            'status'    => 0
-                        ],
-                        [
-                            'name'      => '分类排序',
-                            'app'       => 'manage',
-                            'model'     => 'category',
-                            'action'    => 'sort',
-                            'type'      => 1,
-                            'status'    => 0
-                        ]
-                    )
-                ],
-                [
                     'name'      => '数据扩展',
                     'app'       => 'manage',
                     'model'     => 'extended',
@@ -642,6 +584,64 @@ class Menu extends \Phinx\Seed\AbstractSeed
             'type'      => '0',
             'child'     => array(
                 [
+                    'name'      => '页面管理',
+                    'app'       => 'manage',
+                    'model'     => 'page',
+                    'action'    => 'default',
+                    'type'      => 1,
+                    'status'    => 1,
+                    'child'     => array(
+                        [
+                            'name'      => '页面列表',
+                            'app'       => 'manage',
+                            'model'     => 'page',
+                            'action'    => 'index',
+                            'type'      => 1,
+                            'status'    => 1
+                        ],
+                        [
+                            'name'      => '页面增加',
+                            'app'       => 'manage',
+                            'model'     => 'page',
+                            'action'    => 'add',
+                            'type'      => 1,
+                            'status'    => 1
+                        ],
+                        [
+                            'name'      => '页面创建',
+                            'app'       => 'manage',
+                            'model'     => 'page',
+                            'action'    => 'create',
+                            'type'      => 1,
+                            'status'    => 0
+                        ],
+                        [
+                            'name'      => '页面修改',
+                            'app'       => 'manage',
+                            'model'     => 'page',
+                            'action'    => 'edit',
+                            'type'      => 1,
+                            'status'    => 0
+                        ],
+                        [
+                            'name'      => '页面删除',
+                            'app'       => 'manage',
+                            'model'     => 'page',
+                            'action'    => 'delete',
+                            'type'      => 1,
+                            'status'    => 0
+                        ],
+                        [
+                            'name'      => '页面更新',
+                            'app'       => 'manage',
+                            'model'     => 'page',
+                            'action'    => 'update',
+                            'type'      => 1,
+                            'status'    => 0
+                        ]
+                    )
+                ],
+                [
                     'name'      => '信息管理',
                     'app'       => 'manage',
                     'model'     => 'info',
@@ -705,13 +705,72 @@ class Menu extends \Phinx\Seed\AbstractSeed
                             'status'    => 0
                         ]
                     )
-                ],[
-                    'name'      => '导航目录',
+                ],
+                [
+                    'name'      => '导航管理',
                     'app'       => 'manage',
                     'model'     => 'category',
                     'action'    => 'default',
                     'type'      => 1,
-                    'status'    => 1
+                    'status'    => 1,
+                    'child'     => array(
+                        [
+                            'name'      => '导航列表',
+                            'app'       => 'manage',
+                            'model'     => 'category',
+                            'action'    => 'index',
+                            'type'      => 1,
+                            'status'    => 1
+                        ],
+                        [
+                            'name'      => '导航增加',
+                            'app'       => 'manage',
+                            'model'     => 'category',
+                            'action'    => 'add',
+                            'type'      => 1,
+                            'status'    => 1
+                        ],
+                        [
+                            'name'      => '导航创建',
+                            'app'       => 'manage',
+                            'model'     => 'category',
+                            'action'    => 'create',
+                            'type'      => 1,
+                            'status'    => 0
+                        ],
+                        [
+                            'name'      => '导航修改',
+                            'app'       => 'manage',
+                            'model'     => 'category',
+                            'action'    => 'edit',
+                            'type'      => 1,
+                            'status'    => 0
+                        ],
+                        [
+                            'name'      => '导航删除',
+                            'app'       => 'manage',
+                            'model'     => 'category',
+                            'action'    => 'delete',
+                            'type'      => 1,
+                            'status'    => 0
+                        ],
+                        [
+                            'name'      => '导航更新',
+                            'app'       => 'manage',
+                            'model'     => 'category',
+                            'action'    => 'update',
+                            'type'      => 1,
+                            'status'    => 0
+                        ],
+                        [
+                            'name'      => '导航排序',
+                            'app'       => 'manage',
+                            'model'     => 'category',
+                            'action'    => 'sort',
+                            'type'      => 1,
+                            'status'    => 0
+                        ]
+                    )
                 ]
             )
         ];

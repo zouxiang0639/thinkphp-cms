@@ -1,6 +1,6 @@
 <?php
 
-namespace app\common\bls\category\Traits;
+namespace app\common\bls\category\traits;
 
 use think\Collection;
 
@@ -11,7 +11,7 @@ trait CategoryTrait
      * @param Collection $items
      * @return Collection
      */
-    protected function formatNavigate(Collection $items)
+    protected function formatCategory(Collection $items)
     {
         return $items->each(function ($item) {
 

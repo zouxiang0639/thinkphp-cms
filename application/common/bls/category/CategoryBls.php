@@ -15,7 +15,7 @@ class CategoryBls
      * @param int $limit
      * @return Collection
      */
-    public static function getNavigateList($where = '', $limit = 20)
+    public static function getCategoryList($where = '', $limit = 20)
     {
         return CategoryModel::where($where)
         ->order(["sort" => "asc"])
@@ -31,14 +31,14 @@ class CategoryBls
      * @param int $parent_id
      * @return bool
      */
-    public static function navigateSort($date, $parent_id = 0)
+    public static function categorySort($date, $parent_id = 0)
     {
         foreach($date as $values) {
             static $num = 0;
 
             foreach ($date as $value) {
                 $num ++;
-                CategoryModel::where('navigate_id', $value['id'])->update(['sort'=> $num,'parent_id' => $parent_id]);
+                CategoryModel::where('category_id', $value['id'])->update(['sort'=> $num,'parent_id' => $parent_id]);
                 if(isset($value['children'])) {
                     self::navigateSort($value['children'], $value['id']);
                 }
@@ -52,7 +52,7 @@ class CategoryBls
      * @param string $where
      * @return CategoryModel
      */
-    public static function getOneNavigate($where = '')
+    public static function getOneCategory($where = '')
     {
         return CategoryModel::where($where)->find();
     }
@@ -79,21 +79,21 @@ class CategoryBls
             $array = array();
             $items = $object->toLinearArray()->getItems();
             foreach ($items as $value) {
-                $array[$value->navigate_id] = $value->icon.$value->title;
+                $array[$value->category_id] = $value->icon.$value->title;
             }
             return $array;
         });
 
     }
 
-    public static function createNavigate($date)
+    public static function createCategory($date)
     {
         return CategoryModel::create($date);
     }
 
-    public static function updateNavigate($id, $date)
+    public static function updateCategory($id, $date)
     {
-        return CategoryModel::where('navigate_id',$id)->save($date);
+        return CategoryModel::where('category_id',$id)->save($date);
     }
 
 }

@@ -1,16 +1,20 @@
 <?php
 namespace app\manage\controller;
 
+use app\common\bls\info\InfoBls;
+use app\common\bls\page\PageBls;
+use app\common\consts\common\CommonStatusConst;
+use app\common\consts\page\PageTemplateConst;
 use app\common\model\CategoryModel;
 use app\common\model\ExtendedModel;
 use app\common\model\InfoModel;
+use app\common\tool\Helper;
 
 class Info extends BasicController
 {
     private $id;
     private $cid;
     private $recommendation = [];
-    private $display        = [];  //修改请到语音包display里修改;
     private $url            = 'info/index';
     private $validate = [
         ['title|标题', 'require']
@@ -18,7 +22,6 @@ class Info extends BasicController
 
     public function __construct()
     {
-        $this->display          = lang('display');
         $this->recommendation   = lang('info recommendation');
         parent::__construct();
 
@@ -39,21 +42,22 @@ class Info extends BasicController
     public function index()
     {
         //条件判断
+        $param = $this->request->param();
         $where          = [];
-        if($this->cid) {
-            $where['info_model.category_id'] = $this->cid;
+        if(!empty($param['page'])) {
+            $where['page_id'] = $param['page'];
         }
 
-        //模型join关联category查询数据
-        $list = InfoModel::with('category')
-            ->where($where)
-            ->order(["sort" => "desc", 'info_id' => 'desc'])
-            ->paginate();
+        if(!empty($param['title'])) {
+            $where['title'] = $param['title'];
+        }
 
+        $list = InfoBls::getInfoList($where);
+        $page = PageBls::getAllPage(['template_type' => PageTemplateConst::INFO[0]]);
 
         return $this->fetch('',[
             'list'  => $list,
-            'page'  => $list->render()
+            'page'  => $page
         ]);
     }
 
@@ -62,10 +66,11 @@ class Info extends BasicController
      */
     public function add()
     {
-        $category   = CategoryModel::get($this->cid);
-        $extendeds  = ExtendedModel::formBuilder($category['data_extended_id']);
-        return $this->fetch('',[
-            'info'  => ['category_id' => $this->cid, 'extendeds' => $extendeds],
+       /* $category   = CategoryModel::get($this->cid);
+        $extendeds  = ExtendedModel::formBuilder($category['data_extended_id']);*/
+
+        return $this->fetch('info',[
+            'info'  => ['category_id' => $this->cid, 'extendeds' => ''],
             'enum'  => self::enum()
         ]);
     }
@@ -77,26 +82,24 @@ class Info extends BasicController
     {
         if($this->request->isPost()){
 
-            $post   = InfoModel::recombinantArray($this->request->post(), 'photos');
-
+            $post   = Helper::recombinantArray($this->request->post(), 'photos');
             //数据验证
             $result = $this->validate($post, $this->validate);
             if($result !== true){
                 return $this->error($result);
             }
 
-            $infoModel      = new InfoModel($post);
 
-            //检查是否有数据库扩展
-            $infoModel      =  $infoModel->checkExtended();
+          /*  //检查是否有数据库扩展
+            $infoModel      =  PageBls::checkExtended($post['page_id']);
             if($infoModel->extendedsModel){
                 $extendedsModel         = new $infoModel->extendedsModel($post['extend']);
                 $infoModel->extendeds   = $extendedsModel;
-            }
+            }*/
 
             //关联数据库扩展模型数据更新
-            if($infoModel->save($post)){
-                return $this->success(lang('Add success'), url($this->url, ['cid' => $this->cid]));
+            if(InfoBls::createInfo($post)){
+                return $this->success(lang('Add success'), url('index'));
             }else{
                 return $this->error(lang('Add failed'));
             }
@@ -130,7 +133,7 @@ class Info extends BasicController
 
         return $this->fetch('', [
             'info'  => $info,
-            'enum'  => self::enum(['category_id' => $info['category_id']])
+            'enum'  => self::enum()
         ]);
     }
 
@@ -142,7 +145,7 @@ class Info extends BasicController
         //edit_post 数据处理
         if($this->request->isPost()){
 
-            $post   = InfoModel::recombinantArray($this->request->post(), 'photos');
+            $post   = Helper::recombinantArray($this->request->post(), 'photos');
 
             //数据验证
             $result = $this->validate($post,$this->validate);
@@ -219,16 +222,14 @@ class Info extends BasicController
     /**
      * 枚举数组
      *
-     * @param  array      $arr
      * @return array
      */
-    private function enum($arr = [])
+    private function enum()
     {
-        $arr = array_merge(['category_id' => $this->cid], $arr);
         return [
             'recommendation'    => $this->recommendation,
-            'category'          => CategoryModel::treeCategory($arr['category_id']),
-            'display'          => $this->display
+            'page'              => PageBls::getAllPage(['template_type' => PageTemplateConst::INFO[0]]),
+            'display'           => CommonStatusConst::desc()
         ];
     }
 }

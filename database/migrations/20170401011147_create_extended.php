@@ -15,7 +15,7 @@ class CreateExtended extends Migrator
             ->addColumn('input_value', 'string', ['limit' => 255, 'comment' => '表单默认值'])
             ->addColumn('comment', 'string', ['limit' => 255, 'comment' => '描述'])
             ->addColumn('title', 'string', ['limit' => 255, 'comment' => '标题'])
-            ->addColumn('group', 'boolean', ['default' => 1, 'comment' => '组类型'])
+            ->addColumn('type', 'boolean', ['default' => 1, 'comment' => '类型'])
             ->addColumn('parent_id', 'integer', ['limit' => MysqlAdapter::INT_SMALL, 'comment' => '父级ID'])
             ->addColumn('name', 'string', ['limit' => 100, 'comment' => '字段或数据库名称'])
             ->addColumn('mysql_fields_type', 'integer', ['limit' => MysqlAdapter::INT_SMALL, 'comment' => '数据库字段类型'])

@@ -1,14 +1,15 @@
+{extend name="layouts/master" /}
+
+{block name="php"}
 <?php
 use app\common\tool\Tool;
+use app\common\consts\extended\ExtendedTypeConst;
 ?>
-<!DOCTYPE html>
-<head>
-    {include file='public_file/header' /}
-</head>
-<body>
-<div class="container-fluid">
-    {include file='public_file/nav_tabs' /}
+{/block}
 
+{block name="content"}
+
+    {include file='public_file/nav_tabs' /}
     <form class="form-horizontal" action="{:url('extended/add')}" method="post" >
         <div class="bs-example">
             <table class="table table-bordered">
@@ -22,11 +23,13 @@ use app\common\tool\Tool;
                 <tr>
                     <th width="150">所属类型</th>
                     <td>
-                        <?=Tool::get('form')->select('group', $info['groups'], object_get($info,'group'), ['class' => 'form-control text'])?>
+                        {:Tool::get('form')->select('type', ExtendedTypeConst::desc(),
+                        isset($info['type']) ? $info['type'] : ''
+                        , ['class' => 'form-control text'])}
                         <span class="form-required">*</span>
                     </td>
                 </tr>
-                <tr>
+                <tr id="mysql-name">
                     <th>数据库名称</th>
                     <th>
                         <input class="form-control text" type="text" name="name" value="{$info.name  ?? ''}">
@@ -48,8 +51,20 @@ use app\common\tool\Tool;
             <a class="btn btn-default active" href="JavaScript:history.go(-1)">返回</a>
         </div>
     </form>
-</div>
+{/block}
 
-{include file='public_file/footer' /}
-</body>
-</html>
+{block name="script"}
+<script>
+    $(function(){
+        $("select[name='type']").change(function() {
+            var mysqlTyle = '{:ExtendedTypeConst::MYSQL}';
+            if ($(this).val() == mysqlTyle ) {
+                $('#mysql-name').show();
+            } else {
+                $('#mysql-name').hide();
+            }
+        }).trigger('change');
+    })
+</script>
+{/block}
+
