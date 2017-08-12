@@ -6,13 +6,7 @@ use app\common\model\FragmentModel;
 
 class Fragment extends BasicController
 {
-
     private $id     = 0;
-    private $url    = 'fragment/index';
-
-    private $validate =[
-        ['title|标题', 'require']
-    ];
 
     public function __construct()
     {

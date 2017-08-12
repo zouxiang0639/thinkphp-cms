@@ -1,24 +1,96 @@
-<!DOCTYPE html>
-<head>
-    {include file='public_file/header' /}
-    <script>
-        $(function(){
-            $("#navcid_select").change(function() {
-                $("#mainform").submit();
-            });
-        })
-    </script>
-</head>
-<body>
-<div class="container-fluid">
-    {include file='public_file/nav_tabs' /}
+{extend name="layouts/master" /}
 
-    <form class="well form-search" id="mainform" action="{:url('file/index')}" method="get">
+{block name="php"}
+<?php
+use app\common\tool\Tool;
+use app\common\consts\file\FileTypeConst;
+?>
+{/block}
+
+{block name="style"}
+<link href="__STATIC__/default/artDialog/skins/default.css" rel="stylesheet" />
+<style>
+    .file-upload-btn-wrapper {
+        margin-bottom: 10px;
+    }
+
+    .file-upload-btn-wrapper .num {
+        color: #999999;
+        float: right;
+        margin-top: 5px;
+    }
+
+    .file-upload-btn-wrapper .num em {
+        color: #FF5500;
+        font-style: normal;
+    }
+
+    .files-wrapper {
+        border: 1px solid #CCCCCC;
+    }
+
+    .files-wrapper ul {
+        height: 280px;
+        overflow-y: scroll;
+        padding-bottom: 10px;
+        position: relative;
+        margin: 0;
+    }
+
+    .files-wrapper li {
+        display: inline;
+        float: left;
+        height: 100px;
+        margin: 10px 0 0 10px;
+        width: 100px;
+        position: relative;
+        border:1px solid #CCCCCC;
+    }
+
+    .files-wrapper li.selected {
+        border: 1px solid #fe781e;
+    }
+    .files-wrapper li .upload-percent{
+        width: 100%;
+        height:100%;
+        line-height: 100px;
+        text-align: center;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .files-wrapper li .selected-icon-wrapper{
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 20px;
+        height: 20px;
+        font-size: 16px;
+        text-align:center;
+        line-height:20px;
+        color:#fe781e;
+        display: none;
+    }
+    .files-wrapper li.selected .selected-icon-wrapper{
+        display: block;
+    }
+    .files-wrapper li img{
+        width: 100%;
+        height: 100%;
+        vertical-align: top;
+    }
+</style>
+{/block}
+
+{block name="content"}
+    {include file='public_file/nav_tabs' /}
+    <form class="well form-search" id="mainform" action="{:url('index')}" method="get">
         <div class="btn-group width2">
-            <?=\app\common\tool\Tool::get('form')->select(
-            'groups',
-            array_merge([0 => '全部模型'], $groups),
-            input('groups'),
+            <?=Tool::get('form')->select(
+            'type',
+            array_merge([0 => '全部模型'], FileTypeConst::desc()),
+            input('type'),
             ['class' => 'form-control', 'id' => 'navcid_select' ]
             )?>
         </div>
@@ -39,8 +111,8 @@
                 <div class="thumbnail">
                     <img id='{$name}-preview' title="{$v.path} {$v.name}" alt="{$v.name}"  style="height: 120px; width: 100%;cursor: hand; display: block;" src="{$v.path}">
                     <div class="caption">
-                        <a  class="btn btn-primary" href="javascript:upload_one_file('{$groups[$v['groups']]}替换' ,'#{$name}' ,'{$v.group}' ,1 ,'' ,{$v.file_id});">
-                            {$groups[$v['groups']]}替换
+                        <a  class="btn btn-primary" href="javascript:upload_one_file('{$v.typeName}替换' ,'#{$name}' ,'{$v.typeEnName }' ,1 ,'' ,{$v.file_id});">
+                            {$v.typeName}替换
                         </a>
                     </div>
                 </div>
@@ -50,13 +122,11 @@
 
     </div>
     <div class="text-center">
-        {$page}
+        {$list->render()}
     </div>
 
-</div>
-{include file='public_file/footer' /}
-</body>
-</html>
+{/block}
 
-
-
+{block name="script"}
+<script src="__STATIC__/default/headjs.js"></script>
+{/block}

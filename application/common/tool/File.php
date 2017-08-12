@@ -1,6 +1,7 @@
 <?php
 namespace app\common\tool;
 
+use app\common\consts\file\FileTypeConst;
 use app\common\model\FileModel;
 
 class File extends \think\File
@@ -170,19 +171,36 @@ class File extends \think\File
      */
     public function fileType($type)
     {
-        $path   = DS.'uploads'.DS;
+        $config = config('admin.file');
+        $post_max_size = ini_get('post_max_size');
+
         switch($type){
-            case 'image':
-                return ['path' => $path.'img/', 'ext' => 'jpg,jpeg,png,gif,bmp4', 'upload_max_filesize' => '10240' ,'title'=>'Image files'];
-            case 'file':
-                return ['path' => $path.'file/', 'ext' => 'txt,dwg,pdf,doc,docx,xls,xlsx,ppt,pptx,zip,rar', 'upload_max_filesize' => '10240' ,'title'=>'File files'];
-            case 'video':
-                return ['path' => $path.'video/', 'ext' => 'mp4,avi,wmv,rm,rmvb,mkv', 'upload_max_filesize' => '10240'];
+            case FileTypeConst::IMAGE_EN :
+                return [
+                    'path' => $config[FileTypeConst::IMAGE_EN]['path'],
+                    'ext' => $config[FileTypeConst::IMAGE_EN]['ext'],
+                    'upload_max_filesize' => $post_max_size ,
+                    'title'=>'Image files'];
+            case FileTypeConst::FILE_EN :
+                return [
+                    'path' => $config[FileTypeConst::FILE_EN]['path'],
+                    'ext' => $config[FileTypeConst::FILE_EN]['ext'],
+                    'upload_max_filesize' => $post_max_size ,
+                    'title'=>'File files'];
+            case FileTypeConst::VIDEO_EN :
+                return [
+                    'path' => $config[FileTypeConst::VIDEO_EN]['path'],
+                    'ext' => $config[FileTypeConst::VIDEO_EN]['ext'],
+                    'upload_max_filesize' => $post_max_size,
+                    'title'=>'File files'];
             case 'audio':
-                return ['path' => $path.'audio/', 'ext' => 'mp3,wma,wav', 'upload_max_filesize' => '10240'];
+                return [
+                    'path' => $config[FileTypeConst::AUDIO_EN]['path'],
+                    'ext' => $config[FileTypeConst::AUDIO_EN]['ext'],
+                    'upload_max_filesize' => $post_max_size,
+                    'title'=>'File files'];
         }
     }
-
     /**
      *  上传处理返回参数
      *
@@ -220,8 +238,9 @@ class File extends \think\File
         $this->checkPath($thumbPath);
 
         //处理图片并保存
+        $config = config('admin.thumb_image');
         $image = \think\Image::open($filename);
-        $image->thumb(300, 300, \think\Image::THUMB_SCALING)->save($thumbImage);
+        $image->thumb($config['width'], $config['height'], \think\Image::THUMB_SCALING)->save($thumbImage);
 
     }
 }

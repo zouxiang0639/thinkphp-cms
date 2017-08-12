@@ -104,7 +104,7 @@ use app\common\tool\Tool;
 						{empty name="$info['multi']"}
                             最多上传<em>{$info.multi}</em>个附件,
                         {/empty}
-						单文件最大<em>{$info['upload_max_filesize_mb']}MB</em>,
+						单文件最大<em>{$info['upload_max_filesize_mb']}</em>,
 						<em style="cursor: help;" title="可上传格式：{$info.extensions}" data-toggle="tooltip">支持格式？</em>
 					</span>
             </div>
@@ -173,7 +173,7 @@ use app\common\tool\Tool;
             flash_swf_url : '__PUBLIC__/js/plupload/Moxie.swf',
             silverlight_xap_url : '__PUBLIC__/js/plupload/Moxie.xap',
             filters : {
-                max_file_size : '{$info['upload_max_filesize_mb']}mb' ,
+                max_file_size : '{$info['upload_max_filesize_mb']}' ,
                 mime_types: [{$info['mime_type']}]
             },
             multi_selection:{$info['multi']},

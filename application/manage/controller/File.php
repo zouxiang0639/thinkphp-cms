@@ -1,12 +1,15 @@
 <?php
 namespace app\manage\controller;
 
-use app\common\model\FileModel;
+use app\common\bls\file\FileBls;
 use app\common\tool\Tool;
 use think\Request;
+use app\common\bls\file\traits\FileTrait;
 
 class File extends BasicController
 {
+
+    use FileTrait;
 
     public function __construct()
     {
@@ -15,24 +18,20 @@ class File extends BasicController
 
     public function index()
     {
-        $groups = lang('file groups');
         $get    = $this->request->get();
         $where  = '';
 
-        if(!empty($get['groups'])){
-            $where['groups']  = $get['groups'];
+        if(!empty($get['type'])){
+            $where['type']  = $get['type'];
         }
         if(!empty($get['name'])){
             $where['name|path'] =['like',"%{$get['name']}%"];
         }
-
-        $list   = FileModel::where($where)->paginate(18, '' , ['query' => $get]);
-
+        $model = FileBls::getFileList($where);
+        $this->formatFile($model->getCollection());
         return $this->fetch('',[
-            'navTabs'   => parent::navTabs(['文件列表' => ['url' => 'file/index']]),
-            'list'      => $list,
-            'groups'    => $groups,
-            'page'  => $list->render(),
+            'navTabs'   => parent::navTabs(['文件列表' => ['url' => 'index']]),
+            'list'      => $model,
         ]);
     }
 
@@ -75,7 +74,6 @@ class File extends BasicController
         $param              = $this->request->param();
         $this->view->engine->layout(false);
         $extensions         = Tool::get('file')->fileType($param['filetype']);
-
         $info   = [
             'multi'                     => $param['multi'],
             'extensions'                => $extensions['ext'],
