@@ -10,13 +10,13 @@ class Backups extends BasicController
     {
         parent::__construct();
         $nav = [
-            '数据库列表' => ['url' => 'backups/index'],
-            '数据库还原' => ['url' => 'backups/import'],
+            '数据库列表' => ['url' => 'index'],
+            '数据库还原' => ['url' => 'import'],
         ];
         $this->assign('navTabs',  parent::navTabs($nav));
     }
 
-    public function index($type = null)
+    public function index()
     {
         $Db    = \think\Db::connect();
         $list  = $Db->query('SHOW TABLE STATUS');

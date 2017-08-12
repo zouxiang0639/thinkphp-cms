@@ -1,6 +1,7 @@
 <?php
 namespace app\manage\controller;
 
+use app\common\bls\fragment\FragmentBls;
 use app\common\model\FragmentModel;
 
 class Fragment extends BasicController
@@ -18,20 +19,23 @@ class Fragment extends BasicController
         parent::__construct();
         $this->id       = !empty($this->request->param('id')) ? intval($this->request->param('id')) : $this->id;
         $nav = [
-            '碎片列表' => ['url' => $this->url],
-            '碎片增加' => ['url' => 'fragment/add'],
-            '碎片修改' => ['url' => ['fragment/edit', ['id' => $this->id]], 'style' => "display: none;"],
+            '碎片列表' => ['url' => 'index'],
+            '碎片增加' => ['url' => 'add'],
+            '碎片修改' => ['url' => ['edit', ['id' => $this->id]], 'style' => "display: none;"],
         ];
         $this->assign('navTabs',  parent::navTabs($nav));
     }
 
     public function index()
     {
+        $where = [];
+        if(!empty(input('title'))){
+            $where['title'] =  ['like', '%'.input('title').'%'];
+        }
 
-        $list = FragmentModel::paginate();
+        $model = FragmentBls::getFragmentList($where);
         return $this->fetch('',[
-            'list'      => $list,
-            'page'      => $list->render(),
+            'list'      => $model,
         ]);
     }
 
@@ -45,24 +49,22 @@ class Fragment extends BasicController
             $post   = $this->request->post();
 
             //数据验证
-            $result = $this->validate($post, $this->validate);
-            if($result !== true){
+            $result = $this->validate($post, 'app\common\bls\fragment\validate\FragmentValidate.create');
+            if(true !== $result){
+                // 验证失败 输出错误信息
                 return $this->error($result);
             }
 
             //写入数据库
-            if(FragmentModel::create($post)){
-                return $this->success(lang('Add success'), url($this->url));
+            if(FragmentBls::createFragment($post)){
+                return $this->success(lang('Add success'), url('index'));
             }else{
                 return $this->error(lang('Add failed'));
             }
 
         }
 
-        return $this->fetch('',[
-            'info'  => [
-                'types'     =>[1]
-            ]
+        return $this->fetch('fragment', [
         ]);
     }
 
@@ -72,12 +74,12 @@ class Fragment extends BasicController
     public function edit()
     {
 
-        $info = FragmentModel::get($this->id);
-        if(empty($info)){
-            return abort(404, lang('404 not found'));
+        $model = FragmentBls::getOneFragment(['fragment_id'=>$this->id]);
+        if(empty($model)){
+            return $this->error('参数错误');
         }
-        return $this->fetch('',[
-            'info'   => $info
+        return $this->fetch('fragment', [
+            'info'   => $model
         ]);
     }
 
@@ -91,24 +93,24 @@ class Fragment extends BasicController
             $post   = $this->request->post();
 
             //数据验证
-            $result = $this->validate($post, $this->validate);
-            if($result !== true){
+            $result = $this->validate($post, 'app\common\bls\fragment\validate\FragmentValidate.update');
+            if(true !== $result){
+                // 验证失败 输出错误信息
                 return $this->error($result);
             }
 
             //更新数据库
-            $update = FragmentModel::get($this->id);
+            $update = FragmentBls::getOneFragment(['fragment_id'=>$this->id]);
             if(empty($update)){
-                return abort(404, lang('404 not found'));
+                return $this->error('参数错误');
             }
             if($update->save($post)){
-                return $this->success(lang('Update success'), url($this->url));
+                return $this->success(lang('Update success'), url('index'));
             }else{
                 return $this->error(lang('Update failed'));
             }
         }
-
-        return abort(404, lang('404 not found'));
+        return $this->error('请求错误');
     }
 
     /**
@@ -117,17 +119,17 @@ class Fragment extends BasicController
     public function delete()
     {
         if($this->request->isPost() && !empty($this->id)){
-            $delete  = FragmentModel::get($this->id);
+            $delete  = FragmentBls::getOneFragment(['fragment_id'=>$this->id]);
             if(empty($delete)){
-                return abort(404, lang('404 not found'));
+                return $this->error('参数错误');
             }
             if($delete->delete()){
-                return $this->success(lang('delete success'), url($this->url));
+                return $this->success(lang('delete success'), url('index'));
             }else{
                 return $this->error(lang('delete failed'));
             }
         }
-        return abort(404, lang('404 not found'));
+        return $this->error('请求错误');
     }
 
 }
