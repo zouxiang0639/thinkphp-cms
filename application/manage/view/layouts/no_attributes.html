@@ -1,23 +1,22 @@
 <!doctype html>
 <html>
 <head>
-
     {include file='public_file/header' /}
+
+    {block name="php"}{/block}
+
+    {block name="style"}{/block}
     <style>
-        body {min-width:790px;}
         .alert{
             position: fixed !important;z-index: 1000;width: 98%;top: 2%;
         }
     </style>
-    {block name="php"}{/block}
-
-    {block name="style"}{/block}
 </head>
 <body>
 
-<div class="container-fluid">
-    {block name="content">}{/block}
-</div>
+
+{block name="content">}{/block}
+
 
 {include file='public_file/footer' /}
 {block name="script"}{/block}

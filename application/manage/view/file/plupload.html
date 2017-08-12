@@ -1,25 +1,8 @@
-<!DOCTYPE html>
+{extend name="layouts/no_attributes" /}
 
-<head>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>图片上传</title>
-    <script type="text/javascript">
-        //全局变量
-        var GV = {
-            ROOT: "/manage/",
-            WEB_ROOT: "__STATIC__",
-            JS_ROOT: "/default/",
-            APP:'Portal'/*当前应用名*/
-        };
-    </script>
-    <link href="__STATIC__/admin/css/bootstrap.min.css" rel="stylesheet">
-    <link href="__STATIC__/admin/css/site.css" rel="stylesheet">
-    <script src="__STATIC__/admin/js/jquery.min.js"></script>
-    <script src="__STATIC__/default/headjs.js"></script>
-    <script src="__STATIC__/admin/js/common.js"></script>
-    <script src="__STATIC__/admin/js/bootstrap.min.js"></script>
+{block name="style"}
+<link href="__STATIC__/default/artDialog/skins/default.css" rel="stylesheet" />
 <style>
     .file-upload-btn-wrapper {
         margin-bottom: 10px;
@@ -92,45 +75,16 @@
         vertical-align: top;
     }
 </style>
-<script>
-    function get_selected_files(){
-        var tab = $("#uploader-tabs li.active").data('tab');
+{/block}
 
-        var files= [];
-        if(tab=='upload-file'){
-            var $files=$('#files-container li.uploaded.selected');
-            if($files.length==0){
-                alert('请上传文件！');
-                return false;
-            }
-           $files.each(function(){
-               var $this=$(this);
-               var url = $this.data('url');
-               var preview_url = $this.data('preview_url');
-               var filepath = $this.data('filepath');
-               var name = $this.data('name');
-               var id = $this.data('id');
-               files.push({'url':url,'preview_url':preview_url,'filepath':filepath,'name':name,'id':id});
-            });
-        }
+{block name="php"}
+<?php
+use app\common\consts\banner\BannerTypeConst;
+use app\common\tool\Tool;
+?>
+{/block}
 
-        if(tab=='network-file'){
-            var url=$('#network-file-input').val();
-            if(url==''){
-                alert('请填写文件地址！');
-                return false;
-            }
-            var id = "networkfile"+new Date().getTime();
-            files.push({'url':url,'preview_url':url,'filepath':url,'id':id});
-        }
-        return files;
-    }
-</script>
-
-</head>
-
-
-<body >
+{block name="content"}
 
 <div class="wrap" style="padding: 5px;">
     <ul class="nav nav-tabs" id="uploader-tabs">
@@ -165,7 +119,45 @@
         </div>
     </div>
 </div>
-{:dump($info)}
+
+{/block}
+
+{block name="script"}
+<script src="__STATIC__/default/headjs.js"></script>
+<script>
+    function get_selected_files(){
+        var tab = $("#uploader-tabs li.active").data('tab');
+
+        var files= [];
+        if(tab=='upload-file'){
+            var $files=$('#files-container li.uploaded.selected');
+            if($files.length==0){
+                alert('请上传文件！');
+                return false;
+            }
+            $files.each(function(){
+                var $this=$(this);
+                var url = $this.data('url');
+                var preview_url = $this.data('preview_url');
+                var filepath = $this.data('filepath');
+                var name = $this.data('name');
+                var id = $this.data('id');
+                files.push({'url':url,'preview_url':preview_url,'filepath':filepath,'name':name,'id':id});
+            });
+        }
+
+        if(tab=='network-file'){
+            var url=$('#network-file-input').val();
+            if(url==''){
+                alert('请填写文件地址！');
+                return false;
+            }
+            var id = "networkfile"+new Date().getTime();
+            files.push({'url':url,'preview_url':url,'filepath':url,'id':id});
+        }
+        return files;
+    }
+</script>
 <script>
     var multi={$info['multi']};
     var mime_type = {$info['mime_type']};
@@ -222,17 +214,17 @@
                         }
                         var $file=$('#'+file.id);
                         $file.addClass('uploaded')
-                            .data('id',file.id)
-                            .data('url',data.path)
-                            .data('preview_url',data.path)
-                            .data('filepath',data.path)
-                            .data('name',data.name);
+                                .data('id',file.id)
+                                .data('url',data.path)
+                                .data('preview_url',data.path)
+                                .data('filepath',data.path)
+                                .data('name',data.name);
 
                         if(data.path.match(/\.(gif|jpeg|jpg|png|bmp|pic)$/gi)){
                             var $img=$('<img/>');
                             $img.attr('src',data.path);
                             $file.find('.upload-percent')
-                                .html($img);
+                                    .html($img);
                         }else{
                             $file.find('.upload-percent').attr('title',data.name).text(data.name);
                         }
@@ -263,5 +255,4 @@
         uploader.init();
     });
 </script>
-</body>
-</html>
+{/block}
