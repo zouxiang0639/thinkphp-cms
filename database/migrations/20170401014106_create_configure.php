@@ -14,8 +14,8 @@ class CreateConfigure extends Migrator
         $table->addColumn('title', 'string', ['limit' => 100, 'comment' => '标题'])
             ->addColumn('configure_name', 'string', ['limit' => 100, 'comment' => '配置名称'])
             ->addColumn('configure_value', 'string', ['limit' => 255, 'comment' => '配置默认值'])
-            ->addColumn('form_type', 'string', ['limit' => 100, 'default' => 'text', 'comment' => '表单类型'])
-            ->addColumn('groups', 'integer', ['limit' => MysqlAdapter::INT_TINY, 'default' => 1, 'comment' => '所属组'])
+            ->addColumn('input_type', 'string', ['limit' => 100, 'default' => 'text', 'comment' => '表单类型'])
+            ->addColumn('type', 'integer', ['limit' => MysqlAdapter::INT_TINY, 'default' => 1, 'comment' => '类型 '])
             ->addColumn('comment', 'string', ['limit' => 255, 'comment' => '描述'])
             ->save();
     }

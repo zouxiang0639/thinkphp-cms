@@ -1,6 +1,9 @@
 <?php
 namespace app\manage\controller;
 
+use app\common\bls\configure\ConfigureBls;
+use app\common\consts\common\CommonFormInputConst;
+use app\common\consts\configure\ConfigureTypeConst;
 use app\common\model\ConfigureModel;
 use app\common\tool\Tool;
 use think\Config;
@@ -8,26 +11,19 @@ use think\Config;
 class Configure extends BasicController
 {
     private $id;
-    private $validate;
     private $url        = 'configure/index';
-    private $groups     = '';
 
     public function __construct()
     {
-        $this->groups   = lang('configure groups');
 
 
         parent::__construct();
         $this->id       = !empty($this->request->param('id')) ? intval($this->request->param('id')) : $this->id;
-        $this->validate = [
-            ['title|标题', 'require'],
-            ['configure_name|配置名称', 'require|unique:configure,configure_name,'.$this->id.',configure_id']
-        ];
 
         $nav = [
-            '配置属性列表' => ['url' => 'configure/index'],
-            '配置属性增加' => ['url' => 'configure/add'],
-            '配置属性修改' => ['url' => ['configure/edit', ['id' => $this->id]], 'style' => "display: none;"],
+            '配置属性列表' => ['url' => 'index'],
+            '配置属性增加' => ['url' => 'add'],
+            '配置属性修改' => ['url' => ['edit', ['id' => $this->id]], 'style' => "display: none;"],
         ];
         $this->assign('navTabs',  parent::navTabs($nav));
     }
@@ -38,17 +34,16 @@ class Configure extends BasicController
     public function index()
     {
         $where  = [];
-        $groups   = intval($this->request->get('groups'));
+        $type   = intval($this->request->get('type'));
 
-        if(!empty($groups)){
-            $where['groups']  = $groups;
+        if(!empty($type)){
+            $where['type']  = $type;
         }
 
-        $list = ConfigureModel::where($where)->paginate();
+        $model = ConfigureBls::getConfigureList($where);
 
-        return $this->fetch('',[
-            'list'  => $list,
-            'page'  => $list->render()
+        return $this->fetch('', [
+            'list'  => $model,
         ]);
     }
 
@@ -62,21 +57,21 @@ class Configure extends BasicController
             $post = $this->request->post();
 
             //数据验证
-            $result = $this->validate($post,$this->validate);
-            if($result !== true){
+            $result = $this->validate($post, 'app\common\bls\configure\validate\ConfigureValidate.create');
+            if(true !== $result){
+                // 验证失败 输出错误信息
                 return $this->error($result);
             }
 
             //写入数据
-            if(ConfigureModel::create($post)){
-                return $this->success(lang('Add success'),$this->url);
+            if(ConfigureBls::createConfigure($post)){
+                return $this->success(lang('Add success'), 'index');
             }else{
                 return $this->error(lang('Add error'));
             }
         }
 
-        return $this->fetch('',[
-            'info'  => ''
+        return $this->fetch('configure', [
         ]);
     }
 
@@ -85,13 +80,14 @@ class Configure extends BasicController
      */
     public function edit()
     {
-        $info = ConfigureModel::get($this->id);
-        if(empty($info)){
-            return abort(404, lang('404 not found'));
+        $model = ConfigureBls::getOneConfigure(['configure_id' => $this->id]);
+
+        if(empty($model)){
+            return $this->error('参数错误');
         }
 
-        return $this->fetch('',[
-            'info'  => $info
+        return $this->fetch('configure', [
+            'info'  => $model
         ]);
     }
 
@@ -105,25 +101,26 @@ class Configure extends BasicController
             $post   = $this->request->post();
 
             //数据验证
-            $result = $this->validate($post,$this->validate);
-            if($result !== true){
+            $result = $this->validate($post, 'app\common\bls\configure\validate\ConfigureValidate.update');
+            if(true !== $result){
+                // 验证失败 输出错误信息
                 return $this->error($result);
             }
 
             //查询数据
-            $query  = ConfigureModel::get($this->id);
-            if(empty($query)){
-                return abort(404, lang('404 not found'));
+            $model  = ConfigureBls::getOneConfigure(['configure_id' => $this->id]);
+            if(empty($model)){
+                return $this->error('参数错误');
             }
 
             //修改数据库
-            if($query->save($post)){
+            if($model->save($post)){
                 return $this->success(lang('Edit success'),$this->url);
             }else{
                 return $this->error(lang('Edit failed'));
             }
         }
-        return abort(404, lang('404 not found'));
+        return $this->error('请求错误');
     }
 
     /**
@@ -131,10 +128,10 @@ class Configure extends BasicController
      */
     public function delete()
     {
-        $delete = ConfigureModel::get($this->id);
+        $delete = ConfigureBls::getOneConfigure(['configure_id' => $this->id]);
 
         if(!$this->request->isAjax() || empty($delete)){
-            return abort(404, lang('404 not found'));
+            return $this->error('请求错误');
         }
 
         //数据删除
@@ -151,13 +148,12 @@ class Configure extends BasicController
     public function basicSettings()
     {
 
-        $list       = ConfigureModel::where(['groups' =>1])->select();
+        $model       = ConfigureBls::getConfigureSelect(['type' => ConfigureTypeConst::BASIC]);
         $fileName   = 'basic';
-
-        return $this->fetch('config',[
-            'html'  => self::htmlBuilder($list,$fileName),
+        return $this->fetch('show',[
+            'html'  => ConfigureBls::htmlBuilder($model,$fileName),
             'info'  => [
-                'class_name'    =>array_get($this->groups , 1),
+                'class_name'    => ConfigureTypeConst::BASIC_DESC,
                 'file_name'     => $fileName
             ]
         ]);
@@ -169,13 +165,13 @@ class Configure extends BasicController
     public function emailSettings()
     {
 
-        $list       = ConfigureModel::where(['groups' => 2])->select();
+        $list       = ConfigureBls::getConfigureSelect(['type' => ConfigureTypeConst::EMAIL]);
         $fileName   = 'email';
 
-        return $this->fetch('config',[
-            'html'  => self::htmlBuilder($list,$fileName),
+        return $this->fetch('show',[
+            'html'  => ConfigureBls::htmlBuilder($list,$fileName),
             'info'  => [
-                'class_name'    => array_get($this->groups , 2),
+                'class_name'    => ConfigureTypeConst::EMAIL_DESC,
                 'file_name'     => $fileName
             ]
         ]);
@@ -196,11 +192,12 @@ class Configure extends BasicController
         //'.$post['class_name'].'
 
         ';
-
-            $list   = ConfigureModel::where(['groups'=>array_search($post['class_name'], $this->groups)])->select();
+            $list   = ConfigureBls::getConfigureSelect(['type' => array_search($post['class_name'], ConfigureTypeConst::desc())]);
             if(empty($list)){
                 return $this->error('配置属性组数据找不到');
             }
+
+
             $tool   = Tool::get('file');
 
             //重组数组阵列
@@ -226,44 +223,7 @@ return ['.$txt.'];
                 return $this->error('更改失败,请检查网站目录'.$pash.'权限');
             }
         }
-        return abort(404, lang('404 not found'));
+        return $this->success('请求错误');
 
-    }
-
-
-    /**
-     * 配置阵列生成html
-     *
-     * @param  object  $list
-     * @param  string  $name
-     * @return string
-     */
-    private function htmlBuilder($list, $name)
-    {
-        $html       = '';
-        $formType   = lang('form type');
-
-        //循环每个配置变量 生成html
-        foreach($list as $v){
-
-            //使用表单枚举生成<form> 标签支持
-            $input  =  Tool::get('helper')->formEnum(
-                $v['form_type'],          //表单类型
-                $v['configure_name'],                           //配置变量名称
-                Config::get($name.'.'.$v['configure_name']),    //读取配置变量的值
-                ['class' => 'form-control text'],               //其他属性
-                json_decode($v['configure_value'])              //需要生成多个 如select
-            );
-
-            //写入$html变量里
-            $html   .= "<tr>
-                            <th width='100'>{$v['title']}</th>
-                            <th>
-                                {$input}<span style='padding-left: 10px'>{$v['comment']}</span>
-                            </th>
-                        </tr>";
-        }
-
-        return $html;
     }
 }

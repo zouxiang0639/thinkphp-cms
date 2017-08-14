@@ -1,0 +1,42 @@
+{extend name="layouts/master" /}
+
+{block name="php"}
+<?php
+use app\common\tool\Tool;
+use app\common\consts\configure\ConfigureTypeConst;
+$navTabs['nav'] = '<li class="active"><a href="">'.$info['class_name'].'</a></li>';
+?>
+{/block}
+
+{block name="content"}
+{include file='public_file/nav_tabs'  /}
+
+<form class="form-horizontal" action="{:url('configure/configBuilder')}" method="post">
+    <input type="hidden" name="class_name" value="{$info.class_name}">
+    <input type="hidden" name="file_name" value="{$info.file_name}">
+    <div class="bs-example">
+        <table class="table table-bordered">
+            <tbody>
+            {$html}
+            </tbody>
+        </table>
+    </div>
+    <div class="form-actions col-sm-12">
+        <button type="button" class="btn btn-primary ajax-post " autocomplete="off">
+            保存
+        </button>
+        <a class="btn btn-default active" href="JavaScript:history.go(-1)">返回</a>
+
+    </div>
+</form>
+{/block}
+
+{block name="script"}
+<script>
+    $(function(){
+        $("#navcid_select").change(function() {
+            $("#mainform").submit();
+        });
+    })
+</script>
+{/block}

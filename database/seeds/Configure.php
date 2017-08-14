@@ -44,8 +44,8 @@ class Configure extends Seeder
             'title'             => array_get($date, 'title', ''),
             'configure_name'    => array_get($date, 'configure_name', ''),
             'configure_value'   => array_get($date, 'configure_value', ''),
-            'form_type'         => array_get($date, 'form_type', ''),
-            'groups'            => array_get($date, 'groups', 1),
+            'input_type'         => array_get($date, 'form_type', ''),
+            'type'            => array_get($date, 'groups', 1),
             'comment'           => array_get($date, 'comment', ''),
         ];
 

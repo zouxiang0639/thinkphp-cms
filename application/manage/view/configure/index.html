@@ -1,24 +1,21 @@
-<!DOCTYPE html>
-<head>
-    {include file='public_file/header' /}
-    <script>
-        $(function(){
-            $("#navcid_select").change(function() {
-                $("#mainform").submit();
-            });
-        })
-    </script>
-</head>
-<body>
-<div class="container-fluid">
-    {include file='public_file/nav_tabs' /}
+{extend name="layouts/master" /}
 
-    <form class="well form-search" id="mainform" action="{:Url('configure/index')}" method="get">
+{block name="php"}
+<?php
+use app\common\tool\Tool;
+use app\common\consts\configure\ConfigureTypeConst;
+?>
+{/block}
+
+{block name="content"}
+{include file='public_file/nav_tabs' /}
+
+    <form class="well form-search" id="mainform" action="{:url('index')}" method="get">
         <div class="btn-group width2">
             <?=\app\common\tool\Tool::get('form')->select(
-            'groups',
-            array_merge([0 => '全部配置'], lang('configure groups')),
-            input('groups'),
+            'type',
+            array_merge([0 => '全部配置'], ConfigureTypeConst::desc()),
+            input('type'),
             ['class' => 'form-control', 'id' => 'navcid_select' ]
             )?>
         </div>
@@ -40,7 +37,7 @@
             <th width="50">{$v.configure_id}</th>
             <th>{$v.title}</th>
             <th>{$v.configure_name}</th>
-            <th>{$v.groups_name}</th>
+            <th>{:ConfigureTypeConst::getDesc($v.type)}</th>
             <th>{$v.comment}</th>
             <th>
                 <a href="{:url('configure/edit',['id'=>$v['configure_id']])}">编辑</a> |
@@ -51,9 +48,17 @@
         </tbody>
     </table>
     <div class="text-center">
-        {$page}
+        {$list->render()}
     </div>
-</div>
-{include file='public_file/footer' /}
-</body>
-</html>
+
+{/block}
+
+{block name="script"}
+<script>
+    $(function(){
+        $("#navcid_select").change(function() {
+            $("#mainform").submit();
+        });
+    })
+</script>
+{/block}
