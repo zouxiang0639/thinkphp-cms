@@ -15,7 +15,7 @@ class Helper
     public function getMd5($password)
     {
         $str    = Config::get('login_md5');
-        return md5(md5($password).$str);
+        return md5($password.$str);
     }
 
     /**

@@ -1,10 +1,14 @@
-<!DOCTYPE html>
-<head>
-    {include file='public_file/header' /}
-</head>
-<body>
-<div class="container-fluid">
-    {include file='public_file/nav_tabs' /}
+{extend name="layouts/master" /}
+
+{block name="php"}
+<?php
+use app\common\tool\Tool;
+?>
+{/block}
+
+{block name="content"}
+
+{include file='public_file/nav_tabs' /}
     <table class="table table-hover table-bordered">
         <thead>
         <tr>
@@ -27,10 +31,10 @@
             <td>{$v.admin_email}</td>
             <td>
                 {if condition="$v['login_priv'] == '1'"}
-                <a  class="a-post" post-msg="你确定要关闭吗？" post-url="{:url('admin/privates',['id' => $v['admin_id'],'param'=>2])}"
+                <a  class="a-post" post-msg="你确定要关闭吗？" post-url="{:url('privates',['id' => $v['admin_id'],'param'=>2])}"
                 >授权</a>
                 {else /}
-                <a class="a-post" post-msg="你确定要授权吗？" post-url="{:url('admin/privates',['id' => $v['admin_id'],'param'=>1])}">关闭</a>
+                <a class="a-post" post-msg="你确定要授权吗？" post-url="{:url('privates',['id' => $v['admin_id'],'param'=>1])}">关闭</a>
                 {/if}
             </td>
             <td>
@@ -38,8 +42,8 @@
                 <font color="#cccccc">独立权限</font> | <font color="#cccccc">编辑</font> | <font color="#cccccc">删除</font>
                 {else /}
                 <a href="{:url('auth/adminAuthorize',['id' => $v['admin_id'],'name'=>$v['admin_name']])}">独立权限</a> |
-                <a href="{:url('admin/edit',['id' => $v['admin_id']])}">编辑</a> |
-                <a class="a-post" post-msg="你确定要删除吗" post-url="{:url('admin/delete',['id' => $v['admin_id']])}">删除</a>
+                <a href="{:url('edit',['id' => $v['admin_id']])}">编辑</a> |
+                <a class="a-post" post-msg="你确定要删除吗" post-url="{:url('delete',['id' => $v['admin_id']])}">删除</a>
                 {/if}
             </td>
         </tr>
@@ -47,9 +51,8 @@
         </tbody>
     </table>
     <div class="text-center">
-        {$page}
+        {$list->render()}
     </div>
-</div>
-{include file='public_file/footer' /}
-</body>
-</html>
+{/block}
+
+

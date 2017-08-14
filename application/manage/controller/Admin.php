@@ -1,15 +1,13 @@
 <?php
 namespace app\manage\controller;
 
-use app\common\model\AdminModel;
+use app\common\bls\Admin\AdminBls;
 use app\common\tool\Tool;
 use thinkcms\auth\model\AuthRole;
 use thinkcms\auth\model\AuthRoleUser;
 
 class Admin extends BasicController
 {
-    protected $validate;
-    protected $url  = 'admin/index';
     protected $id   = 0;
 
     public function __construct()
@@ -17,17 +15,10 @@ class Admin extends BasicController
 
         parent::__construct();
         $this->id       = !empty($this->request->param('id'))?intval($this->request->param('id')):$this->id;
-        $this->validate = [
-            ['admin_name|用户名', 'require|unique:admin,admin_name,'.$this->id.',admin_id'],
-            ['admin_email|邮箱', 'email'],
-            ['admin_password|密码', 'require'],
-            ['role|角色', 'require'],
-        ];
-
         $nav = [
-            '管理员列表' =>['url'=>'admin/index'],
-            '管理员增加' =>['url'=>'admin/add'],
-            '管理员修改' =>['url'=>['admin/edit', ['id' => $this->id]], 'style'=>"display: none;"],
+            '管理员列表' =>['url'=>'index'],
+            '管理员增加' =>['url'=>'add'],
+            '管理员修改' =>['url'=>['edit', ['id' => $this->id]], 'style'=>"display: none;"],
         ];
         $this->assign('navTabs',  parent::navTabs($nav));
     }
@@ -35,11 +26,10 @@ class Admin extends BasicController
     //首页
     public function index()
     {
-        $list   = AdminModel::paginate(20);
+        $model   = AdminBls::getAdminList();
 
         return $this->fetch('',[
-            'list'  => $list,
-            'page'  => $list->render()
+            'list'  => $model,
         ]);
     }
 
@@ -51,21 +41,23 @@ class Admin extends BasicController
             $post = $this->request->post();
 
             //数据验证
-            $result = $this->validate($post,$this->validate);
-            if (true !== $result) {
+            $result = $this->validate($post, 'app\common\bls\admin\validate\AdminValidate.create');
+            if(true !== $result){
+                // 验证失败 输出错误信息
                 return $this->error($result);
             }
 
             //写入数据库
             $post['admin_password'] = Tool::get('helper')->getMd5($post['admin_password']);
-            $add = AdminModel::create($post);
-            if($add){
+            $model = AdminBls::createAdmin($post);
+
+            if($model){
 
                 //加入角色
                 $authRoleUser = new AuthRoleUser();
-                $authRoleUser->authRoleUserAdd($post['role'], $add['admin_id']);
+                $authRoleUser->authRoleUserAdd($post['role'], $model['admin_id']);
 
-                return $this->success(lang('Add success'), url($this->url));
+                return $this->success(lang('Add success'), url('index'));
             }else{
                 return $this->error(lang('Add failed'));
             }
@@ -74,7 +66,7 @@ class Admin extends BasicController
         //页面渲染
         $info['role_html'] = self::role();
 
-        return $this->fetch('',[
+        return $this->fetch('admin', [
             'info' => $info
         ]);
     }
@@ -82,14 +74,14 @@ class Admin extends BasicController
     //编辑
     public function edit()
     {
-        $info = AdminModel::get($this->id);
-        if(empty($info)){
-          return abort(404, lang('404 not found'));
+        $model = AdminBls::getOneAdmin(['admin_id' => $this->id]);
+        if(empty($model)){
+          return $this->error('参数错误');
         }
-        $info['role_html'] = self::role($info['role']);
 
-        return $this->fetch('',[
-            'info' => $info
+        $model['role_html'] = self::role($model['role']);
+        return $this->fetch('admin', [
+            'info' => $model
         ]);
     }
 
@@ -101,37 +93,37 @@ class Admin extends BasicController
             $post   = $this->request->post();
 
             //数据验证
-            unset($this->validate[2], $this->validate[0]); //销毁用户名  密码验证
-            $result = $this->validate($post, $this->validate);
-            if (true !== $result) {
+            $result = $this->validate($post, 'app\common\bls\admin\validate\AdminValidate.update');
+            if(true !== $result){
+                // 验证失败 输出错误信息
                 return $this->error($result);
             }
 
             //修改数据
-            $sdit   = AdminModel::get($this->id);
-            if($sdit->save($post)){
+            $model   = AdminBls::getOneAdmin(['admin_id' => $this->id]);
+            if($model->save($post)){
 
                 //加入角色
                 $authRoleUser = new AuthRoleUser();
                 $authRoleUser->authRoleUserAdd($post['role'], $this->id);
 
-                return $this->success(lang('Edit success'), url($this->url));
+                return $this->success(lang('Edit success'), url('index'));
 
             }else{
                 return $this->error(lang('Edit failed'));
             }
         }
 
-        return abort(404, lang('404 not found'));
+        return $this->error('请求错误');
     }
 
     //删除
     public function delete()
     {
-        $delete = AdminModel::get($this->id);
+        $delete = AdminBls::getOneAdmin(['admin_id' => $this->id]);
 
         if(!$this->request->isAjax() || empty($delete)){
-            return abort(404, lang('404 not found'));
+            return $this->error('请求错误');
         }else if($delete->admin_id == 1){
             return $this->error('超级管理员不能删除');
         }
@@ -143,7 +135,7 @@ class Admin extends BasicController
             $authRoleUser = new AuthRoleUser();
             $authRoleUser->authRoleUserDelete($delete->admin_id);
 
-            return $this->success('删除成功',url($this->url));
+            return $this->success('删除成功', url('index'));
         }else{
             return $this->error('删除失败');
         }
@@ -154,15 +146,15 @@ class Admin extends BasicController
     public function privates()
     {
         $param      = intval($this->request->param('param'));
-        $privates   = AdminModel::get($this->id);
+        $model   = AdminBls::getOneAdmin(['admin_id' => $this->id]);
 
         if(!$this->request->isAjax() && empty($delete)){
-            return abort(404, lang('404 not found'));
-        }else if($privates->admin_id == 1){
+            return $this->error('请求错误');
+        }else if($model->admin_id == 1){
             return $this->error('超级管理员不可操作');
         }
 
-        $ratify = $privates->save(['login_priv'=>$param]);
+        $ratify = $model->save(['login_priv'=>$param]);
         if($ratify){
             return $this->success(lang('Success'), url($this->url));
         }else{
@@ -173,7 +165,7 @@ class Admin extends BasicController
     //修改密码
     public function editPassword()
     {
-        $info = AdminModel::get(parent::$uid);
+        $model = AdminBls::getOneAdmin(['admin_id' => parent::$uid]);
 
         //密码修改数据处理
         if($this->request->isPost()){
@@ -181,15 +173,15 @@ class Admin extends BasicController
             $oldPassword    = Tool::get('helper')->getMd5($post['old_password']);
             $password       = Tool::get('helper')->getMd5($post['password']);
 
+
             //数据验证
-            $validate = [
-                ['password|新密码', 'require']
-            ];
-            $result = $this->validate($post,$validate);
-            if (true !== $result) {
+            $result = $this->validate($post, 'app\common\bls\admin\validate\AdminValidate.edit_password');
+            if(true !== $result){
+                // 验证失败 输出错误信息
                 return $this->error($result);
             }
-            if($oldPassword != $info['admin_password']){
+
+            if($oldPassword != $model['admin_password']){
                 return $this->error('原始密码错误');
             }else if($post['password'] != $post['repassword']){
                 return $this->error('两次密码输入错误');
@@ -198,7 +190,7 @@ class Admin extends BasicController
             }
 
             //修改数据
-            if($info->save(['admin_password' => $password])){
+        if($model->save(['admin_password' => $password])){
                 return $this->success(lang('Edit success'));
             }else{
                 return $this->error(lang('Edit failed'));
@@ -207,7 +199,7 @@ class Admin extends BasicController
         }
 
         return $this->fetch('',[
-            'info' => $info
+            'info' => $model
         ]);
     }
 
@@ -218,13 +210,13 @@ class Admin extends BasicController
             $post   = $this->request->post();
 
             //查找管理员
-            $user   = AdminModel::get(['admin_name' => $post['name']]);
-            if(empty($user)){
+            $model   = AdminBls::getOneAdmin(['admin_name' => $post['name']]);
+            if(empty($model)){
                 return $this->error('没有这个管理员');
             }
 
             //匹配自身密码
-            $admin  = AdminModel::get(parent::$uid);
+            $admin  = AdminBls::getOneAdmin(['admin_id' => parent::$uid]);
             if($admin['admin_password'] != Tool::get('helper')->getMd5($post['password'])){
                 return $this->error('自身密码输入错误');
             }
@@ -232,7 +224,7 @@ class Admin extends BasicController
             //修改数据库
             $rand       = rand(11111111,99999999);
             $password   = Tool::get('helper')->getMd5($rand);
-            if($user->save(['admin_password'=>$password])){
+            if($model->save(['admin_password'=>$password])){
                 return $this->success(lang('Edit success').' 管理员的密码是'.$rand);
             }else{
                 return $this->error(lang('Edit failed'));
