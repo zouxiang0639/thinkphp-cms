@@ -8,3 +8,4 @@ config
 public/uploads/
 .svn/
 web.config
+database/backups

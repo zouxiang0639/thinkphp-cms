@@ -28,11 +28,10 @@ class Info extends BasicController
         $this->id       = intval(array_get($this->request->param(), 'id'));
         $this->cid      = intval(array_get($this->request->param(), 'cid', $this->id));
         $nav = [
-            '信息列表' => ['url' => [$this->url, ['cid' => $this->cid]]],
-            '信息增加' => ['url' => ['info/add', ['cid' => $this->cid]]],
-            '信息修改' => ['url' => ['info/edit', ['id' => $this->id, 'cid' => $this->cid]], 'style' => "display: none;"],
+            '信息列表' => ['url' => ['index', ['cid' => $this->cid]]],
+            '信息增加' => ['url' => ['add', ['cid' => $this->cid]]],
+            '信息修改' => ['url' => ['edit', ['id' => $this->id, 'cid' => $this->cid]], 'style' => "display: none;"],
         ];
-
         $this->assign([
             'navTabs'   => parent::navTabs($nav),
             'cid'       => $this->cid

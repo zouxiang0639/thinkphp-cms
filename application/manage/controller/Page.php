@@ -1,10 +1,10 @@
 <?php
 namespace app\manage\controller;
 
+use app\common\bls\extended\ExtendedBls;
 use app\common\bls\page\PageBls;
 use app\common\consts\common\CommonStatusConst;
 use app\common\consts\page\PageTemplateConst;
-use app\common\model\ExtendedModel;
 use app\common\tool\Helper;
 
 class page extends BasicController
@@ -22,9 +22,9 @@ class page extends BasicController
         $this->id           = intval(array_get($this->request->param(), 'id'));
 
         $nav = [
-            '页面列表' => ['url' => 'page/index'],
-            '页面增加' => ['url' => 'page/add'],
-            '页面修改' => ['url' => ['page/edit', ['id' => $this->id]], 'style' => "display: none;"],
+            '页面列表' => ['url' => 'index'],
+            '页面增加' => ['url' => 'add'],
+            '页面修改' => ['url' => ['edit', ['id' => $this->id]], 'style' => "display: none;"],
         ];
         $this->assign('navTabs',  parent::navTabs($nav));
     }
@@ -43,7 +43,8 @@ class page extends BasicController
     public function add(){
 
         //扩展数据form生成
-        $parentCategory['extendeds']  = ExtendedModel::formBuilder(0);
+        $parentCategory['extendeds']  = ExtendedBls::formBuilder(0);
+
         return $this->fetch('page', [
             'enum' => self::enum(),
             'info' => $parentCategory
@@ -81,7 +82,7 @@ class page extends BasicController
         }
 
         //扩展数据form生成
-        $info['extendeds'] = ExtendedModel::formBuilder($info['fields_extended_id'], $info->extend);
+        $info['extendeds'] = ExtendedBls::formBuilder($info['fields_extended_id'], $info->extend);
         return $this->fetch('page',[
             'enum' => self::enum(),
             'info' => $info
@@ -146,7 +147,7 @@ class page extends BasicController
      */
     private function enum()
     {
-        $extendedGroup   = ExtendedModel::extendedGroup();
+        $extendedGroup   = ExtendedBls::extendedGroup();
         return  [
             'display'            => CommonStatusConst::desc(),
             'template_group'     => PageTemplateConst::groupDesc(),
