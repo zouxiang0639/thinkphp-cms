@@ -16,8 +16,7 @@ trait CategoryTrait
         return $items->each(function ($item) {
 
             $item->titleName = $item->title;
-
-            if(empty($item->titleName) and ($page = $item->relationPage)) {
+            if(empty($item->titleName)  && ($page = $item->page)) {
                 $item->titleName = $page->title;
             }
         });

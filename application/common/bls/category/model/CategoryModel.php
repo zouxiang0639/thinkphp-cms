@@ -21,4 +21,10 @@ class CategoryModel extends BasicModel
         return $count;
     }
 
+    //关联一对一 分类
+    public function page()
+    {
+        return $this->hasOne('app\common\bls\page\model\PageModel','page_id', 'page_id');
+    }
+
 }

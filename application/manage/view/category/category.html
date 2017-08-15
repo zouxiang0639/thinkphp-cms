@@ -16,7 +16,6 @@ use app\common\consts\category\CategoryGroupConst;
 
 {block name="content"}
     {include file='public_file/nav_tabs' /}
-
     <form class="form-horizontal" action="{:empty(input('id')) ? url('create') : url('update',['id'=>input('id')])}" method="post">
 
         <table class="table table-bordered ">
@@ -50,7 +49,7 @@ use app\common\consts\category\CategoryGroupConst;
             <tr>
                 <th width="150">绑定页面</th>
                 <td>
-                    {:Tool::get('form')->select('bind_page', array_merge([''=>'请选择'], CategoryBindPageConst::desc()), isset($info) ? $info->bind_page : '', ['class'=>'form-control text']) }
+                    {:Tool::get('form')->select('bind_page', array_merge(['0'=>'请选择'], CategoryBindPageConst::desc()), isset($info) ? $info->bind_page : '', ['class'=>'form-control text']) }
                 </td>
             </tr>
             <tr id="page">

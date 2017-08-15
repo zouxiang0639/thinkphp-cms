@@ -72,7 +72,7 @@ class Category extends BasicController
 
     public function add()
     {
-        return $this->fetch('navigate', [
+        return $this->fetch('category', [
             'category'  => CategoryBls::getTreeCategory(input('group')),
             'page'      => PageBls::getAllPage()
         ]);
@@ -101,7 +101,7 @@ class Category extends BasicController
     public function edit()
     {
         $model = CategoryBls::getOneCategory(['category_id'=>input('id')]);
-        return $this->fetch('navigate', [
+        return $this->fetch('category', [
             'category'  => CategoryBls::getTreeCategory($model->group),
             'page'      => PageBls::getAllPage(),
             'info'      => $model
@@ -112,7 +112,7 @@ class Category extends BasicController
     {
         if($this->request->isPost()){
             $data = $this->request->post();
-            $result = $this->validate($data,'app\common\bls\navigate\validate\CategoryValidate.category');
+            $result = $this->validate($data,'app\common\bls\category\validate\CategoryValidate.category');
             if(true !== $result){
                 // 验证失败 输出错误信息
                 return $this->error($result);

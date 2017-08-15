@@ -2,24 +2,35 @@
 namespace app\common\bls\category\validate;
 
 
-use think\Validate;
+use app\common\base\BaseValidate;
+use app\common\consts\category\CategoryBindPageConst;
 
-class CategoryValidate extends Validate
+class CategoryValidate extends BaseValidate
 {
-    protected $rule =   [
-        'group'  => 'require',
-        'title'   => 'require',
-        'bind_page' => 'require',
-    ];
 
-    protected $message  =   [
-        'group.require' => '导航分类必须',
-        'title.require' => '标题不能为空',
-        'bind_page.require' => '请选择绑定页面',
-    ];
+    public function setRule()
+    {
+        return  [
+            'group'  => 'require',
+            'title'   => 'requireIf:bind_page,'.CategoryBindPageConst::LINKS,
+            'bind_page' => 'require',
+        ];
+    }
 
-    protected $scene = [
-        'category'  =>  ['group', 'title', 'bind_page']
-    ];
+    public function setMessage()
+    {
+        return [
+            'group.require' => '导航分类必须',
+            'title.require' => '标题不能为空',
+            'bind_page.require' => '请选择绑定页面',
+        ];
+    }
+
+    public function setScene()
+    {
+        return [
+            'category'  =>  ['group', 'title', 'bind_page']
+        ];
+    }
 
 }
