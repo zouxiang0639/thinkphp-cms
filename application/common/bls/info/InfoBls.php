@@ -36,22 +36,17 @@ class InfoBls
 
         if($extended = $page->extendedData) {
             $extended['check'] = false;
-            if($extended->type == ExtendedTypeConst::FIELD) {
-                $model->extend = $date['extend'];
-            } else if($extended->type == ExtendedTypeConst::MYSQL) {
-                $extended['check'] = true;
+            if($extended->type == ExtendedTypeConst::MYSQL) {
+               return Db::transaction(function() use($model, $extended, $date) {
+                    $result = $model->save();
+                    Db::name($extended['name'])->insert(array_merge(['extended_id' => $model->info_id], $date['extend']));
+                    return $result;
+                });
             }
+            $model->extend = $date['extend'];
         }
 
-        Db::transaction(function() use($model, $extended, $date) {
-            $model->save();
-            if($extended['check'] == true){
-                Db::name($extended['name'])->insert(array_merge(['extended_id' => $model->info_id], $date['extend']));
-            }
-
-        });
-
-        return $model;
+        return $model->save();
     }
 
     public static function infoUpdate(InfoModel $model, $date)
@@ -80,9 +75,11 @@ class InfoBls
                     return $result;
                 });
             }
+
+            $model->extend = $date['extend'];
         }
 
-        $model->extend = $date['extend'];
+
         return $model->save();
     }
 

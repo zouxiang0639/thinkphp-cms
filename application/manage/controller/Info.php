@@ -43,7 +43,7 @@ class Info extends BasicController
         }
 
         if(!empty($param['title'])) {
-            $where['title'] = $param['title'];
+            $where['title'] = ['like',"%{$param['title']}%"];
         }
 
         $model = InfoBls::getInfoList($where);
@@ -185,23 +185,25 @@ class Info extends BasicController
      */
     public function extended()
     {
-        $page_id    = input('page_id');
-        $info_id    = input('info_id');
-        $html       = '';
-        $date       = [];
-        $page       = PageBls::getOnePage(['page_id'=>$page_id]);
+        if($this->request->isPost()){
+            $page_id    = input('page_id');
+            $info_id    = input('info_id');
+            $html       = '';
+            $date       = [];
+            $page       = PageBls::getOnePage(['page_id'=>$page_id]);
 
-        if(!empty($page) && $extended = $page->extendedData){
-            if(!empty($info_id)) {
-                $info = InfoBls::getOneInfo(['info_id'=>$info_id]);
-                if($extended->type == ExtendedTypeConst::FIELD) {
-                    $date = $info->extend;
-                } else {
-                    $date = InfoBls::getInfoMysqlExtended($extended->name, $info->info_id);
+            if(!empty($page) && $extended = $page->extendedData){
+                if(!empty($info_id)) {
+                    $info = InfoBls::getOneInfo(['info_id'=>$info_id]);
+                    if($extended->type == ExtendedTypeConst::FIELD) {
+                        $date = $info->extend;
+                    } else {
+                        $date = InfoBls::getInfoMysqlExtended($extended->name, $info->info_id);
+                    }
                 }
+                $html = ExtendedBls::formBuilder($page->data_extended_id, $date);
             }
-            $html = ExtendedBls::formBuilder($page->data_extended_id, $date);
+            return $this->success('' ,'', $html);
         }
-        return $this->success('' ,'', $html);
     }
 }

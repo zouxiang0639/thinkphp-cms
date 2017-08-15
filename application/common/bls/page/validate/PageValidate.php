@@ -10,8 +10,7 @@ class PageValidate extends BaseValidate
     public function setRule()
     {
         return [
-            ['title|标题', 'require'],
-            ['page_id|分类', 'require']
+            ['title|标题', 'require']
         ];
     }
 
@@ -24,8 +23,8 @@ class PageValidate extends BaseValidate
     public function setScene()
     {
         return [
-            'create'  =>  ['title', 'page_id'],
-            'update'  =>  ['title', 'page_id']
+            'create'  =>  ['title'],
+            'update'  =>  ['title']
         ];
     }
 

@@ -4,6 +4,7 @@
 <?php
 use app\common\consts\page\PageTemplateConst;
 use app\common\tool\Tool;
+use app\common\consts\common\CommonStatusConst;
 ?>
 {/block}
 
@@ -28,34 +29,47 @@ use app\common\tool\Tool;
                 </tr>
 
                 <tr>
-                    <th width="150">模版模型</th>
+                    <th width="150">模版类型</th>
                     <td>
-                        <?=Tool::get('form')->select('template_type', $enum['template_group'], object_get($info, 'template_type'), ['class' => 'form-control
-                        text', 'id' =>'group'])?>
+                        {:Tool::get('form')->select('template_type', PageTemplateConst::groupDesc(),
+                            isset($info->template_type) ? $info->template_type : '',
+                            ['class' => 'form-control text', 'id' =>'group']
+                        )}
                     </td>
                 </tr>
                 <tr>
                     <th width="150">默认模版</th>
                     <td>
-                        <?=Tool::get('form')->select('template_page', $enum['template_default'], object_get($info, 'template_page'), ['class' => 'form-control text'])?>
+                        {:Tool::get('form')->select('template_page', PageTemplateConst::pageDesc(),
+                            isset($info->template_page) ? $info->template_page : '',
+                            ['class' => 'form-control text']
+                        )}
                     </td>
                 </tr>
                 <tr class="template_info">
                     <th width="150">详情模板</th>
                     <td>
-                        <?=Tool::get('form')->select('template_info', $enum['template_info'],  object_get($info, 'template_info'), ['class' => 'form-control text'])?>
+                        {:Tool::get('form')->select('template_info', PageTemplateConst::infoDesc(),
+                            isset($info->template_info) ? $info->template_info : '',
+                            ['class' => 'form-control text']
+                        )}
                     </td>
                 </tr>
                 <tr>
-                    <th>导航字段扩展</th>
+                    <th>页面扩展</th>
                     <td>
-                        <?=Tool::get('form')->select('fields_extended_id', $enum['fields_extended'], object_get($info, 'fields_extended_id'), ['class' => 'form-control text'])?>
+                        {:Tool::get('form')->select('fields_extended_id', $enum['fields_extended'],
+                            isset($info->fields_extended_id) ? $info->fields_extended_id : '',
+                            ['class' => 'form-control text']
+                        )}
                 </tr>
-
                 <tr>
                     <th>信息扩展</th>
                     <td>
-                        <?=Tool::get('form')->select('data_extended_id', $enum['data_extended'], object_get($info, 'data_extended_id'), ['class' => 'form-control text'])?>
+                        {:Tool::get('form')->select('data_extended_id', $enum['data_extended'],
+                            isset($info->data_extended_id) ? $info->data_extended_id : '',
+                            ['class' => 'form-control text']
+                        )}
                     </td>
                 </tr>
                 <tr class="template_info">
@@ -73,7 +87,9 @@ use app\common\tool\Tool;
                 <tr>
                     <th>相册图集</th>
                     <th>
-                        <?=Tool::get('form')->multiImage('photos', object_get($info, 'photos'))?>
+                        {:Tool::get('form')->multiImage('photos',
+                            isset($info->photos) ? $info->photos : ''
+                        )}
                     </th>
                 </tr>
             </table>
@@ -86,7 +102,9 @@ use app\common\tool\Tool;
                 </tr>
                 <tr>
                     <th>
-                        <?=Tool::get('form')->oneImage('picture', object_get($info, 'picture'))?>
+                        {:Tool::get('form')->oneImage('picture',
+                            isset($info->picture) ? $info->picture : ''
+                        )}
                     </th>
                 </tr>
                 <tr>
@@ -94,7 +112,10 @@ use app\common\tool\Tool;
                 </tr>
                 <tr>
                     <th>
-                        <?=Tool::get('form')->select('display', $enum['display'], object_get($info, 'display'), ['class' => 'form-control text'])?>
+                        {:Tool::get('form')->select('display', CommonStatusConst::desc(),
+                            isset($info->display) ? $info->display : '',
+                            ['class' => 'form-control text']
+                        )}
                     </th>
                 </tr>
                 <tr>
@@ -119,11 +140,13 @@ use app\common\tool\Tool;
         </div>
         <div class="col-sm-12"> <!--底部-->
             <table class="table table-bordered" >
-                {$info.extendeds ?? ''}
+                <thead id="extended">
+
+                </thead>
                 <tr>
                     <th width="150">文章内容</th>
                     <th>
-                        <?=Tool::get('form')->editor('content', object_get($info, 'content'))?>
+                        {:Tool::get('form')->editor('content', isset($info->content) ? $info->content : '')}
                     </th>
                 </tr>
             </table>
@@ -152,6 +175,28 @@ use app\common\tool\Tool;
             }else {
                 tr.hide();
             }
+        }).trigger("change");
+
+        $("select[name=fields_extended_id]").change(function () {
+            var fields_extended_id = $(this).val();
+            var page_id = '{:input("id")}';
+            $.ajax({
+                url : "{:url('extended')}",
+                type : 'post',
+                data: {'fields_extended_id':fields_extended_id,'page_id':page_id},
+                dataType : 'json',
+                success : function (json)
+                {
+                    $("#extended").html(json.data);
+                },
+                error:function(xhr){          //上传失败
+                    alertError(xhr.responseText);
+
+                },
+                beforeSend:function(){
+                    $("#rechargeLog").html('<img src="/statics/admin/css/loading.gif">');
+                }
+            });
         }).trigger("change");
     });
 </script>

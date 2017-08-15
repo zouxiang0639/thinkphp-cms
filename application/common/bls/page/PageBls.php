@@ -8,7 +8,7 @@ class PageBls
 
     public static function getPageList($where = [], $limit = 20)
     {
-        return PageModel::where($where)->paginate($limit, '', [
+        return PageModel::where($where)->order('page_id asc')->paginate($limit, '', [
             'query' => input()
         ]);
     }
@@ -41,6 +41,7 @@ class PageBls
         $model->keywords = $date['keywords'];
         $model->description = $date['description'];
         $model->content = $date['content'];
+        $model->extend = isset($date['extend']) ? $date['extend'] : '';
 
         return $model->save();
     }
@@ -49,29 +50,4 @@ class PageBls
     {
         return PageModel::where($where)->find();
     }
-
-// 检查扩展
-    public static function checkExtended($page_id)
-    {
-        $extended = PageModel::get($page_id)->dataFieldsExtended;
-
-        /*//数据库扩展关联数据操作
-        if($extended['group'] == 2){
-
-            //拼接扩展的模型命名空间
-            $mysqlName  = explode('_', $extended['name'].'_Model');
-            $modelName  = array_map(function($arr){
-                return ucfirst($arr);
-            }, $mysqlName);
-            $modelName  = implode('', $modelName);
-            $this->extendedsModel    = "app\\manage\\model\\{$modelName}";
-            unset( $this->extend);
-
-            //关联数据一起更新
-            $this->together('extendeds');
-        }
-*/
-        return $extended;
-    }
-
 }

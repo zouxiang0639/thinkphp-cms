@@ -4,23 +4,20 @@ namespace app\manage\controller;
 use app\common\bls\extended\ExtendedBls;
 use app\common\bls\page\PageBls;
 use app\common\consts\common\CommonStatusConst;
-use app\common\consts\page\PageTemplateConst;
-use app\common\model\ExtendedModel;
 use app\common\tool\Helper;
+use app\common\bls\page\traits\PageTrait;
 
 class page extends BasicController
 {
+    use PageTrait;
+
     private $id         = 0;
-    private $url        = 'index';
-    private $validate   = [
-        ['title|标题', 'require'],
-    ];
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->id           = intval(array_get($this->request->param(), 'id'));
+        $this->id           = input('id');
 
         $nav = [
             '页面列表' => ['url' => 'index'],
@@ -32,7 +29,18 @@ class page extends BasicController
 
     public function index()
     {
-        $model = PageBls::getPageList();
+        $param = $this->request->param();
+        $where = [];
+        if(!empty($param['type'])) {
+            $where['template_type'] = $param['type'];
+        }
+
+        if(!empty($param['title'])) {
+            $where['title'] = ['like',"%{$param['title']}%"];
+        }
+
+        $model = PageBls::getPageList($where);
+        $this->formatPage($model->getCollection());
         return $this->fetch('', [
             'list'      => $model
         ]);
@@ -44,11 +52,15 @@ class page extends BasicController
     public function add(){
 
         //扩展数据form生成
-        $parentCategory['extendeds']  = ExtendedModel::formBuilder(0);
+        $extendedGroup   = ExtendedBls::extendedGroup();
+        $enum =  [
+            'display'            => CommonStatusConst::desc(),
+            'fields_extended'    => $extendedGroup[1],  //字段扩展
+            'data_extended'      => $extendedGroup[0],  //所有的扩展
+        ];
 
         return $this->fetch('page', [
-            'enum' => self::enum(),
-            'info' => $parentCategory
+            'enum' => $enum,
         ]);
     }
 
@@ -58,8 +70,9 @@ class page extends BasicController
             $post   = Helper::recombinantArray($this->request->post(), 'photos');
 
             //数据验证
-            $result = $this->validate($post, $this->validate);
-            if($result !== true){
+            $result = $this->validate($post, 'app\common\bls\page\validate\pageValidate.create');
+            if(true !== $result){
+                // 验证失败 输出错误信息
                 return $this->error($result);
             }
 
@@ -82,10 +95,14 @@ class page extends BasicController
             return $this->error('参数错误');
         }
 
-        //扩展数据form生成
-        $info['extendeds'] = ExtendedModel::formBuilder($info['fields_extended_id'], $info->extend);
+        $extendedGroup   = ExtendedBls::extendedGroup();
+        $enum =  [
+            'fields_extended'    => $extendedGroup[1],  //字段扩展
+            'data_extended'      => $extendedGroup[0],  //所有的扩展
+        ];
+
         return $this->fetch('page',[
-            'enum' => self::enum(),
+            'enum' => $enum,
             'info' => $info
         ]);
     }
@@ -100,8 +117,9 @@ class page extends BasicController
 
             $post   = Helper::recombinantArray($this->request->post(), 'photos');
             //数据验证
-            $result = $this->validate($post,$this->validate);
-            if($result !== true){
+            $result = $this->validate($post, 'app\common\bls\page\validate\pageValidate.update');
+            if(true !== $result){
+                // 验证失败 输出错误信息
                 return $this->error($result);
             }
 
@@ -111,7 +129,7 @@ class page extends BasicController
             if(!empty($model)){
                 //修改数据库
                 if($model->save($post)){
-                    return $this->success(lang('Update success'),$this->url);
+                    return $this->success(lang('Update success'), url('index'));
                 }else{
                     return $this->error(lang('Update failed'));
                 }
@@ -133,30 +151,36 @@ class page extends BasicController
             return $this->error('参数错误');
         }
 
+        if($model->info->count()) {
+            return $this->error('信息数据请清空');
+        }
+
         //数据删除
         if($model->delete()){
-            return $this->success(lang('Delete success'),url($this->url));
+            return $this->success(lang('Delete success'));
         }else{
             return $this->error(lang('Delete failed'));
         }
     }
 
     /**
-     * 枚举数组
-     *
-     * @return array
+     *   数据扩展
      */
-    private function enum()
+    public function extended()
     {
-        $extendedGroup   = ExtendedBls::extendedGroup();
-        return  [
-            'display'            => CommonStatusConst::desc(),
-            'template_group'     => PageTemplateConst::groupDesc(),
-            'fields_extended'    => $extendedGroup[1],  //字段扩展
-            'data_extended'      => $extendedGroup[0],  //所有的扩展
-            'template_default'   => PageTemplateConst::pageDesc(),
-            'template_info'      => PageTemplateConst::infoDesc(),
-        ];
+        if($this->request->isPost()){
+            $page_id    = input('page_id');
+            $fields_extended_id    = input('fields_extended_id');
+            $data       = [];
+
+            if(!empty($page_id)){
+                $page  = PageBls::getOnePage(['page_id'=>$page_id]);
+                $data = $page->extend;
+            }
+
+            $html = ExtendedBls::formBuilder($fields_extended_id, $data);
+            return $this->success('' ,'', $html);
+        }
     }
 
 }

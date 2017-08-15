@@ -34,29 +34,20 @@ class PageTemplateConst
 
     public static function pageDesc()
     {
-        $array = [
+
+        return [
             self::ARTICLE[0]    => self::ARTICLE[1],
             self::NEWS[0]       => self::NEWS[1],
         ];
-
-        return array_merge($array, self::conmmon());
     }
 
     public static function infoDesc()
     {
-        $array = [
+        return [
             self::NEWS_INFO[0]       => self::NEWS_INFO[1],
         ];
-
-        return array_merge($array, self::conmmon());
     }
 
-    protected static function conmmon()
-    {
-        return [
-
-        ];
-    }
 
    /* public static function getJson()
     {
@@ -78,4 +69,5 @@ class PageTemplateConst
     {
         return array_get(self::desc(), $item, '');
     }
+
 }
