@@ -2,7 +2,16 @@
 <head>
     <title>后台</title>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="__STATIC__/default/jquery/html5shiv.js"></script>
+    <script type="text/javascript" src="__STATIC__/default/jquery/respond.min.js"></script>
+    <![endif]-->
+    <!--[if IE 6]>
+    <script type="text/javascript" src="__STATIC__/default/jquery/DD_belatedPNG_0.0.8a-min.js"></script>
+    <script>DD_belatedPNG.fix('*');</script>
+    <![endif]-->
+
     <link href="__STATIC__/admin/css/theme.min.css" rel="stylesheet">
     <link href="__STATIC__/default/font-awesome/4.4.0/css/font-awesome.min.css"  rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="__STATIC__/admin/css/simplebootadminindex.min.css?">
@@ -87,16 +96,16 @@
                         <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-closer">
-                        <li>
-                            <a href="javascript:openapp('/moban2/index.php?g=Admin&m=setting&a=site','index_site','网站信息');">
+                     <!--   <li>
+                            <a href="javascript:openapp('','index_site','网站信息');">
                                 <i class="fa fa-cog"></i> 网站信息
                             </a>
                         </li>
                         <li>
-                            <a href="javascript:openapp('/moban2/index.php?g=Admin&m=user&a=userinfo','index_userinfo','修改信息');">
+                            <a href="javascript:openapp('','index_userinfo','修改信息');">
                                 <i class="fa fa-user"></i> 修改信息
                             </a>
-                        </li>
+                        </li>-->
                         <li>
                             <a href="<?php echo Url('publics/logout')?>" data-method="post">
                                 <i class="fa fa-sign-out"></i> 退出</a>
@@ -116,7 +125,7 @@
             <a class="btn btn-small btn-warning" href="{:url('index/index')}" title="网站首页" >
                 <i class="fa fa-home"></i>
             </a>
-            <a class="btn btn-small btn-success" href="javascript:openapp('<?php echo Url('nav/index')?>','index_termlist','分类管理');" title="分类管理">
+            <a class="btn btn-small btn-success" href="javascript:openapp('<?php echo Url('page/index')?>','index_termlist','页面管理');" title="分类管理">
                 <i class="fa fa-th"></i>
             </a>
             <a class="btn btn-small btn-info" href="javascript:openapp('<?php echo Url('info/index')?>','index_postlist','文章管理');" title="文章管理">
@@ -148,8 +157,8 @@
         </div>
     </div>
 </div>
-<script src="__STATIC__/admin/js/jquery.min.js"></script>
-<script src="__STATIC__/admin/js/bootstrap.min.js"></script>
+<script src="__STATIC__/default/jquery/1.11.3/jquery.min.js"></script>
+<script src="__STATIC__/default/bootstrap/bootstrap.min.js"></script>
 <script src="__STATIC__/admin/js/jquery-1.8.0.min.js"></script>
 <script src="__STATIC__/admin/js/index.js"></script>
 <script>

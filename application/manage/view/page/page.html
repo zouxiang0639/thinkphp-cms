@@ -30,14 +30,14 @@ use app\common\tool\Tool;
                 <tr>
                     <th width="150">模版模型</th>
                     <td>
-                        <?=Tool::get('form')->select('template_type', $enum['template_group'], object_get($info, 'template_group'), ['class' => 'form-control
+                        <?=Tool::get('form')->select('template_type', $enum['template_group'], object_get($info, 'template_type'), ['class' => 'form-control
                         text', 'id' =>'group'])?>
                     </td>
                 </tr>
                 <tr>
                     <th width="150">默认模版</th>
                     <td>
-                        <?=Tool::get('form')->select('template_page', $enum['template_default'], object_get($info, 'template_default'), ['class' => 'form-control text'])?>
+                        <?=Tool::get('form')->select('template_page', $enum['template_default'], object_get($info, 'template_page'), ['class' => 'form-control text'])?>
                     </td>
                 </tr>
                 <tr class="template_info">
@@ -152,8 +152,7 @@ use app\common\tool\Tool;
             }else {
                 tr.hide();
             }
-        });
-        $("#group").trigger("change");
+        }).trigger("change");
     });
 </script>
 {/block}

@@ -394,47 +394,6 @@ class Menu extends \Phinx\Seed\AbstractSeed
                     )
                 ],
                 [
-                    'name'      => '模版文件管理',
-                    'app'       => 'manage',
-                    'model'     => 'template',
-                    'action'    => 'default',
-                    'type'      => '0',
-                    'child'     => array(
-                        [
-                            'name'      => '模版文件列表',
-                            'app'       => 'manage',
-                            'model'     => 'template',
-                            'action'    => 'index',
-                            'type'      => 1,
-                            'status'    => 1
-                        ],
-                        [
-                            'name'      => '模版文件添加',
-                            'app'       => 'manage',
-                            'model'     => 'template',
-                            'action'    => 'add',
-                            'type'      => 1,
-                            'status'    => 1
-                        ],
-                        [
-                            'name'      => '模版文件修改',
-                            'app'       => 'manage',
-                            'model'     => 'template',
-                            'action'    => 'edit',
-                            'type'      => 1,
-                            'status'    => 0
-                        ],
-                        [
-                            'name'      => '模版文件更新',
-                            'app'       => 'manage',
-                            'model'     => 'template',
-                            'action'    => 'update',
-                            'type'      => 1,
-                            'status'    => 0
-                        ]
-                    )
-                ],
-                [
                     'name'      => '数据扩展',
                     'app'       => 'manage',
                     'model'     => 'extended',

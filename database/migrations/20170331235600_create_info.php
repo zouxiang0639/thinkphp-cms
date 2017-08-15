@@ -10,7 +10,7 @@ class CreateInfo extends Migrator
      */
     public function up()
     {
-        $table = $this->table('info', ['id' => 'info_id', 'engine'=>'MyISAM', 'comment' => '信息表']);
+        $table = $this->table('info', ['id' => 'info_id', 'engine'=>'InnoDB', 'comment' => '信息表']);
         $table->addColumn('title', 'string', ['limit' => 100, 'comment' => '标题'])
             ->addColumn('visiting', 'integer', ['limit' => 11, 'comment' => '访问量'])
             ->addColumn('page_id', 'integer', ['limit' => MysqlAdapter::INT_SMALL, 'comment' => '分类导航ID'])

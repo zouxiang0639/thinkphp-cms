@@ -9,8 +9,9 @@ class InfoModel extends BasicModel
     public $primaryKey = 'info_id';
 
     //关联一对一 分类
-    public function category()
+    public function page()
     {
-        return $this->hasOne('app\common\bls\page\model\PageModel','category_id');
+        return $this->hasOne('app\common\bls\page\model\PageModel','page_id', 'page_id');
     }
+
 }

@@ -14,7 +14,7 @@ class PageModel extends BasicModel
     ];
 
     //关联一对一
-    public function dataFieldsExtended()
+    public function extendedData()
     {
         return $this->hasOne('app\common\bls\extended\model\ExtendedModel', 'extended_id', 'data_extended_id');
     }

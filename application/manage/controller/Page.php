@@ -5,6 +5,7 @@ use app\common\bls\extended\ExtendedBls;
 use app\common\bls\page\PageBls;
 use app\common\consts\common\CommonStatusConst;
 use app\common\consts\page\PageTemplateConst;
+use app\common\model\ExtendedModel;
 use app\common\tool\Helper;
 
 class page extends BasicController
@@ -43,7 +44,7 @@ class page extends BasicController
     public function add(){
 
         //扩展数据form生成
-        $parentCategory['extendeds']  = ExtendedBls::formBuilder(0);
+        $parentCategory['extendeds']  = ExtendedModel::formBuilder(0);
 
         return $this->fetch('page', [
             'enum' => self::enum(),
@@ -82,7 +83,7 @@ class page extends BasicController
         }
 
         //扩展数据form生成
-        $info['extendeds'] = ExtendedBls::formBuilder($info['fields_extended_id'], $info->extend);
+        $info['extendeds'] = ExtendedModel::formBuilder($info['fields_extended_id'], $info->extend);
         return $this->fetch('page',[
             'enum' => self::enum(),
             'info' => $info

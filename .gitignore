@@ -9,3 +9,4 @@ public/uploads/
 .svn/
 web.config
 database/backups
+application/manage/model/

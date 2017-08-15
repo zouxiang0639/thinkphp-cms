@@ -1,32 +1,28 @@
 <?php
 namespace app\manage\controller;
 
+use app\common\bls\extended\ExtendedBls;
 use app\common\bls\info\InfoBls;
 use app\common\bls\page\PageBls;
 use app\common\consts\common\CommonStatusConst;
+use app\common\consts\extended\ExtendedTypeConst;
 use app\common\consts\page\PageTemplateConst;
-use app\common\model\CategoryModel;
-use app\common\model\ExtendedModel;
-use app\common\model\InfoModel;
 use app\common\tool\Helper;
+use app\common\bls\info\traits\InfoTrait;
 
 class Info extends BasicController
 {
+    use InfoTrait;
+
     private $id;
     private $cid;
-    private $recommendation = [];
-    private $url            = 'info/index';
-    private $validate = [
-        ['title|标题', 'require']
-    ];
 
     public function __construct()
     {
-        $this->recommendation   = lang('info recommendation');
         parent::__construct();
 
-        $this->id       = intval(array_get($this->request->param(), 'id'));
-        $this->cid      = intval(array_get($this->request->param(), 'cid', $this->id));
+        $this->id       = $this->request->param('id');
+        $this->cid      = $this->request->param('cid');
         $nav = [
             '信息列表' => ['url' => ['index', ['cid' => $this->cid]]],
             '信息增加' => ['url' => ['add', ['cid' => $this->cid]]],
@@ -34,7 +30,6 @@ class Info extends BasicController
         ];
         $this->assign([
             'navTabs'   => parent::navTabs($nav),
-            'cid'       => $this->cid
         ]);
     }
 
@@ -43,19 +38,19 @@ class Info extends BasicController
         //条件判断
         $param = $this->request->param();
         $where          = [];
-        if(!empty($param['page'])) {
-            $where['page_id'] = $param['page'];
+        if(!empty($param['cid'])) {
+            $where['page_id'] = $param['cid'];
         }
 
         if(!empty($param['title'])) {
             $where['title'] = $param['title'];
         }
 
-        $list = InfoBls::getInfoList($where);
+        $model = InfoBls::getInfoList($where);
         $page = PageBls::getAllPage(['template_type' => PageTemplateConst::INFO[0]]);
-
+        $this->formatInfo($model->getCollection());
         return $this->fetch('',[
-            'list'  => $list,
+            'list'  => $model,
             'page'  => $page
         ]);
     }
@@ -65,12 +60,11 @@ class Info extends BasicController
      */
     public function add()
     {
-       /* $category   = CategoryModel::get($this->cid);
-        $extendeds  = ExtendedModel::formBuilder($category['data_extended_id']);*/
+
 
         return $this->fetch('info',[
-            'info'  => ['category_id' => $this->cid, 'extendeds' => ''],
-            'enum'  => self::enum()
+            'page'              => PageBls::getAllPage(['template_type' => PageTemplateConst::INFO[0]]),
+            'display'           => CommonStatusConst::desc()
         ]);
     }
 
@@ -83,27 +77,20 @@ class Info extends BasicController
 
             $post   = Helper::recombinantArray($this->request->post(), 'photos');
             //数据验证
-            $result = $this->validate($post, $this->validate);
-            if($result !== true){
+            $result = $this->validate($post, 'app\common\bls\info\validate\InfoValidate.create');
+            if(true !== $result){
+                // 验证失败 输出错误信息
                 return $this->error($result);
             }
 
-
-          /*  //检查是否有数据库扩展
-            $infoModel      =  PageBls::checkExtended($post['page_id']);
-            if($infoModel->extendedsModel){
-                $extendedsModel         = new $infoModel->extendedsModel($post['extend']);
-                $infoModel->extendeds   = $extendedsModel;
-            }*/
-
             //关联数据库扩展模型数据更新
             if(InfoBls::createInfo($post)){
-                return $this->success(lang('Add success'), url('index'));
+                return $this->success(lang('Add success'), url('index',['cid' => $this->cid]));
             }else{
                 return $this->error(lang('Add failed'));
             }
         }
-        return abort(404, lang('404 not found'));
+        return $this->error('请求错误');
     }
 
     /**
@@ -111,28 +98,14 @@ class Info extends BasicController
      */
     public function edit()
     {
-
-        $info    = InfoModel::get($this->id);
-
-        if(empty($info)){
-            return abort(404, lang('404 not found'));
+        $model = InfoBls::getOneInfo(['info_id' => $this->id]);
+        if(empty($model)){
+            return $this->error('参数错误');
         }
-        $category           = CategoryModel::get($info['category_id']);
-
-        //检查是否有数据扩展
-        $extendModel        = $info->checkExtended(false);
-        $extendeds          = [];
-        if(!empty($extendModel->extendedsModel)){
-            $extendeds      = $extendModel->extendeds;
-        }else{
-            $extendeds      = $info['extend'];
-        }
-
-        $info['extendeds']  = ExtendedModel::formBuilder($category['data_extended_id'], $extendeds);
-
-        return $this->fetch('', [
-            'info'  => $info,
-            'enum'  => self::enum()
+        return $this->fetch('info', [
+            'info'  => $model,
+            'page'              => PageBls::getAllPage(['template_type' => PageTemplateConst::INFO[0]]),
+            'display'           => CommonStatusConst::desc()
         ]);
     }
 
@@ -140,41 +113,30 @@ class Info extends BasicController
      * 信息更新
      */
     public function update(){
-
-        //edit_post 数据处理
         if($this->request->isPost()){
-
             $post   = Helper::recombinantArray($this->request->post(), 'photos');
 
             //数据验证
-            $result = $this->validate($post,$this->validate);
-            if($result !== true){
+            $result = $this->validate($post, 'app\common\bls\info\validate\InfoValidate.update');
+            if(true !== $result){
+                // 验证失败 输出错误信息
                 return $this->error($result);
             }
 
             //查询数据
-            $query  = InfoModel::get($this->id);
-            if(empty($query)){
-                return abort(404, lang('404 not found'));
-            }
-
-            //检查是否有数据库扩展
-            $update = $query->checkExtended();
-            if($update->extendedsModel){
-                foreach($post['extend'] as $k=>$v){
-                    $update->extendeds->$k  = $v;
-                }
-                unset($post['extend']);
+            $model  = InfoBls::getOneInfo(['info_id' => $this->id]);
+            if(empty($model)){
+                return $this->error('参数错误');
             }
 
             //关联数据库扩展模型数据更新
-            if($update->save($post)){
-                return $this->success(lang('Update success'), url($this->url, ['cid' => $this->cid]));
+            if(InfoBls::infoUpdate($model,$post)){
+                return $this->success(lang('Update success'), url('index', ['cid' => $this->cid]));
             }else{
                 return $this->error(lang('Update failed'));
             }
         }
-        return abort(404, lang('404 not found'));
+        return $this->error('请求错误');
     }
 
     /**
@@ -183,31 +145,31 @@ class Info extends BasicController
     public function delete()
     {
         if($this->request->isPost() && !empty($this->id)){
-            $delete  = InfoModel::get($this->id);
+            $model  = InfoBls::getOneInfo(['info_id' => $this->id]);
 
-            if(empty($delete)){
-                return abort(404, lang('404 not found'));
+            if(empty($model)){
+                return $this->error('参数错误');
             }
 
             //关联数据库扩展模型数据删除
-            if($delete->checkExtended()->delete()){
+            if(InfoBls::infoDelete($model)){
                 return $this->success(lang('delete success'));
             }else{
                 return $this->error(lang('delete failed'));
             }
         }
-        return abort(404, lang('404 not found'));
+        return $this->error('请求错误');
     }
 
     /**
      * 信息排序
      */
-        public function sort()
+    public function sort()
     {
-        $sort   = InfoModel::get($this->id);
+        $sort   = InfoBls::getOneInfo(['info_id' => $this->id]);
         $order  = isset($_POST['order']) ? intval($_POST['order']) : 0;
         if(!$this->request->isPost() || empty($sort)){
-            return abort(404, lang('404 not found'));
+            return $this->error('参数错误');
         }
 
         //更新数据
@@ -219,16 +181,27 @@ class Info extends BasicController
     }
 
     /**
-     * 枚举数组
-     *
-     * @return array
+     *   数据扩展
      */
-    private function enum()
+    public function extended()
     {
-        return [
-            'recommendation'    => $this->recommendation,
-            'page'              => PageBls::getAllPage(['template_type' => PageTemplateConst::INFO[0]]),
-            'display'           => CommonStatusConst::desc()
-        ];
+        $page_id    = input('page_id');
+        $info_id    = input('info_id');
+        $html       = '';
+        $date       = [];
+        $page       = PageBls::getOnePage(['page_id'=>$page_id]);
+
+        if(!empty($page) && $extended = $page->extendedData){
+            if(!empty($info_id)) {
+                $info = InfoBls::getOneInfo(['info_id'=>$info_id]);
+                if($extended->type == ExtendedTypeConst::FIELD) {
+                    $date = $info->extend;
+                } else {
+                    $date = InfoBls::getInfoMysqlExtended($extended->name, $info->info_id);
+                }
+            }
+            $html = ExtendedBls::formBuilder($page->data_extended_id, $date);
+        }
+        return $this->success('' ,'', $html);
     }
 }

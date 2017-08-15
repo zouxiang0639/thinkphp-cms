@@ -270,7 +270,7 @@ class ExtendedBls
             $sql = "CREATE TABLE `{$mysqlName}` (
                       `extended_id` int(10) NOT NULL,
                       PRIMARY KEY (`extended_id`)
-                    ) ENGINE=MyISAM CHARSET=utf8 COMMENT='{$model->title}'";
+                    ) ENGINE=InnoDB CHARSET=utf8 COMMENT='{$model->title}'";
 
             try{
 

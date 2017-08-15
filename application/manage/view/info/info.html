@@ -3,6 +3,7 @@
 {block name="php"}
 <?php
 use app\common\tool\Tool;
+use app\common\consts\info\InfoRecommendationConst;
 ?>
 {/block}
 
@@ -13,7 +14,9 @@ use app\common\tool\Tool;
 {block name="content"}
 {include file='public_file/nav_tabs' /}
 
-<form class="form-horizontal" action="{:url('info/create')}" method="post">
+<form class="form-horizontal"
+      action="{:empty(input('id')) ? url('create',['cid'=>input('cid')]) : url('update',['id'=>input('id'), 'cid'=>input('cid')])}"
+      method="post">
 
     <div class="bs-example">
         <!--右侧-->
@@ -29,13 +32,19 @@ use app\common\tool\Tool;
                 <tr>
                     <th width="150">分类</th>
                     <td>
-                        <?=Tool::get('form')->select('page_id', $enum['page'], object_get($info, 'template_default'), ['class' => 'form-control text'])?>
+                        {:Tool::get('form')->select('page_id', $page,
+                            isset($info->page_id) ? $info->page_id : input('cid'),
+                            ['class' => 'form-control text']
+                        )}
                     </td>
                 </tr>
                 <tr>
                     <th width="150">可见性</th>
                     <td>
-                        <?=Tool::get('form')->select('display', $enum['display'], object_get($info, 'display'), ['class' => 'form-control text'])?>
+                        {:Tool::get('form')->select('display', $display,
+                            isset($info->display) ? $info->display : '',
+                            ['class' => 'form-control text']
+                        )}
                     </td>
                 </tr>
                 <tr>
@@ -53,7 +62,10 @@ use app\common\tool\Tool;
                 <tr>
                     <th>推荐</th>
                     <th>
-                        <?=Tool::get('form')->checkboxs('recommendation', $enum['recommendation'], object_get($info, 'recommendation'))?>
+                        {:Tool::get('form')->checkboxs('recommendation',
+                            InfoRecommendationConst::desc(),
+                            isset($info->recommendation) ? $info->recommendation : ''
+                        )}
                     </th>
                 </tr>
                 <tr>
@@ -65,7 +77,9 @@ use app\common\tool\Tool;
                 <tr>
                     <th>相册图集</th>
                     <th>
-                        <?=Tool::get('form')->multiImage('photos', object_get($info, 'photos'))?>
+                        {:Tool::get('form')->multiImage('photos',
+                            isset($info->photos) ? $info->photos : ''
+                        )}
                     </th>
                 </tr>
             </table>
@@ -79,7 +93,7 @@ use app\common\tool\Tool;
                 </tr>
                 <tr>
                     <th>
-                        <?=Tool::get('form')->oneImage('picture', object_get($info, 'picture'))?>
+                        {:Tool::get('form')->oneImage('picture', isset($info->picture) ? $info->picture : '')}
                     </th>
                 </tr>
                 <tr>
@@ -87,7 +101,7 @@ use app\common\tool\Tool;
                 </tr>
                 <tr>
                     <th>
-                        <?=Tool::get('form')->date('create_time', object_get($info, 'create_time'))?>
+                        {:Tool::get('form')->date('create_time', isset($info->create_time) ? $info->create_time : '')}
                     </th>
                 </tr>
                 <tr>
@@ -111,11 +125,13 @@ use app\common\tool\Tool;
         <!--底部-->
         <div class="col-sm-12">
             <table class="table table-bordered" >
-                {$info.extendeds ?? ''}
+               <thead id="extended">
+
+               </thead>
                 <tr>
                     <th width="150">文章内容</th>
                     <th>
-                        <?=Tool::get('form')->editor('content', object_get($info, 'content'))?>
+                        {:Tool::get('form')->editor('content', isset($info->content) ? $info->content : '')}
                     </th>
                 </tr>
             </table>
@@ -125,7 +141,6 @@ use app\common\tool\Tool;
         <button type="button" class="btn btn-primary ajax-post " autocomplete="off">
             保存
         </button>
-        <input type="submit" value="asdas">
         <a class="btn btn-default active" href="JavaScript:history.go(-1)">返回</a>
     </div>
 </form>
@@ -133,4 +148,29 @@ use app\common\tool\Tool;
 
 {block name="script"}
 <script src="__STATIC__/default/headjs.js"></script>
+<script>
+    $(function () {
+        $("select[name=page_id]").change(function () {
+            var page_id = $(this).val();
+            var info_id = '{:input("id")}';
+            $.ajax({
+                url : "{:url('extended')}",
+                type : 'post',
+                data: {'page_id':page_id,'info_id':info_id},
+                dataType : 'json',
+                success : function (json)
+                {
+                    $("#extended").html(json.data);
+                },
+                error:function(xhr){          //上传失败
+                    alertError(xhr.responseText);
+
+                },
+                beforeSend:function(){
+                    $("#rechargeLog").html('<img src="/statics/admin/css/loading.gif">');
+                }
+            });
+        }).trigger("change");
+    })
+</script>
 {/block}
