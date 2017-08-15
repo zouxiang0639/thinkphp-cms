@@ -35,7 +35,13 @@ class Category extends BasicController
 
     public function index()
     {
-        $model = CategoryBls::getCategoryList();
+        $param = $this->request->param();
+        $where          = [];
+        if(!empty($param['group'])) {
+            $where['group'] = $param['group'];
+        }
+
+        $model = CategoryBls::getCategoryList($where);
         $this->formatCategory($model->getCollection());
 
         $html = (new Tree('parent_id'))->create($model->getCollection(), function($date) {
