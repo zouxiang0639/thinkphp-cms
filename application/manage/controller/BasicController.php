@@ -16,7 +16,6 @@ abstract class BasicController extends BaseController
         $auth->noNeedCheckRules = [
             'manage/index/index','manage/index/home','manage/info/extended','manage/page/extended',
             'manage/goods/extended'
-
         ];
         $user                   = $auth::is_login();
 

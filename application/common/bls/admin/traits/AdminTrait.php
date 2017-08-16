@@ -11,10 +11,10 @@ trait AdminTrait
      * @param Collection $items
      * @return Collection
      */
-    protected function formatBanner(Collection $items)
+    protected function formatAdmin(Collection $items)
     {
         return $items->each(function ($item) {
-            $item->typeName = BannerTypeConst::getDesc($item->type);
+            $item->lastLoginIpName = long2ip($item->last_login_ip);
         });
     }
 }

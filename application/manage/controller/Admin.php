@@ -5,9 +5,12 @@ use app\common\bls\Admin\AdminBls;
 use app\common\tool\Tool;
 use thinkcms\auth\model\AuthRole;
 use thinkcms\auth\model\AuthRoleUser;
+use app\common\bls\admin\traits\AdminTrait;
 
 class Admin extends BasicController
 {
+    use AdminTrait;
+
     protected $id   = 0;
 
     public function __construct()
@@ -27,6 +30,7 @@ class Admin extends BasicController
     public function index()
     {
         $model   = AdminBls::getAdminList();
+        $this->formatAdmin($model->getCollection());
 
         return $this->fetch('',[
             'list'  => $model,

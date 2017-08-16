@@ -20,15 +20,17 @@ class AdminValidate extends BaseValidate
     public function setMessage()
     {
         return [
+            'admin_name.require' => '用户名不能为空'
         ];
     }
 
     public function setScene()
     {
         return [
-            'create'  =>  ['admin_name', 'admin_email', 'admin_password', 'role'],
-            'update'  =>  ['admin_email', 'role'],
+            'create'  => ['admin_name', 'admin_email', 'admin_password', 'role'],
+            'update'  => ['admin_email', 'role'],
             'edit_password'  =>  ['password'],
+            'login'   => ['admin_name' => 'require', 'admin_password']
         ];
     }
 

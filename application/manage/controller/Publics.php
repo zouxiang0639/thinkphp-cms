@@ -1,9 +1,9 @@
 <?php
 namespace app\manage\controller;
 
+use app\common\bls\Admin\AdminBls;
 use think\Cache;
 use think\Controller;
-use app\common\model\AdminModel;
 use thinkcms\auth\Auth;
 
 class Publics extends Controller
@@ -17,19 +17,14 @@ class Publics extends Controller
         if($this->request->isPost()){
             $post   = $this->request->post();
 
-            $validate = [
-                ['admin_name|用户名','require|max:25'],
-                ['admin_password|密码','require'],
-                //[ 'verify|验证码','require|captcha']
-            ];
-
             //数据验证
-            $result = $this->validate($post,$validate);
-            if (true !== $result) {
+            $result = $this->validate($post, 'app\common\bls\admin\validate\AdminValidate.login');
+            if(true !== $result){
+                // 验证失败 输出错误信息
                 return $this->error($result);
             }
 
-            $login  = AdminModel::login($post);
+            $login  = AdminBls::login($post);
 
             if($login === false){
                 return $this->error('用户名或者密码错误');
