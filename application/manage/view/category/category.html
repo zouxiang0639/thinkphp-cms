@@ -16,7 +16,9 @@ use app\common\consts\category\CategoryGroupConst;
 
 {block name="content"}
     {include file='public_file/nav_tabs' /}
-    <form class="form-horizontal" action="{:empty(input('id')) ? url('create') : url('update',['id'=>input('id')])}" method="post">
+    <form class="form-horizontal"
+          action="{:empty(input('id')) ? url('create',['group' => input('group')]) : url('update',['id'=>input('id'),'group' => input('group')])}"
+          method="post">
 
         <table class="table table-bordered ">
             <tr>

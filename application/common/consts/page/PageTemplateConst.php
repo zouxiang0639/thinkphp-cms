@@ -6,8 +6,8 @@ namespace app\common\consts\page;
  */
 class PageTemplateConst
 {
-    const PAGE  = [1, '单页模版'];
-    const INFO  = [2, '信息模版'];
+    const PAGE  = [1, '单页模版', 'manage/page/edit'];
+    const INFO  = [2, '信息模版', 'manage/info/index'];
 
     const ARTICLE = [11, '关于我们', ' article '];
     const NEWS  = [12, '新闻', 'news'];

@@ -17,7 +17,7 @@ class CategoryModel extends BasicModel
      */
     public function subsetNum()
     {
-        $count = self::where('parent_id', $this->navigate_id)->count();
+        $count = self::where('parent_id', $this->category_id)->count();
         return $count;
     }
 

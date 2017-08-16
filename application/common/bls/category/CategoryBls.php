@@ -40,7 +40,7 @@ class CategoryBls
                 $num ++;
                 CategoryModel::where('category_id', $value['id'])->update(['sort'=> $num,'parent_id' => $parent_id]);
                 if(isset($value['children'])) {
-                    self::navigateSort($value['children'], $value['id']);
+                    self::categorySort($value['children'], $value['id']);
                 }
             }
 
@@ -79,7 +79,12 @@ class CategoryBls
             $array = array();
             $items = $object->toLinearArray()->getItems();
             foreach ($items as $value) {
-                $array[$value->category_id] = $value->icon.$value->title;
+                $title = $value->title;
+                if(empty($title) && $page = $value->page){
+                    $title = $page->title;
+                }
+
+                $array[$value->category_id] = $value->icon.$title;
             }
             return $array;
         });

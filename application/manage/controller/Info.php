@@ -37,6 +37,7 @@ class Info extends BasicController
     {
         //条件判断
         $param = $this->request->param();
+
         $where          = [];
         if(!empty($param['cid'])) {
             $where['page_id'] = $param['cid'];

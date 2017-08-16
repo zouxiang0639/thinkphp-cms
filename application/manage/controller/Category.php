@@ -19,17 +19,17 @@ class Category extends BasicController
         parent::__construct();
 
         $this->id       = intval(array_get($this->request->param(), 'id'));
-
-        $nav = [
-            '导航列表' => ['url' => 'index'],
-            '导航添加' => ['url' => 'add'],
-            '导航修改' => ['url' => ['edit',['id'=> $this->id]],'style' => "display: none;"]
-        ];
-        $this->assign('navTabs',  parent::navTabs($nav));
-
         if(empty(input('group'))) {
             $_GET['group'] = 1;
         }
+        $nav = [
+            '导航列表' => ['url' => ['index', ['group' => input('group')]]],
+            '导航添加' => ['url' => ['add', ['group' => input('group')]]],
+            '导航修改' => ['url' => ['edit',['id'=> $this->id, 'group' => input('group')]],'style' => "display: none;"]
+        ];
+        $this->assign('navTabs',  parent::navTabs($nav));
+
+
 
     }
 
@@ -49,13 +49,17 @@ class Category extends BasicController
 
                 $html = '';
                 foreach ($date as $value) {
+
+                    $page = $value->url ? '<a target="_blank" href="'.$value->url.'" >内部页面</a>' : '';
+
                     $html .= '<li id="list_'.$value->category_id.'"><div>
                         <span class="disclose"><span>
                         </span></span>
                         '.$value->titleName.'
                         <span style="float: right">
-                            <a href="'.url('edit', ['id' => $value->category_id]).'" class="layui-btn layui-btn-normal layui-btn-mini">编辑</a>
-                            <a href="javascript:;" date='.$value->category_id.' class="layui-btn layui-btn-danger layui-btn-mini category-delete">删除</a>
+                            '.$page.'
+                            <a href="'.url('edit', ['id' => $value->category_id]).'" >编辑</a>
+                            <a href="javascript:;" date='.$value->category_id.' class="category-delete">删除</a>
                         </span>
                     </div>';
 
@@ -95,7 +99,7 @@ class Category extends BasicController
             }
 
             if(CategoryBls::createCategory($data)){
-                return $this->success(lang('success'), url('index'));
+                return $this->success(lang('success'), url('index', ['group' => input('group')]));
             }else {
                 return $this->error(lang('failed'));
             }
@@ -130,7 +134,7 @@ class Category extends BasicController
             }
 
             if($model->save($data)) {
-                return $this->success(lang('update success'), url('index'));
+                return $this->success(lang('update success'), url('index',['group' => input('group')]));
             }else {
                 return $this->error(lang('update failed'));
             }
