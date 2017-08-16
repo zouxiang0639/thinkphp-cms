@@ -27,60 +27,13 @@ class ExtendedModel extends BasicModel
         return ExtendedModel::where(['parent_id'=>$this->extended_id])->delete();
     }
 
-
-    /**
-     * 生成form表单
-     * @return mixed
-     */
-    public static function formBuilder($id, $data='')
+    public function pageDataExtended()
     {
-
-        if($id==0){
-            return '';
-        }
-
-        $html   = '';
-        //获取
-        $extend     = self::where(['parent_id'=>$id])
-            ->order(["sort" => "desc", 'extended_id' => 'asc'])
-            ->select();
-
-        foreach((object)$extend as $v){
-            //使用表单枚举生成<form> 标签支持
-            $input  =  Tool::get('helper')->formEnum(
-                $v['input_type'],        //表单类型
-                'extend['.$v['name'].']',                       //变量名称
-                array_get($data,$v['name']),                    //置变量的值
-                ['class' => 'form-control text'],               //其他属性
-                json_decode($v['input_value'])                  //需要生成多个 如select
-            );
-
-            $html  .= "<tr>
-                            <th>{$v['title']}</th>
-                            <th>
-                                {$input}
-                                <span style='padding-left: 10px'>{$v['comment']}</span>
-                            </th>
-                        </tr>";
-        }
-
-        return $html;
+        return $this->hasMany('app\common\bls\page\model\PageModel', 'data_extended_id', 'extended_id');
     }
 
-    /**
-     * 数据扩展组
-     * @return mixed
-     */
-    public static function extendedGroup()
+    public function pageFieldsExtended()
     {
-        $extended   = self::where(['parent_id'=>0])->column('extended_id,group,title');
-        $default    = [0 => '请选择'];
-        $group      = [0 => $default, 1 => $default, 2 => $default];
-        foreach((array)$extended as $v){
-            $group[$v['group']][$v['extended_id']]  = $v['title'];
-            $group[0][$v['extended_id']]            = $v['title'];
-        }
-        return $group;
+        return $this->hasMany('app\common\bls\page\model\PageModel', 'fields_extended_id', 'extended_id');
     }
-
 }

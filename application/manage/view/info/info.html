@@ -34,7 +34,7 @@ use app\common\consts\info\InfoRecommendationConst;
                     <td>
                         {:Tool::get('form')->select('page_id', $page,
                             isset($info->page_id) ? $info->page_id : input('cid'),
-                            ['class' => 'form-control text']
+                            ['class' => 'form-control text', 'placeholder'=>'请选择']
                         )}
                     </td>
                 </tr>

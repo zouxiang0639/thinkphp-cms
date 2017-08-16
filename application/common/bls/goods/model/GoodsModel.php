@@ -1,12 +1,12 @@
 <?php
-namespace app\common\bls\info\model;
+namespace app\common\bls\goods\model;
 
 use app\common\base\BasicModel;
 
-class InfoModel extends BasicModel
+class GoodsModel extends BasicModel
 {
-    public $name = 'info';
-    public $primaryKey = 'info_id';
+    public $name = 'goods';
+    public $primaryKey = 'goods_id';
 
     //字段转型
     protected $type = [

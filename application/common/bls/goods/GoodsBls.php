@@ -1,30 +1,28 @@
 <?php
-namespace app\common\bls\info;
+namespace app\common\bls\goods;
 
-use app\common\bls\info\model\InfoModel;
+use app\common\bls\goods\model\GoodsModel;
 use app\common\bls\page\PageBls;
 use app\common\consts\extended\ExtendedTypeConst;
 use think\Db;
 
-class InfoBls
+class GoodsBls
 {
-    public static function getInfoList($where = '', $limit = 20)
+    public static function getGoodsList($where = '', $limit = 20)
     {
-        return InfoModel::where($where)
-            ->order(["sort" => "desc", 'info_id' => 'desc'])
+        return GoodsModel::where($where)
+            ->order(["sort" => "desc", 'goods_id' => 'desc'])
             ->paginate($limit, '', [
                 'query' => input()
             ]);
     }
 
-    public static function createInfo($date)
+    public static function createGoods($date)
     {
-        $model = new InfoModel();
+        $model = new GoodsModel();
         $model->title       = $date['title'];
         $model->page_id     = $date['page_id'];
         $model->display     = $date['display'];
-        $model->links       = $date['links'];
-        $model->visiting    = $date['visiting'];
         $model->comment     = $date['comment'];
         $model->photos      = $date['photos'];
         $model->picture     = $date['picture'];
@@ -35,13 +33,11 @@ class InfoBls
         $page = PageBls::getOnePage(['page_id'=>$model->page_id]);
 
         if($extended = $page->extendedData) {
-            $extended['check'] = false;
             if($extended->type == ExtendedTypeConst::MYSQL) {
                 Db::transaction(function() use($model, $extended, $date) {
                     $model->save();
-                    Db::name($extended['name'])->insert(array_merge(['extended_id' => $model->info_id], $date['extend']));
+                    Db::name($extended['name'])->insert(array_merge(['extended_id' => $model->goods_id], $date['extend']));
                 });
-
                 return true;
             }
             $model->extend = $date['extend'];
@@ -50,13 +46,11 @@ class InfoBls
         return $model->save();
     }
 
-    public static function infoUpdate(InfoModel $model, $date)
+    public static function goodsUpdate(GoodsModel $model, $date)
     {
         $model->title       = $date['title'];
         $model->page_id     = $date['page_id'];
         $model->display     = $date['display'];
-        $model->links       = $date['links'];
-        $model->visiting    = $date['visiting'];
         $model->comment     = $date['comment'];
         $model->photos      = $date['photos'];
         $model->picture     = $date['picture'];
@@ -71,8 +65,8 @@ class InfoBls
         if($extended = $page->extendedData) {
             if($extended->type == ExtendedTypeConst::MYSQL) {
                 Db::transaction(function() use($model, $extended, $date) {
-                     $model->save();
-                     Db::name($extended['name'])->where(['extended_id' => $model->info_id])->update($date['extend']);
+                    $model->save();
+                    Db::name($extended['name'])->where(['extended_id' => $model->goods_id])->update($date['extend']);
                 });
                 return true;
             }
@@ -80,18 +74,18 @@ class InfoBls
             $model->extend = $date['extend'];
         }
 
-
         return $model->save();
     }
 
-    public static function infoDelete(InfoModel $model)
+    public static function goodsDelete(GoodsModel $model)
     {
         $page = $model->page;
         if($extended = $page->extendedData) {
-
             if($extended->type == ExtendedTypeConst::MYSQL) {
                 return Db::transaction(function() use($model, $extended) {
-                    Db::name($extended['name'])->where(['extended_id' => $model->info_id])->delete();
+                    if($extended['check'] == true){
+                        Db::name($extended['name'])->where(['extended_id' => $model->goods_id])->delete();
+                    }
                     return $model->delete();
                 });
             }
@@ -99,12 +93,12 @@ class InfoBls
         return $model->delete();
     }
 
-    public static function getOneInfo($where)
+    public static function getOneGoods($where)
     {
-        return InfoModel::where($where)->find();
+        return GoodsModel::where($where)->find();
     }
 
-    public static function getInfoMysqlExtended($tableName, $extended_id)
+    public static function getGoodsMysqlExtended($tableName, $extended_id)
     {
        return Db::name($tableName)->where(['extended_id'=>$extended_id])->find();
     }

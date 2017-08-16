@@ -4,6 +4,7 @@ namespace app\manage\controller;
 use app\common\bls\extended\ExtendedBls;
 use app\common\bls\page\PageBls;
 use app\common\consts\common\CommonStatusConst;
+use app\common\consts\page\PageTemplateConst;
 use app\common\tool\Helper;
 use app\common\bls\page\traits\PageTrait;
 
@@ -151,8 +152,12 @@ class page extends BasicController
             return $this->error('参数错误');
         }
 
-        if($model->info->count()) {
+        if($model->template_type == PageTemplateConst::INFO[0] && $model->info->count()) {
             return $this->error('信息数据请清空');
+        }
+
+        if($model->template_type == PageTemplateConst::GOODS[0] && $model->goods->count()) {
+            return $this->error('产品数据请清空');
         }
 
         //数据删除

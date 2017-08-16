@@ -2,9 +2,8 @@
 
 {block name="php"}
 <?php
-use app\common\consts\page\PageTemplateConst;
 use app\common\tool\Tool;
-use app\common\consts\common\CommonStatusConst;
+use app\common\consts\goods\GoodsRecommendationConst;
 ?>
 {/block}
 
@@ -12,10 +11,13 @@ use app\common\consts\common\CommonStatusConst;
 <link href="__STATIC__/default/artDialog/skins/default.css" rel="stylesheet" />
 {/block}
 
-
 {block name="content"}
 {include file='public_file/nav_tabs' /}
-<form class="form-horizontal" action="{:empty(input('id')) ? url('create') : url('update',['id'=>input('id')])}" method="post">
+
+<form class="form-horizontal"
+      action="{:empty(input('id')) ? url('create',['cid'=>input('cid')]) : url('update',['id'=>input('id'), 'cid'=>input('cid')])}"
+      method="post">
+
     <div class="bs-example">
         <!--右侧-->
         <div class="col-sm-8">
@@ -27,56 +29,23 @@ use app\common\consts\common\CommonStatusConst;
                         <span class="form-required">*</span>
                     </th>
                 </tr>
-
                 <tr>
-                    <th width="150">模版类型</th>
+                    <th width="150">分类</th>
                     <td>
-                        {:Tool::get('form')->select('template_type', PageTemplateConst::groupDesc(),
-                            isset($info->template_type) ? $info->template_type : '',
-                            ['class' => 'form-control text', 'id' =>'group']
+                        {:Tool::get('form')->select('page_id', $page,
+                            isset($info->page_id) ? $info->page_id : input('cid'),
+                            ['class' => 'form-control text', 'placeholder'=>'请选择']
                         )}
                     </td>
                 </tr>
                 <tr>
-                    <th width="150">默认模版</th>
+                    <th width="150">可见性</th>
                     <td>
-                        {:Tool::get('form')->select('template_page', PageTemplateConst::pageDesc(),
-                            isset($info->template_page) ? $info->template_page : '',
+                        {:Tool::get('form')->select('display', $display,
+                            isset($info->display) ? $info->display : '',
                             ['class' => 'form-control text']
                         )}
                     </td>
-                </tr>
-                <tr class="template_info">
-                    <th width="150">详情模板</th>
-                    <td>
-                        {:Tool::get('form')->select('template_info', PageTemplateConst::infoDesc(),
-                            isset($info->template_info) ? $info->template_info : '',
-                            ['class' => 'form-control text']
-                        )}
-                    </td>
-                </tr>
-                <tr>
-                    <th>页面扩展</th>
-                    <td>
-                        {:Tool::get('form')->select('fields_extended_id', $enum['fields_extended'],
-                            isset($info->fields_extended_id) ? $info->fields_extended_id : '',
-                            ['class' => 'form-control text','placeholder'=>'请选择']
-                        )}
-                </tr>
-                <tr>
-                    <th>信息扩展</th>
-                    <td>
-                        {:Tool::get('form')->select('data_extended_id', $enum['data_extended'],
-                            isset($info->data_extended_id) ? $info->data_extended_id : '',
-                            ['class' => 'form-control text','placeholder'=>'请选择']
-                        )}
-                    </td>
-                </tr>
-                <tr class="template_info">
-                    <th>列表行数</th>
-                    <th>
-                        <input type="text" class="form-control text" name="list_row" value="{$info.list_row ?? '10'}">
-                    </th>
                 </tr>
                 <tr>
                     <th>简介</th>
@@ -94,7 +63,8 @@ use app\common\consts\common\CommonStatusConst;
                 </tr>
             </table>
         </div>
-        <!--    左侧-->
+
+        <!--左侧-->
         <div class="col-sm-3">
             <table class="table table-bordered">
                 <tr>
@@ -102,25 +72,19 @@ use app\common\consts\common\CommonStatusConst;
                 </tr>
                 <tr>
                     <th>
-                        {:Tool::get('form')->oneImage('picture',
-                            isset($info->picture) ? $info->picture : ''
-                        )}
+                        {:Tool::get('form')->oneImage('picture', isset($info->picture) ? $info->picture : '')}
                     </th>
                 </tr>
                 <tr>
-                    <th>可见性</th>
+                    <th>创建时间</th>
                 </tr>
                 <tr>
                     <th>
-                        {:Tool::get('form')->select('display', CommonStatusConst::desc(),
-                            isset($info->display) ? $info->display : '',
-                            ['class' => 'form-control text']
-                        )}
+                        {:Tool::get('form')->date('create_time', isset($info->create_time) ? $info->create_time : '')}
                     </th>
                 </tr>
                 <tr>
-                    <th>关键字</th>
-
+                    <th>网页描述</th>
                 </tr>
                 <tr>
                     <th>
@@ -128,21 +92,21 @@ use app\common\consts\common\CommonStatusConst;
                     </th>
                 </tr>
                 <tr>
-                    <th>描述</th>
+                    <th>网页关键字</th>
                 </tr>
                 <tr>
                     <th>
                         <textarea name="description" class="form-control text" clos="30" rows="2">{$info.description ?? ''}</textarea>
                     </th>
                 </tr>
-
             </table>
         </div>
-        <div class="col-sm-12"> <!--底部-->
+        <!--底部-->
+        <div class="col-sm-12">
             <table class="table table-bordered" >
-                <thead id="extended">
+               <thead id="extended">
 
-                </thead>
+               </thead>
                 <tr>
                     <th width="150">文章内容</th>
                     <th>
@@ -153,7 +117,6 @@ use app\common\consts\common\CommonStatusConst;
         </div>
     </div>
     <div class="form-actions col-sm-12">
-
         <button type="button" class="btn btn-primary ajax-post " autocomplete="off">
             保存
         </button>
@@ -165,25 +128,14 @@ use app\common\consts\common\CommonStatusConst;
 {block name="script"}
 <script src="__STATIC__/default/headjs.js"></script>
 <script>
-    $(function(){
-        $("#group").change(function() {
-            var tr,num;
-            num = $(this).val();
-            tr  = $('.template_info');
-            if(num >= 2){
-                tr.show();
-            }else {
-                tr.hide();
-            }
-        }).trigger("change");
-
-        $("select[name=fields_extended_id]").change(function () {
-            var fields_extended_id = $(this).val();
-            var page_id = '{:input("id")}';
+    $(function () {
+        $("select[name=page_id]").change(function () {
+            var page_id = $(this).val();
+            var goods_id = '{:input("id")}';
             $.ajax({
                 url : "{:url('extended')}",
                 type : 'post',
-                data: {'fields_extended_id':fields_extended_id,'page_id':page_id},
+                data: {'page_id':page_id,'goods_id':goods_id},
                 dataType : 'json',
                 success : function (json)
                 {
@@ -198,6 +150,6 @@ use app\common\consts\common\CommonStatusConst;
                 }
             });
         }).trigger("change");
-    });
+    })
 </script>
 {/block}

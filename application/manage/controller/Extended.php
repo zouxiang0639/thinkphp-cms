@@ -14,7 +14,8 @@ class Extended extends BasicController
     public function __construct()
     {
         parent::__construct();
-        $this->id       = !empty($this->request->param('id')) ? intval($this->request->param('id')) : $this->id;
+        $this->id       = $this->request->get('id');
+
         $nav = [
             '数据扩展列表' => ['url' => 'index'],
             '数据扩展增加' => ['url' => 'add'],
@@ -108,8 +109,12 @@ class Extended extends BasicController
                 return $this->error('参数错误');
             }
 
+            if($model->pageFieldsExtended->count() || $model->pageDataExtended->count()){
+                return $this->error('数据扩展已被绑定');
+            }
+
             if(ExtendedBls::deleteExtended($model)){
-                return $this->success(lang('delete success'), url($this->url));
+                return $this->success(lang('delete success'), url('index'));
             }else{
                 return $this->error(lang('delete failed'));
             }
@@ -128,7 +133,6 @@ class Extended extends BasicController
             $post               = $this->request->post();
             $post['parent_id']  = $this->id;
             $post['id']         = intval($post['id']);
-
 
             if(empty($post['id'])){ //创建数据库字段
 
@@ -262,6 +266,7 @@ class Extended extends BasicController
     {
         if($this->request->isPost() && !empty($this->id)){
             $model = ExtendedBls::getOneExtended(['extended_id' => $this->id]);
+
             if(empty($model)) {
                 return $this->error('参数错误');
             }

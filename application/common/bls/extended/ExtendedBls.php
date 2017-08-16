@@ -73,9 +73,7 @@ class ExtendedBls
         $model->input_value = $data['input_value'];
         $model->parent_id = $data['parent_id'];
         $model->type = ExtendedTypeConst::MYSQL;
-
         $model->save();
-
         return self::createFields($model);
 
     }
@@ -228,8 +226,7 @@ class ExtendedBls
     {
 
         $extended   = ExtendedModel::where(['parent_id'=>0])->column('extended_id,type,title');
-        $default    = [0 => '请选择'];
-        $group      = [0 => $default, 1 => $default, 2 => $default];
+        $group      = [0 => [], 1 => [], 2 => []];
         foreach((array)$extended as $v){
             $group[$v['type']][$v['extended_id']]  = $v['title'];
             $group[0][$v['extended_id']]            = $v['title'];
@@ -317,7 +314,9 @@ class '.$modelName.' extends Model
      */
     private static function createFields(ExtendedModel $model)
     {
+
         $parent = ExtendedModel::get($model->parent_id);
+
         if($model->type == ExtendedTypeConst::MYSQL){
             $mysqlName      = Config::get('database.prefix').$parent['name'];
             $type   = lang('mysql fields type');

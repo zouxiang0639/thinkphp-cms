@@ -1,10 +1,10 @@
 <?php
-namespace app\common\bls\info\validate;
+namespace app\common\bls\goods\validate;
 
 
 use app\common\base\BaseValidate;
 
-class InfoValidate extends BaseValidate
+class GoodsValidate extends BaseValidate
 {
 
     public function setRule()
@@ -18,7 +18,7 @@ class InfoValidate extends BaseValidate
     public function setMessage()
     {
         return [
-            'page_id.request' => '请选择分类'
+            'page_id.require' => '请选择分类'
         ];
     }
 

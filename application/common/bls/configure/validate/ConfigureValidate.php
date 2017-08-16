@@ -28,8 +28,8 @@ class ConfigureValidate extends BaseValidate
     public function setScene()
     {
         return [
-            'create'  =>  ['title','input_type','configure_name'],
-            'update'  =>  ['title']
+            'create'  =>  ['title','configure_name', 'input_type'],
+            'update'  =>  ['title', 'configure_name', 'input_type']
         ];
     }
 

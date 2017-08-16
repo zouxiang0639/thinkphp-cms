@@ -4,12 +4,13 @@
 <?php
 use app\common\tool\Tool;
 use app\common\consts\configure\ConfigureTypeConst;
+use app\common\consts\common\CommonFormInputConst;
 ?>
 {/block}
 
 {block name="content"}
 {include file='public_file/nav_tabs' /}
-<form class="form-horizontal" action="{:empty(input('id')) ? url('create') : url('update',['id'=>input('id')])}" method="post">
+<form class="form-horizontal" action="{:empty(input('id')) ? url('add') : url('update',['id'=>input('id')])}" method="post">
     <div class="bs-example">
         <table class="table table-bordered">
             <tbody>
@@ -35,10 +36,9 @@ use app\common\consts\configure\ConfigureTypeConst;
             </tr>
 
             <tr>
-                <th>渲染类型</th>
+                <th>输出类型</th>
                 <td>
-                    {:Tool::get('form')->select('input_type', lang('form type'), isset($info->form_type) ? $info->form_type : '', ['class'=>"form-control
-                    text"] )}
+                    {:Tool::get('form')->select('input_type', CommonFormInputConst::desc(), isset($info->input_type) ? $info->input_type : '', ['class'=>"form-control text", 'placeholder'=>'请选择'] )}
                 </td>
             </tr>
             <tr>

@@ -666,6 +666,71 @@ class Menu extends \Phinx\Seed\AbstractSeed
                     )
                 ],
                 [
+                    'name'      => '产品管理',
+                    'app'       => 'manage',
+                    'model'     => 'goods',
+                    'action'    => 'default',
+                    'type'      => '0',
+                    'child'     => array(
+                        [
+                            'name'      => '产品列表',
+                            'app'       => 'manage',
+                            'model'     => 'goods',
+                            'action'    => 'index',
+                            'type'      => 1,
+                            'status'    => 1
+                        ],
+                        [
+                            'name'      => '产品增加',
+                            'app'       => 'manage',
+                            'model'     => 'goods',
+                            'action'    => 'add',
+                            'type'      => 1,
+                            'status'    => 1
+                        ],
+                        [
+                            'name'      => '产品创建',
+                            'app'       => 'manage',
+                            'model'     => 'goods',
+                            'action'    => 'create',
+                            'type'      => 1,
+                            'status'    => 0
+                        ],
+                        [
+                            'name'      => '产品编辑',
+                            'app'       => 'manage',
+                            'model'     => 'goods',
+                            'action'    => 'edit',
+                            'type'      => 1,
+                            'status'    => 0
+                        ],
+                        [
+                            'name'      => '产品更新',
+                            'app'       => 'manage',
+                            'model'     => 'goods',
+                            'action'    => 'update',
+                            'type'      => 1,
+                            'status'    => 0
+                        ],
+                        [
+                            'name'      => '产品删除',
+                            'app'       => 'manage',
+                            'model'     => 'goods',
+                            'action'    => 'delete',
+                            'type'      => 1,
+                            'status'    => 0
+                        ],
+                        [
+                            'name'      => '产品排序',
+                            'app'       => 'manage',
+                            'model'     => 'goods',
+                            'action'    => 'sort',
+                            'type'      => 1,
+                            'status'    => 0
+                        ]
+                    )
+                ],
+                [
                     'name'      => '导航管理',
                     'app'       => 'manage',
                     'model'     => 'category',

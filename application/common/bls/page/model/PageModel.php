@@ -21,7 +21,12 @@ class PageModel extends BasicModel
 
     public function info()
     {
-        return $this->hasMany('app\common\bls\info\model\InfoModel', 'id', 'info_id');
+        return $this->hasMany('app\common\bls\info\model\InfoModel', 'page_id', 'page_id');
+    }
+
+    public function goods()
+    {
+        return $this->hasMany('app\common\bls\goods\model\GoodsModel', 'page_id', 'page_id');
     }
 
 }

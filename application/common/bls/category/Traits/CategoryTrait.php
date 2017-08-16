@@ -27,6 +27,8 @@ trait CategoryTrait
 
                     if($page->template_type == PageTemplateConst::INFO[0]) {
                         $item->url = url(PageTemplateConst::INFO[2], ['cid' => $page->page_id]);
+                    } else if ($page->template_type == PageTemplateConst::GOODS[0]) {
+                        $item->url = url(PageTemplateConst::GOODS[2], ['cid' => $page->page_id]);
                     } else {
                         $item->url = url(PageTemplateConst::PAGE[2], ['id' => $page->page_id]);
                     }

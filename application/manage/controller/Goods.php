@@ -2,17 +2,17 @@
 namespace app\manage\controller;
 
 use app\common\bls\extended\ExtendedBls;
-use app\common\bls\info\InfoBls;
+use app\common\bls\goods\GoodsBls;
 use app\common\bls\page\PageBls;
 use app\common\consts\common\CommonStatusConst;
 use app\common\consts\extended\ExtendedTypeConst;
 use app\common\consts\page\PageTemplateConst;
 use app\common\tool\Helper;
-use app\common\bls\info\traits\InfoTrait;
+use app\common\bls\goods\traits\GoodsTrait;
 
-class Info extends BasicController
+class Goods extends BasicController
 {
-    use InfoTrait;
+    use GoodsTrait;
 
     private $id;
     private $cid;
@@ -24,9 +24,9 @@ class Info extends BasicController
         $this->id       = $this->request->param('id');
         $this->cid      = $this->request->param('cid');
         $nav = [
-            '信息列表' => ['url' => ['index', ['cid' => $this->cid]]],
-            '信息增加' => ['url' => ['add', ['cid' => $this->cid]]],
-            '信息修改' => ['url' => ['edit', ['id' => $this->id, 'cid' => $this->cid]], 'style' => "display: none;"],
+            '产品列表' => ['url' => ['index', ['cid' => $this->cid]]],
+            '产品增加' => ['url' => ['add', ['cid' => $this->cid]]],
+            '产品修改' => ['url' => ['edit', ['id' => $this->id, 'cid' => $this->cid]], 'style' => "display: none;"],
         ];
         $this->assign([
             'navTabs'   => parent::navTabs($nav),
@@ -47,9 +47,9 @@ class Info extends BasicController
             $where['title'] = ['like',"%{$param['title']}%"];
         }
 
-        $model = InfoBls::getInfoList($where);
-        $page = PageBls::getAllPage(['template_type' => PageTemplateConst::INFO[0]]);
-        $this->formatInfo($model->getCollection());
+        $model = GoodsBls::getGoodsList($where);
+        $page = PageBls::getAllPage(['template_type' => PageTemplateConst::GOODS[0]]);
+        $this->formatGoods($model->getCollection());
         return $this->fetch('',[
             'list'  => $model,
             'page'  => $page
@@ -62,9 +62,8 @@ class Info extends BasicController
     public function add()
     {
 
-
-        return $this->fetch('info',[
-            'page'              => PageBls::getAllPage(['template_type' => PageTemplateConst::INFO[0]]),
+        return $this->fetch('goods',[
+            'page'              => PageBls::getAllPage(['template_type' => PageTemplateConst::GOODS[0]]),
             'display'           => CommonStatusConst::desc()
         ]);
     }
@@ -78,14 +77,14 @@ class Info extends BasicController
 
             $post   = Helper::recombinantArray($this->request->post(), 'photos');
             //数据验证
-            $result = $this->validate($post, 'app\common\bls\info\validate\InfoValidate.create');
+            $result = $this->validate($post, 'app\common\bls\goods\validate\GoodsValidate.create');
             if(true !== $result){
                 // 验证失败 输出错误信息
                 return $this->error($result);
             }
 
             //关联数据库扩展模型数据更新
-            if(InfoBls::createInfo($post)){
+            if(GoodsBls::createGoods($post)){
                 return $this->success(lang('Add success'), url('index',['cid' => $this->cid]));
             }else{
                 return $this->error(lang('Add failed'));
@@ -99,14 +98,15 @@ class Info extends BasicController
      */
     public function edit()
     {
-        $model = InfoBls::getOneInfo(['info_id' => $this->id]);
+        $model = GoodsBls::getOneGoods(['goods_id' => $this->id]);
+
         if(empty($model)){
             return $this->error('参数错误');
         }
-        return $this->fetch('info', [
-            'info'  => $model,
-            'page'              => PageBls::getAllPage(['template_type' => PageTemplateConst::INFO[0]]),
-            'display'           => CommonStatusConst::desc()
+        return $this->fetch('goods', [
+            'info'      => $model,
+            'page'      => PageBls::getAllPage(['template_type' => PageTemplateConst::GOODS[0]]),
+            'display'   => CommonStatusConst::desc()
         ]);
     }
 
@@ -118,20 +118,20 @@ class Info extends BasicController
             $post   = Helper::recombinantArray($this->request->post(), 'photos');
 
             //数据验证
-            $result = $this->validate($post, 'app\common\bls\info\validate\InfoValidate.update');
+            $result = $this->validate($post, 'app\common\bls\goods\validate\GoodsValidate.update');
             if(true !== $result){
                 // 验证失败 输出错误信息
                 return $this->error($result);
             }
 
             //查询数据
-            $model  = InfoBls::getOneInfo(['info_id' => $this->id]);
+            $model  = GoodsBls::getOneGoods(['goods_id' => $this->id]);
             if(empty($model)){
                 return $this->error('参数错误');
             }
 
             //关联数据库扩展模型数据更新
-            if(InfoBls::infoUpdate($model,$post)){
+            if(GoodsBls::goodsUpdate($model,$post)){
                 return $this->success(lang('Update success'), url('index', ['cid' => $this->cid]));
             }else{
                 return $this->error(lang('Update failed'));
@@ -146,14 +146,14 @@ class Info extends BasicController
     public function delete()
     {
         if($this->request->isPost() && !empty($this->id)){
-            $model  = InfoBls::getOneInfo(['info_id' => $this->id]);
+            $model  = GoodsBls::getOneGoods(['goods_id' => $this->id]);
 
             if(empty($model)){
                 return $this->error('参数错误');
             }
 
             //关联数据库扩展模型数据删除
-            if(InfoBls::infoDelete($model)){
+            if(GoodsBls::goodsDelete($model)){
                 return $this->success(lang('delete success'));
             }else{
                 return $this->error(lang('delete failed'));
@@ -167,7 +167,7 @@ class Info extends BasicController
      */
     public function sort()
     {
-        $sort   = InfoBls::getOneInfo(['info_id' => $this->id]);
+        $sort   = GoodsBls::getOneGoods(['goods_id' => $this->id]);
         $order  = isset($_POST['order']) ? intval($_POST['order']) : 0;
         if(!$this->request->isPost() || empty($sort)){
             return $this->error('参数错误');
@@ -188,18 +188,18 @@ class Info extends BasicController
     {
         if($this->request->isPost()){
             $page_id    = input('page_id');
-            $info_id    = input('info_id');
+            $goods_id   = input('goods_id');
             $html       = '';
             $date       = [];
             $page       = PageBls::getOnePage(['page_id'=>$page_id]);
 
             if(!empty($page) && $extended = $page->extendedData){
-                if(!empty($info_id)) {
-                    $info = InfoBls::getOneInfo(['info_id'=>$info_id]);
-                    if($extended->type == ExtendedTypeConst::MYSQL) {
-                        $date = InfoBls::getInfoMysqlExtended($extended->name, $info->info_id);
+                if(!empty($goods_id)) {
+                    $goods = GoodsBls::getOneGoods(['goods_id'=>$goods_id]);
+                    if($extended->type == ExtendedTypeConst::FIELD) {
+                        $date = $goods->extend;
                     } else {
-                        $date = $info->extend;
+                        $date = GoodsBls::getGoodsMysqlExtended($extended->name, $goods->goods_id);
                     }
                 }
                 $html = ExtendedBls::formBuilder($page->data_extended_id, $date);

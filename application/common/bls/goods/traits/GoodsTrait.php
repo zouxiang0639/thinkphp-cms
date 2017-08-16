@@ -1,17 +1,17 @@
 <?php
 
-namespace app\common\bls\info\traits;
+namespace app\common\bls\goods\traits;
 
 use think\Collection;
 
-trait InfoTrait
+trait GoodsTrait
 {
     /**
      * 属性填充
      * @param Collection $items
      * @return Collection
      */
-    protected function formatInfo(Collection $items)
+    protected function formatGoods(Collection $items)
     {
         return $items->each(function ($item) {
             $item->pageName = '';

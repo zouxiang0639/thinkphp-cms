@@ -13,7 +13,11 @@ abstract class BasicController extends BaseController
     {
         parent::__construct();
         $auth                   = new Auth();
-        $auth->noNeedCheckRules = ['manage/index/index','manage/index/home','manage/info/extended','manage/page/extended'];
+        $auth->noNeedCheckRules = [
+            'manage/index/index','manage/index/home','manage/info/extended','manage/page/extended',
+            'manage/goods/extended'
+
+        ];
         $user                   = $auth::is_login();
 
         if($user){//用户登录状态
