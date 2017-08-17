@@ -9,7 +9,6 @@ use app\common\consts\category\CategoryGroupConst;
 ?>
 {/block}
 
-
 {block name="style"}
 <link rel="stylesheet" href="__STATIC__/default/select2/select2.min.css" media="all">
 {/block}
@@ -24,8 +23,11 @@ use app\common\consts\category\CategoryGroupConst;
             <tr>
                 <th>导航分类</th>
                 <th>
-                    {:Tool::get('form')->select('group', CategoryGroupConst::desc(), isset($info) ? $info->group : input('group'), ['class'=>'form-control
-                    text','lay-ignore','disabled'])}
+                    {:Tool::get('form')->select('group',
+                        CategoryGroupConst::desc(),
+                        isset($info) ? $info->group : input('group'),
+                        ['class'=>'form-control text','lay-ignore','disabled']
+                    )}
                     <input type="hidden" name="group" value="{$info->group ?? input('group')}">
                     <span class="form-required">*</span>
                 </th>
@@ -39,25 +41,41 @@ use app\common\consts\category\CategoryGroupConst;
             <tr>
                 <th>状态</th>
                 <td>
-                    {:Tool::get('form')->select('status', CategoryStatusConst::desc(), isset($info) ? $info->status : '', ['class'=>'form-control text']) }
+                    {:Tool::get('form')->select('status',
+                        CategoryStatusConst::desc(),
+                        isset($info) ? $info->status : '',
+                        ['class'=>'form-control text']
+                    )}
                 </td>
             </tr>
             <tr>
                 <th width="150">父级导航</th>
                 <td>
-                    {:Tool::get('form')->select('parent_id', array_merge([0=>'/'], $category), isset($info) ? $info->parent_id : '', ['class'=>'form-control text', 'id'=>'select2-parent-id']) }
+                    {:Tool::get('form')->select('parent_id', $category,
+                        isset($info) ? $info->parent_id : '',
+                        ['class'=>'form-control text', 'id'=>'select2-parent-id']
+                    )}
                 </td>
             </tr>
             <tr>
                 <th width="150">绑定页面</th>
                 <td>
-                    {:Tool::get('form')->select('bind_page', array_merge(['0'=>'请选择'], CategoryBindPageConst::desc()), isset($info) ? $info->bind_page : '', ['class'=>'form-control text']) }
+                    {:Tool::get('form')->select('bind_page',
+                        CategoryBindPageConst::desc(),
+                        isset($info) ? $info->bind_page : '',
+                        ['class'=>'form-control text', 'placeholder'=>'请选择']
+                    )}
                 </td>
             </tr>
             <tr id="page">
                 <th width="150">本地链接</th>
                 <td>
-                    {:Tool::get('form')->select('page_id', $page, isset($info) ? $info->page_id : '', ['class'=>'form-control text', 'id'=>'select2-page']) }
+                    {:Tool::get('form')->select('page_id',
+                        $page,
+                        isset($info) ? $info->page_id : '',
+                        ['class'=>'form-control text',
+                        'id'=>'select2-page']
+                    )}
                 </td>
             </tr>
             <tr id="template_info">

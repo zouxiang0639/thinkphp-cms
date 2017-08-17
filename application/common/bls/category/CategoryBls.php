@@ -27,18 +27,23 @@ class CategoryBls
     /**
      * 排序导航
      *
-     * @param $date
+     * @param $data
      * @param int $parent_id
      * @return bool
      */
-    public static function categorySort($date, $parent_id = 0)
+    public static function categorySort($data, $parent_id = 0)
     {
-        foreach($date as $values) {
+        foreach($data as $values) {
             static $num = 0;
 
-            foreach ($date as $value) {
+            foreach ($data as $value) {
                 $num ++;
-                CategoryModel::where('category_id', $value['id'])->update(['sort'=> $num,'parent_id' => $parent_id]);
+                $sortDate = [
+                    'sort'      => $num,
+                    'parent_id' => $parent_id,
+                    'path'      => self::categoryPath($parent_id, $value['id'])
+                ];
+                CategoryModel::where('category_id', $value['id'])->update($sortDate);
                 if(isset($value['children'])) {
                     self::categorySort($value['children'], $value['id']);
                 }
@@ -76,7 +81,7 @@ class CategoryBls
         $model = self::getAllCategory(['group' => $group]);
 
         return  (new Tree('parent_id'))->create($model, function($object){
-            $array = array();
+            $array = [0 => '/'];
             $items = $object->toLinearArray()->getItems();
             foreach ($items as $value) {
                 $title = $value->title;
@@ -91,14 +96,33 @@ class CategoryBls
 
     }
 
-    public static function createCategory($date)
+    public static function createCategory($data)
     {
-        return CategoryModel::create($date);
+        $model = new CategoryModel();
+        $model->group = $data['group'];
+        $model->title = $data['title'];
+        $model->status = $data['status'];
+        $model->parent_id = $data['parent_id'];
+        $model->bind_page = $data['bind_page'];
+        $model->page_id = $data['page_id'];
+        $model->links = $data['links'];
+        $model->save();
+        $model->path = self::categoryPath($model->parent_id, $model->category_id);
+        return $model->save();
     }
 
-    public static function updateCategory($id, $date)
+    public static function updateCategory(CategoryModel $model, $date)
     {
-        return CategoryModel::where('category_id',$id)->save($date);
+        $date['path'] = self::categoryPath($date['parent_id'], $model->category_id);
+        return $model->save($date);
     }
 
+    protected static function categoryPath($parent_id, $category_id)
+    {
+        if($parent_id == 0) {
+            return $category_id;
+        }
+        $path = self::getOneCategory(['category_id' => $parent_id])->path;
+        return $path.','.$category_id;
+    }
 }

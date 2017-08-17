@@ -17,6 +17,7 @@ class CreateCategory extends Migrator
             ->addColumn('page_id', 'integer', ['limit' => MysqlAdapter::INT_SMALL, 'comment' => '', 'signed'=>false])
             ->addColumn('group', 'integer', ['limit' => MysqlAdapter::INT_TINY, 'default' => 0, 'comment' => '导航分类 NavigateGroupConst'])
             ->addColumn('bind_page', 'integer', ['limit' => MysqlAdapter::INT_TINY, 'default' => 0, 'comment' => '绑定页面类型 1:本地连接 2外部连接  NavigateBindPageConst'])
+            ->addColumn('path', 'string', ['limit' => 150, 'comment' => '路由'])
             ->addColumn('status', 'boolean', ['default' => 1, 'comment' => '状态:  1,所有人可见 2,不可见 3,管理员可见'])
             ->addColumn('links', 'string', ['limit' => 200, 'comment' => '外部链接'])
             ->addColumn('sort', 'integer', ['limit' => 10, 'comment' => '排序'])

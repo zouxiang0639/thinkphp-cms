@@ -49,6 +49,9 @@ class Category extends BasicController
 
                 $html = '';
                 foreach ($date as $value) {
+                   /* if($value->category_id == 6){
+                        dump($value);die;
+                    }*/
 
                     $page = $value->url ? '<a target="_blank" href="'.$value->url.'" >内部页面</a>' : '';
 
@@ -133,7 +136,7 @@ class Category extends BasicController
                 return $this->error('参数错误');
             }
 
-            if($model->save($data)) {
+            if(CategoryBls::updateCategory($model,$data)) {
                 return $this->success(lang('update success'), url('index',['group' => input('group')]));
             }else {
                 return $this->error(lang('update failed'));
