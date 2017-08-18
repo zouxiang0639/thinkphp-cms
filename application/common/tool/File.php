@@ -1,6 +1,7 @@
 <?php
 namespace app\common\tool;
 
+use app\common\bls\file\FileBls;
 use app\common\consts\file\FileTypeConst;
 use app\common\model\FileModel;
 
@@ -79,7 +80,7 @@ class File extends \think\File
          *  图片上传替换原图
          */
         if(!empty($id) && $id !='undefined'){
-            $replaceFile = FileModel::get($id);
+            $replaceFile = FileBls::getOneFile(['file_id'=>$id]);
             if($replaceFile){
                 $filePath  = explode(DS, $replaceFile['path']);
                 $count      = count($filePath);
@@ -91,7 +92,7 @@ class File extends \think\File
          * 如果不是替换文件 根据hash查找文件库是否有上传过
          */
         if(!$filePath){
-            $info = FileModel::where(['hash'=>$hash])->column(['0,path,name']);
+            $info = FileBls::getFileArray(['hash'=>$hash]);
             //如果查找成功就返回数据库里面的数据
             if(!empty($info)) {
                 return $this->result(1, '上传成功', $info[0]['path'], $info[0]['name']);
@@ -132,16 +133,17 @@ class File extends \think\File
         if(!$filePath) {
 
             //创建上传的文件数据
-            FileModel::create([
+            FileBls::createFile([
                 'path'  => $path,
                 'name'  => $info->info['name'],
                 'group' => $type,
                 'hash'  => $hash,
             ]);
+
         }else if ($filePath && is_object($replaceFile)){
 
             //更新替换上传的文件数据
-            $replaceFile->save([
+            FileBls::updateFile($replaceFile, [
                 'path'  => $path,
                 'name'  => $info->info['name'],
                 'group' => $type,

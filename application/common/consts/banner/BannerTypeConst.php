@@ -8,7 +8,7 @@ class BannerTypeConst
 {
     const HOME_BANNER = 1;
 
-    const HOME_BANNER_DESC = '首页Banner';
+    const HOME_BANNER_DESC = '幻灯片';
 
     public static function desc()
     {

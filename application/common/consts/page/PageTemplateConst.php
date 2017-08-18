@@ -12,11 +12,11 @@ class PageTemplateConst
     const GOODS = [3, '产品模版', 'manage/goods/index'];
 
     //页面
-    const ARTICLE = [11, '关于我们', ' article '];
+    const ARTICLE = [11, '文章', ' article '];
     const NEWS  = [12, '新闻', 'news'];
 
     //内页
-    const NEWS_INFO  = [13, '新闻内页', 'news_info'];
+    const NEWS_INFO  = [23, '新闻详情', 'news_info'];
 
     public static function desc()
     {

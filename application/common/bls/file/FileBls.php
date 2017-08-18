@@ -13,4 +13,34 @@ class FileBls
             'query' => input()
         ]);
     }
+
+    public static function createFile($data)
+    {
+        $model = new FileModel();
+        $model->path  =  $data['path'];
+        $model->name  =  $data['name'];
+        $model->group =  $data['group'];
+        $model->hash  =  $data['hash'];
+        $model->save();
+    }
+
+    public static function getOneFile($where)
+    {
+        return FileModel::where($where)->find();
+    }
+
+    public static function updateFile($model, $data)
+    {
+        $model->path  =  $data['path'];
+        $model->name  =  $data['name'];
+        $model->group =  $data['group'];
+        $model->hash  =  $data['hash'];
+        $model->save();
+    }
+
+    public static function getFileArray($where)
+    {
+        return FileModel::where($where)->column(['0,path,name']);
+    }
+
 }
