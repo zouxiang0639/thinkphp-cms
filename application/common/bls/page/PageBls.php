@@ -50,4 +50,9 @@ class PageBls
     {
         return PageModel::where($where)->find();
     }
+
+    public static function getPageSelect($where, $order = '')
+    {
+        return PageModel::where($where)->order($order)->select();
+    }
 }

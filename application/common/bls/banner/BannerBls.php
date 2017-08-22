@@ -32,4 +32,9 @@ class BannerBls
     {
         return BannerModel::where($where)->find();
     }
+
+    public static function getBannerSelect($where, $order = '')
+    {
+        return BannerModel::where($where)->order($order)->select();
+    }
 }

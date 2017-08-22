@@ -29,4 +29,9 @@ class FragmentBls
     {
         return FragmentModel::where($where)->find();
     }
+
+    public static function getFragmentSelect($where, $order = '')
+    {
+        return FragmentModel::where($where)->order($order)->select();
+    }
 }

@@ -8,6 +8,10 @@ $navTabs['nav'] = '<li class="active"><a href="">'.$info['class_name'].'</a></li
 ?>
 {/block}
 
+{block name="style"}
+<link href="__STATIC__/default/artDialog/skins/default.css" rel="stylesheet" />
+{/block}
+
 {block name="content"}
 {include file='public_file/nav_tabs'  /}
 
@@ -32,6 +36,7 @@ $navTabs['nav'] = '<li class="active"><a href="">'.$info['class_name'].'</a></li
 {/block}
 
 {block name="script"}
+<script src="__STATIC__/default/headjs.js"></script>
 <script>
     $(function(){
         $("#navcid_select").change(function() {

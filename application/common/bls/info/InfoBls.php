@@ -108,4 +108,9 @@ class InfoBls
     {
        return Db::name($tableName)->where(['extended_id'=>$extended_id])->find();
     }
+
+    public static function getInfoSelect($where, $order = '')
+    {
+        return InfoModel::where($where)->order($order)->select();
+    }
 }

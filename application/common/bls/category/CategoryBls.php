@@ -125,4 +125,9 @@ class CategoryBls
         $path = self::getOneCategory(['category_id' => $parent_id])->path;
         return $path.','.$category_id;
     }
+
+    public static function getCategorySelect($where, $order = '')
+    {
+        return CategoryModel::where($where)->order($order)->select();
+    }
 }

@@ -1,6 +1,7 @@
 <?php
 namespace app\common\tool;
 
+use app\common\consts\common\CommonFormInputConst;
 use think\Config;
 
 class Helper
@@ -27,22 +28,24 @@ class Helper
     public  function formEnum($type, $name, $value = null, $options = [], $list = []){
         $html = '';
         switch($type){
-            case 'text':
+            case CommonFormInputConst::TEXT:
                 return Tool::get('form')->text($name, $value, $options);
-            case 'select':
+            case CommonFormInputConst::SELECT:
                 return Tool::get('form')->select($name, $list, $value, $options);
-            case 'checkbox':
+            case CommonFormInputConst::CHECKBOX:
                 return Tool::get('form')->checkboxs($name, $list, $value, ['style' => 'margin-top: 2px;' ]);
-            case 'radio':
+            case CommonFormInputConst::RADIO:
                 return Tool::get('form')->radios($name, $list, $value, ['style' => 'margin-top: 2px;' ]);
-            case 'textarea':
-                return Tool::get('form')->textarea($name, $value,  array_merge(['clos' => '30', 'rows' => 3], $options));
-            case 'password':
+            case CommonFormInputConst::PASSWORD:
                 return Tool::get('form')->password($name, $options);
-            case 'oneimage':
+            case CommonFormInputConst::TEXTAREA:
+                return Tool::get('form')->textarea($name, $value,  array_merge(['clos' => '30', 'rows' => 3], $options));
+            case CommonFormInputConst::ONE_IMAGE:
                 return Tool::get('form')->oneImage($name, $value);
             case 'multiimage':
                 return Tool::get('form')->multiImage($name, $value);
+            case 'editor':
+                return Tool::get('form')->editor($name, $value);
             case 'editor':
                 return Tool::get('form')->editor($name, $value);
             default:

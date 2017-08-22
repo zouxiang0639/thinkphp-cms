@@ -218,6 +218,11 @@ class ExtendedBls
         return $html;
     }
 
+    public static function getExtendedSelect($where, $order = '')
+    {
+        return ExtendedModel::where($where)->order($order)->select();
+    }
+
     /**
      * 数据扩展组
      * @return mixed
