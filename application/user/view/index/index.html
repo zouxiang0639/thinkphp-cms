@@ -1,0 +1,92 @@
+{extend name="layouts/master" /}
+
+{block name="php"}
+<?php
+$id = 1;
+?>
+{/block}
+
+{block name="content"}
+
+<div class="main fly-user-main layui-clear">
+    {include file='public/filt_menu' /}
+
+    <div class="fly-panel fly-panel-user panel-user" pad20>
+        <div class="layui-tab layui-tab-brief" lay-filter="user" id="LAY_msg" style="margin-top: 15px;">
+            <fieldset class="layui-elem-field " style="height: 200px">
+                <legend>会员中心</legend>
+                <div class="layui-row">
+                    <div class="layui-col-xs4 circle">
+                        <img src="{$info->avatar}"  width="150" height="150" class="layui-circle">
+                    </div>
+                    <div class="layui-col-xs8   ">
+                        <ul class="action-list">
+
+                            <li>昵称：<span>{$info->nickname}</span></li>
+                            <li>绑定邮箱：<span class="tel">{$info->email}</span></li>
+                            <li>会员类型：<span>注册会员</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </fieldset>
+            <hr>
+            <div class="layui-row portal-sub">
+                <div class="layui-col-md6">
+                    <h3>
+                        待支付的订单：
+                        <span class="num">0</span>
+                    </h3>
+                    <a href="">
+                        查看待支付订单
+                        <i class="layui-icon">&#xe602;</i>
+                    </a>
+                    <img src="__STATIC__/user/image/portal-icon-1.png" alt="">
+                </div>
+                <div class="layui-col-md6">
+                    <h3>待收货的订单：<span class="num">0</span></h3>
+                    <a href="">
+                        查看待收货订单
+                        <i class="layui-icon">&#xe602;</i>
+                    </a>
+                    <img src="__STATIC__/user/image/portal-icon-2.png" alt="">
+                </div>
+                <div class="layui-col-md6">
+                    <h3>待支付的订单：
+                        <span class="num">0</span>
+                    </h3>
+                    <a href="">
+                        查看待支付订单
+                        <i class="layui-icon">&#xe602;</i>
+                    </a>
+                    <img src="__STATIC__/user/image/portal-icon-3.png" alt="">
+                </div>
+                <div class="layui-col-md6">
+                    <h3>
+                        待收货的订单：
+                        <span class="num">0</span>
+                    </h3>
+                    <a href="">
+                        查看待收货订单
+                        <i class="layui-icon">&#xe602;</i>
+                    </a>
+                    <img src="__STATIC__/user/image/portal-icon-4.png" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{/block}
+
+{block name="script"}
+<script>
+    layui.config({
+        version: "2.0.0",
+        base: '__STATIC__/user/js/'
+    }).extend({
+        fly: 'global'
+    }).use('fly');
+
+</script>
+{block}

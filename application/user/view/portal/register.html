@@ -1,0 +1,112 @@
+{extend name="layouts/master" /}
+
+{block name="content"}
+<div class="main layui-clear">
+    <div class="fly-panel fly-panel-user" pad20="">
+        <div class="layui-tab layui-tab-brief" lay-filter="user">
+            <ul class="layui-tab-title">
+                <li><a href="{:url('login')}">登入</a></li>
+                <li class="layui-this">注册</li>
+            </ul>
+            <div class="layui-form layui-tab-content" id="LAY_ucm" style="padding: 20px 0;">
+                <div class="layui-tab-item layui-show">
+                    <div class="layui-form layui-form-pane">
+                        <form method="post">
+                            {:token()}
+                            <div class="layui-form-item">
+                                <label  class="layui-form-label">邮箱</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="email" required="" lay-verify="email" autocomplete="off" class="layui-input" />
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">
+                                    将会成为您唯一的登入名
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">昵称</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="username" required="" lay-verify="required" autocomplete="off" class="layui-input" />
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">密码</label>
+                                <div class="layui-input-inline">
+                                    <input type="password" name="password" required="" lay-verify="required" autocomplete="off" class="layui-input" />
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">
+                                    6到16个字符
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">确认密码</label>
+                                <div class="layui-input-inline">
+                                    <input type="password" name="password_confirm" required="" lay-verify="required" autocomplete="off" class="layui-input" />
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">验证码</label>
+                                <div class="layui-input-inline">
+                                    <input name="verify"  lay-verify="required" placeholder="请输入验证码" class="layui-input" type="text" />
+                                </div>
+                                <div class="layui-input-inline">
+                                    <img height="38" src="" id="captcha_img" onclick="load_captcha()" >
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <button class="layui-btn" lay-submit="" lay-filter="register">立即注册</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+
+
+{block name="script"}
+<script>
+    load_captcha();
+    function load_captcha() {
+        document.getElementById("captcha_img").src = '{:captcha_src()}?' + Math.random();
+    }
+
+    layui.use(['form'], function() {
+        var form = layui.form,
+            layer = layui.layer;
+
+        form.on('submit(register)', function(data){
+            var _this = $(this);
+            buttonDisabledTrue(_this);
+
+            $.ajax({
+                url: '{:url("register")}',
+                data: data.field,
+                type:'POST',
+                cache: false,
+                dataType:'json',
+                success:function(res) {
+                    if(res.code == 0) {
+
+                        $('input[name=__token__]').val(res.data);
+                        buttonDisabledFalse(_this);
+                        load_captcha();
+
+                        layer.msg(res.msg, {icon: 5, time: 2000});
+
+                    } else {
+                        layer.msg(res.msg, {icon: 1, time: 2000});
+                        window.location.href = res.url;
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    layer.msg('服务器未正常响应，请稍后重试', {icon: 5, time: 2000});
+                }
+            });
+            return false;
+        });
+
+    });
+</script>
+{/block}

@@ -49,3 +49,4 @@ if (! function_exists('thumb_get')) {
         }
     }
 }
+

@@ -1,0 +1,90 @@
+{extend name="layouts/master" /}
+
+{block name="content"}
+<div class="main layui-clear">
+    <div class="fly-panel fly-panel-user" pad20="">
+        <div class="layui-tab layui-tab-brief" lay-filter="user">
+            <ul class="layui-tab-title">
+                <li class="layui-this">忘记密码</li>
+            </ul>
+            <div class="layui-form layui-tab-content" id="LAY_ucm" style="padding: 20px 0;">
+                <div class="layui-tab-item layui-show">
+                    <div class="layui-form layui-form-pane">
+                        <form class="layui-form" action="">
+                            {:token()}
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">邮箱</label>
+                                <div class="layui-input-inline">
+                                    <input name="email" lay-verify="required" autocomplete="off" class="layui-input" type="text" />
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">验证码</label>
+                                <div class="layui-input-inline">
+                                    <input name="verify" lay-verify="required" placeholder="请输入验证码" class="layui-input" type="text" />
+                                </div>
+                                <div class="layui-input-inline">
+                                    <img height="38" src="" id="captcha_img" onclick="load_captcha()">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <button class="layui-btn" lay-submit="" lay-filter="forget">立即提交</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="script"}
+<script>
+
+    load_captcha();
+    function load_captcha() {
+        document.getElementById("captcha_img").src = '{:captcha_src()}?' + Math.random();
+    }
+
+    layui.use(['form'], function(){
+        var form = layui.form,
+                layer = layui.layer;
+
+
+        //监听提交
+        form.on('submit(forget)', function(data){
+            var _this = $(this);
+            //buttonDisabledTrue(_this);
+
+            $.ajax({
+                url: '{:url("forget")}',
+                data: data.field,
+                type:'POST',
+                cache: false,
+                dataType:'json',
+                success:function(res) {
+                    if(res.code == 0) {
+
+                        $('input[name=__token__]').val(res.data);
+                        buttonDisabledFalse(_this);
+                        load_captcha();
+
+                        layer.msg(res.msg, {icon: 5, time: 2000});
+
+                    } else {
+                        layer.msg(res.msg, {icon: 1, time: 2000});
+                        window.location.href = res.url;
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    layer.msg('服务器未正常响应，请稍后重试', {icon: 5, time: 2000});
+                }
+            });
+            return false;
+        });
+
+
+    });
+</script>
+{/block}

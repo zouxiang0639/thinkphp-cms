@@ -11,7 +11,7 @@ class User extends BasicController
     public function index()
     {
         $model = UserBls::getUserList();
-        return $this->fetch('' , [
+        return $this->fetch('' ,[
             'list' => $model
         ]);
     }

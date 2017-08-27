@@ -1,53 +1,13 @@
-<!DOCTYPE html>
-<head>
-    {include file='manage@public_file/header' /}
-</head>
-<body >
+{extend name="layouts/master" /}
 
-<div class="container-fluid">
+{block name="php"}
+{/block}
 
-    {assign name="navTabs.nav" value='<li class="active"><a href="">用户列表</a></li>' /}
-    {include file='manage@public_file/nav_tabs' /}
+{block name="style"}
+{/block}
 
-    <form class="well form-search" id="mainform" action="{:url('info/index')}" method="get">
-        <div class="btn-group width2">
-            <a class="btn btn-primary" href="{:url('category/edit')}">编辑分类</a>
-        </div>
-    </form>
-    <form  method="post">
-        <table class="table table-hover table-bordered table-list" id="menus-table">
-            <thead>
-            <tr>
-                <th width="50">编号</th>
-                <th width="120">用户名</th>
-                <th>最后登录时间</th>
-                <th width="180">操作</th>
-            </tr>
-            </thead>
-            <tbody>
-            {foreach name='$list' item='v' }
-                <tr>
-                    <th width="50">{$v->getKey()}</th>
-                    <th><img height="30" src="{$v.}"></th>
-                    <th>{$v.title}</th>
-                    <th>
-                        <a href="{:url('info/edit')}">编辑</a> |
-                        <a class="a-post" post-msg="你确定删除吗?" post-url="{:url('info/delete', ['id'=>$v['info_id']])}">删除</a>
-                    </th>
-                </tr>
-            {/foreach}
-            </tbody>
-        </table>
-    </form>
-    <div class="text-center">
-        {//$page}
-    </div>
-    <input type="hidden" value="{:url('info/sort')}" class="listOrderUrl">
+{block name="content"}
+{/block}
 
-
-</div>
-
-{include file='manage@public_file/footer' /}
-
-</body>
-</html>
+{block name="script"}
+{/block}

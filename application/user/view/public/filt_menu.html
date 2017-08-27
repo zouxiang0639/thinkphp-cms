@@ -1,0 +1,14 @@
+<ul class="layui-nav layui-nav-tree layui-inline" lay-filter="user">
+    {foreach name='$menu' item='value' }
+    <li class="layui-nav-item {:isset($id) && $value['id'] == $id ? 'layui-this' : ''}">
+        <a href="{$value.url}">
+            <i class="layui-icon">{$value.icon}</i>
+            {$value.title}
+        </a>
+    </li>
+    {/foreach}
+</ul>
+<div class="site-tree-mobile layui-hide">
+    <i class="layui-icon">&#xe602;</i>
+</div>
+<div class="site-mobile-shade"></div>
