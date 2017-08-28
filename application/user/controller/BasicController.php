@@ -18,7 +18,7 @@ class BasicController extends Controller
         if(! $this->request->is_login()) {
             return $this->redirect('portal/login');
         }
-        $this->assign('leftMenu', self::lifeMenu());
+        $this->assign('leftMenu', self::leftMenu());
     }
 
     public function leftMenu()
