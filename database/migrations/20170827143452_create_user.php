@@ -21,7 +21,8 @@ class CreateUser extends Migrator
             ->addColumn('comment', 'string', ['limit' => 255, 'comment' => '简介'])
             ->addColumn('avatar', 'string', ['limit' => 100, 'comment' => '头像'])
             ->addColumn('token', 'string', ['limit' => 100, 'comment' => '令牌'])
-            ->addColumn('birthday', 'timestamp', ['comment' => '生日'])
+            ->addColumn('birthday', 'datetime', ['comment' => '生日'])
+            ->addColumn('status', 'boolean', ['default' => 1, 'comment' => '状态 详细UserStatusConst'])
             ->addIndex(['user_id'])
             ->addTimestamps('create_time', 'update_time')
             ->save();

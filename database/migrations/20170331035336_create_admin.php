@@ -14,7 +14,7 @@ class CreateAdmin extends Migrator
             ->addColumn('admin_password', 'char', ['limit' => 32, 'comment' => '用户密码'])
             ->addColumn('login_priv', 'boolean', ['default' => 1, 'comment' => '登录权限: 1,授权 2,关闭'])
             ->addColumn('last_login_ip', 'integer', ['limit' => 11, 'comment' => '最后登录IP'])
-            ->addColumn('last_login_time', 'timestamp', ['comment' => '最后登录时间'])
+            ->addColumn('last_login_time', 'datetime', ['comment' => '最后登录时间'])
             ->addColumn('admin_email', 'string', ['limit' => 50, 'comment' => '管理员邮箱'])
             ->addColumn('comment', 'string', ['limit' => 255, 'comment' => '管理员介绍'])
             ->addColumn('sex', 'boolean', ['comment' => '性别:1,男 2,女'])
