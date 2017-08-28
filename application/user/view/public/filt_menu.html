@@ -1,5 +1,5 @@
 <ul class="layui-nav layui-nav-tree layui-inline" lay-filter="user">
-    {foreach name='$lifeMenu' item='value' }
+    {foreach name='$leftMenu' item='value' }
     <li class="layui-nav-item {:isset($id) && $value['id'] == $id ? 'layui-this' : ''}">
         <a href="{$value.url}">
             <i class="layui-icon">{$value.icon}</i>

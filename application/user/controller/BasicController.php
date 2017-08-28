@@ -18,10 +18,10 @@ class BasicController extends Controller
         if(! $this->request->is_login()) {
             return $this->redirect('portal/login');
         }
-        $this->assign('lifeMenu', self::lifeMenu());
+        $this->assign('leftMenu', self::lifeMenu());
     }
 
-    public function lifeMenu()
+    public function leftMenu()
     {
         return [
             ['id'=>1, 'title' => '会员中心', 'url' => url('index/index'), 'icon' => '&#xe612;'],
