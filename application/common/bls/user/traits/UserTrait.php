@@ -2,6 +2,7 @@
 
 namespace app\common\bls\user\traits;
 
+use app\common\consts\user\UserStatusConst;
 use think\Collection;
 
 trait UserTrait
@@ -15,8 +16,9 @@ trait UserTrait
     {
         return $items->each(function ($item) {
             $item->birthday = substr($item->birthday, 0, 10);
-            $item->nickname = empty($this->nickname) ? '匿名' : $this->nickname;
-            $item->avatar = empty($this->avatar) ? '/static/user/image/avatar.jpg' : $this->avatar;
+            $item->nickname = empty($item->nickname) ? '匿名' : $item->nickname;
+            $item->avatar = empty($item->avatar) ? '/static/user/image/avatar.jpg' : $item->avatar;
+            $item->statusName = UserStatusConst::getDesc($item->status);
         });
     }
 }

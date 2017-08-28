@@ -101,12 +101,12 @@ class Portal extends BaseController
 
             $mail = new Email();
 
-            $mail->addAddress('542506511@qq.com', 'Joe User');     // Add a recipient
+            $mail->addAddress($post['email']);     // Add a recipient
             $mail->isHTML(true);                                  // Set email format to HTML
             $mail->Subject = '找回密码';
 
             $url = url('setPassword', ['token'=>$model->token, 'email'=> $post['email']], true, true);
-            $html ="亲爱的用户：<br>您好！<br>";
+            $html ="尊敬的用户：<br>您好！<br>";
             $html.='<br>为了保障您帐号的安全性，请在 10分钟内完成修改密码。';
             $html.='<a href="'.$url.'">点击跳转修改密码</a>';
             $mail->Body    = $html;

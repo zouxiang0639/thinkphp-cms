@@ -11,9 +11,11 @@ class UserBls
 {
     public static $session_prefix = 'wwww';
 
-    public static function getUserList($where = '', $limit = '')
+    public static function getUserList($where = '', $limit = 20)
     {
-        return UserModel::where($where)->paginate($limit, input());
+        return UserModel::where($where)->paginate($limit, '', [
+            'query' => input()
+        ]);
     }
 
     public static function createUser($data)

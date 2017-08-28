@@ -20,7 +20,8 @@ class Menu extends \Phinx\Seed\AbstractSeed
            $this->menuSystem(),
            $this->menuArticle(),
            $this->menuOther(),
-           $this->menuExtendedTool()
+           $this->menuExtendedTool(),
+           $this->menuUser(),
        ];
 
        foreach($array as $v){
@@ -924,6 +925,64 @@ class Menu extends \Phinx\Seed\AbstractSeed
                             'action'    => 'index',
                             'type'      => 1,
                             'status'    => 1
+                        ]
+                    )
+                ]
+            )
+        ];
+        return $arr;
+    }
+
+    /**
+     * 会员管理
+     */
+    public function menuUser()
+    {
+        $arr = [
+            'name'      => '会员管理',
+            'app'       => 'manage_user',
+            'model'     => 'other',
+            'action'    => 'default',
+            'type'      => '0',
+            'child'     => array(
+                [
+                    'name'      => '用户管理',
+                    'app'       => 'manage_user',
+                    'model'     => 'user',
+                    'action'    => 'default',
+                    'type'      => '0',
+                    'child'     => array(
+                        [
+                            'name'      => '用户列表',
+                            'app'       => 'manage_user',
+                            'model'     => 'user',
+                            'action'    => 'index',
+                            'type'      => 1,
+                            'status'    => 1
+                        ],
+                        [
+                            'name'      => '用户禁用启用',
+                            'app'       => 'manage_user',
+                            'model'     => 'user',
+                            'action'    => 'status',
+                            'type'      => 1,
+                            'status'    => 0
+                        ],
+                        [
+                            'name'      => '用户详细',
+                            'app'       => 'manage_user',
+                            'model'     => 'user',
+                            'action'    => 'show',
+                            'type'      => 1,
+                            'status'    => 0
+                        ],
+                        [
+                            'name'      => '重置密码',
+                            'app'       => 'manage_user',
+                            'model'     => 'user',
+                            'action'    => 'setPassword',
+                            'type'      => 1,
+                            'status'    => 0
                         ]
                     )
                 ]

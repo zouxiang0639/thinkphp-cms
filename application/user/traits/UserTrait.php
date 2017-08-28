@@ -1,6 +1,6 @@
 <?php
 
-namespace app\common\bls\info\traits;
+namespace app\common\bls\user\traits;
 
 use think\Collection;
 

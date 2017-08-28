@@ -20,45 +20,11 @@
 </head>
 <body >
 
-<div class="header">
-    <div class="main">
-        <a class="logo" href="/" title="Fly">Fly社区</a>
-        <div class="nav">
-            <a class="nav-this" href="index.html">
-                <i class="iconfont icon-wenda"></i>问答
-            </a>
-            <a href="http://www.layui.com/" target="_blank">
-                <i class="iconfont icon-ui"></i>框架
-            </a>
-        </div>
 
-        <div class="nav-user">
-            <!-- 登入后的状态 -->
-
-            <a class="avatar" href="../user/index.html">
-                <img src="http://tp4.sinaimg.cn/1345566427/180/5730976522/0">
-                <cite>贤心</cite>
-                <i>VIP2</i>
-            </a>
-            <div class="nav">
-                <a href="../user/set.html"><i class="iconfont icon-shezhi"></i>设置</a>
-                <a href=""><i class="iconfont icon-tuichu" style="top: 0; font-size: 22px;"></i>退了</a>
-            </div>
-
-        </div>
-    </div>
-</div>
-
+{include file='public/header' /}
 {block name="content"}{/block}
 
-<div class="footer">
-    <p><a href="http://fly.layui.com/">Fly社区</a> 2017 &copy; <a href="http://www.layui.com/">layui.com</a></p>
-    <p>
-        <a href="http://fly.layui.com/auth/get" target="_blank">产品授权</a>
-        <a href="http://fly.layui.com/jie/8157.html" target="_blank">获取Fly社区模版</a>
-        <a href="http://fly.layui.com/jie/2461.html" target="_blank">微信公众号</a>
-    </p>
-</div>
+{include file='public/footer' /}
 
 <script src="__STATIC__/default/layui/layui.js"></script>
 <script src="__STATIC__/user/js/global.js"></script>
