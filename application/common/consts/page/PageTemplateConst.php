@@ -30,6 +30,15 @@ class PageTemplateConst
         ];
     }
 
+    public static function descEn()
+    {
+        return [
+            self::ARTICLE[0]    => self::ARTICLE[2],
+            self::NEWS[0]       => self::NEWS[2],
+            self::NEWS_INFO[0]  => self::NEWS_INFO[2]
+        ];
+    }
+
     public static function groupDesc()
     {
         return [
@@ -75,6 +84,11 @@ class PageTemplateConst
     public static function getDesc($item)
     {
         return array_get(self::desc(), $item, '');
+    }
+
+    public static function getDescEn($item)
+    {
+        return array_get(self::descEn(), $item, '');
     }
 
 }
