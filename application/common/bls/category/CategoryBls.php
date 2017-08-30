@@ -4,9 +4,12 @@ namespace app\common\bls\category;
 use app\common\bls\category\model\CategoryModel;
 use app\common\library\trees\Tree;
 use think\model\Collection;
+use app\common\extend\traits\CategoryTrait;
 
 class CategoryBls
 {
+
+    use CategoryTrait; //扩展方法
 
     /**
      * 获取导航列表

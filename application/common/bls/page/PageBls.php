@@ -2,21 +2,17 @@
 namespace app\common\bls\page;
 
 use app\common\bls\page\model\PageModel;
+use app\common\extend\traits\PageTrait;
 
 class PageBls
 {
+    use PageTrait;  //方法扩展
 
     public static function getPageList($where = [], $limit = 20)
     {
         return PageModel::where($where)->order('page_id asc')->paginate($limit, '', [
             'query' => input()
         ]);
-    }
-
-    //关联一对一
-    public function dataFieldsExtended()
-    {
-        return $this->hasOne('app\common\model\ExtendedModel','extended_id','data_extended_id');
     }
 
     public static function getAllPage($where = '')

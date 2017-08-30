@@ -5,9 +5,12 @@ use app\common\bls\info\model\InfoModel;
 use app\common\bls\page\PageBls;
 use app\common\consts\extended\ExtendedTypeConst;
 use think\Db;
+use app\common\extend\traits\InfoTrait;
 
 class InfoBls
 {
+    use InfoTrait;  //扩展方法
+
     public static function getInfoList($where = '', $limit = 20)
     {
         return InfoModel::where($where)
