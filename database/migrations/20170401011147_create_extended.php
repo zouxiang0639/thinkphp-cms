@@ -11,7 +11,7 @@ class CreateExtended extends Migrator
     public function up()
     {
         $table = $this->table('extended', ['id' => 'extended_id', 'engine'=>'MyISAM', 'comment' => '字段扩展表']);
-        $table->addColumn('input_type', 'string', ['limit' => 100, 'comment' => '表单类型'])
+        $table->addColumn('input_type', 'integer', ['limit' => MysqlAdapter::INT_TINY, 'default' => 1, 'comment' => '表单类型 CommonFormInputConst'])
             ->addColumn('input_value', 'string', ['limit' => 255, 'comment' => '表单默认值'])
             ->addColumn('comment', 'string', ['limit' => 255, 'comment' => '描述'])
             ->addColumn('title', 'string', ['limit' => 255, 'comment' => '标题'])

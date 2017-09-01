@@ -910,7 +910,8 @@ class Menu extends \Phinx\Seed\AbstractSeed
                             'status'    => 0
                         ]
                     )
-                ],[
+                ],
+                [
                     'name'      => '文件管理',
                     'app'       => 'manage',
                     'model'     => 'file',
@@ -925,6 +926,39 @@ class Menu extends \Phinx\Seed\AbstractSeed
                             'action'    => 'index',
                             'type'      => 1,
                             'status'    => 1
+                        ]
+                    )
+                ],
+                [
+                    'name'      => '表单管理',
+                    'app'       => 'manage',
+                    'model'     => 'forms',
+                    'action'    => 'default',
+                    'type'      => '0',
+                    'child'     => array(
+                        [
+                            'name'      => '表单列表',
+                            'app'       => 'manage',
+                            'model'     => 'forms',
+                            'action'    => 'index',
+                            'type'      => 1,
+                            'status'    => 1
+                        ],
+                        [
+                            'name'      => '表单详细',
+                            'app'       => 'manage',
+                            'model'     => 'forms',
+                            'action'    => 'show',
+                            'type'      => 1,
+                            'status'    => 0
+                        ],
+                        [
+                            'name'      => '删除',
+                            'app'       => 'manage',
+                            'model'     => 'forms',
+                            'action'    => 'delete',
+                            'type'      => 1,
+                            'status'    => 0
                         ]
                     )
                 ]

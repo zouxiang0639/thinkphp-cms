@@ -34,7 +34,7 @@ class Helper
                 return Tool::get('form')->select($name, $list, $value, $options);
             case CommonFormInputConst::CHECKBOX:
                 return Tool::get('form')->checkboxs($name, $list, $value, ['style' => 'margin-top: 2px;' ]);
-            case CommonFormInputConst::RADIO:
+            case CommonFormInputConst::RADIOS:
                 return Tool::get('form')->radios($name, $list, $value, ['style' => 'margin-top: 2px;' ]);
             case CommonFormInputConst::PASSWORD:
                 return Tool::get('form')->password($name, $options);

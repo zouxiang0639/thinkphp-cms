@@ -8,4 +8,5 @@ CKEDITOR.editorConfig = function( config ) {
 	// config.language = 'fr';
 	// config.uiColor = '#AADC6E';
     config.filebrowserImageUploadUrl = GV.ROOT+'file/upload?data=echo&type=image';  //图片上传
+    config.allowedContent=true;
 };

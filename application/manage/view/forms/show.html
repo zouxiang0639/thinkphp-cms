@@ -1,0 +1,17 @@
+{extend name="layouts/master" /}
+
+{block name="content"}
+
+{include file='public_file/nav_tabs' /}
+
+    <div class="bs-example">
+        <table class="table table-bordered">
+            {$html}
+        </table>
+    </div>
+    <div class="form-actions col-sm-12">
+
+        <a class="btn btn-default active" href="JavaScript:history.go(-1)">返回</a>
+    </div>
+{/block}
+

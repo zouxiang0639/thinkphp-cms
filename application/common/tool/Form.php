@@ -148,9 +148,9 @@ class Form extends FormBuilder
     public function radios($name, $list, $value = null, $options = [] )
     {
         $html = '';
-        foreach((array)$list as $v){
-            $checked    = $v==$value ? 1 : '' ;
-            $checkbox   = parent::radio($name, $value, $checked, $options);
+        foreach((array)$list as $key => $v){
+            $checked    = $key == $value ? 1 : '' ;
+            $checkbox   = parent::radio($name, $key, $checked, $options);
             $html       .="<label style='padding-top: 0px;padding-left: 0px;' class='checkbox-inline'>{$checkbox} {$v}</label>" ;
         }
         return $html;

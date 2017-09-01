@@ -16,9 +16,9 @@ use app\common\tool\Tool;
     <div class="btn-group width2">
         {:Tool::get('form')->select(
         'type',
-        array_merge([0 => '全部'], BannerTypeConst::desc()),
+        BannerTypeConst::desc(),
         input('type'),
-        ['class' => 'form-control', 'id' => 'navcid_select' ]
+        ['class' => 'form-control', 'id' => 'navcid_select', 'placeholder'=>'全部']
         )}
     </div>
 </form>

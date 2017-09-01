@@ -4,6 +4,7 @@
 <?php
 use app\common\tool\Tool;
 use app\common\consts\extended\ExtendedTypeConst;
+use app\common\consts\common\CommonFormInputConst;
 ?>
 {/block}
 
@@ -47,16 +48,17 @@ use app\common\consts\extended\ExtendedTypeConst;
             </tr>
             </thead>
             <tbody>
-            {foreach name='$info->extendedChild' item='v' }
+            {foreach name='$list' item='v' }
             <tr>
                 <th width="50">{$v.extended_id}</th>
                 <th>{$v.sort}</th>
                 <th>{$v.title}</th>
                 <th>{$v.name}</th>
-                <th>{:array_get(lang('form type'), $v['input_type'])}</th>
+                <th>{$v.inputTypeName}</th>
                 <th>
-                    <a class="fields"   data-target=".bs-example-modal-lg" data-toggle="modal"
-                       onclick="fields('{$v.title}', '{$v.input_type}' ,'{$v.input_value}' ,'{$v.comment}', '{$v.sort}', '{$v.extended_id}')" href="#">编辑</a>
+
+                    <a class="fields"   data-target=".bs-example-modal-lg" data-toggle="modal" input_value='{$v.input_value}'
+                       onclick="fields('{$v.title}', '{$v.input_type}' , $(this).attr('input_value') ,'{$v.comment}', '{$v.sort}', '{$v.extended_id}')" href="#">编辑</a>
                     <a class="a-post" post-msg="你确定删除吗?" post-url="{:url('extended/fieldsDelete', ['id'=>$v['extended_id']])}">删除</a>
                 </th>
             </tr>
@@ -122,8 +124,11 @@ use app\common\consts\extended\ExtendedTypeConst;
                                     输出类型
                                 </th>
                                 <td>
-                                    <?=Tool::get('form')->select('input_type', lang('form type'), object_get($info,'input_type'), ['class' =>
-                                    'form-control text'])?>
+                                    {:Tool::get('form')->select('input_type',
+                                    CommonFormInputConst::desc(),
+                                    object_get($info,'input_type'),
+                                    ['class' =>'form-control text']
+                                    )}
                                     <span class="form-required">*</span>
                                 </td>
                             </tr>

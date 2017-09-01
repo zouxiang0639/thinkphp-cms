@@ -171,13 +171,16 @@ class Extended extends BasicController
         }
 
         $model = ExtendedBls::getOneExtended(['extended_id'=>$this->id]);
+        $list = $model->extendedChild;
+        $this->formatExtendedField($list);
         if(empty($model)){
             return $this->error('参数错误');
         }
 
         return $this->fetch('',[
             'info'   => $model,
-            'showCreateTabel' => ExtendedBls::showCreateTabel($model)
+            'showCreateTabel' => ExtendedBls::showCreateTabel($model),
+            'list' => $list
         ]);
     }
 
@@ -239,9 +242,14 @@ class Extended extends BasicController
 
 
                 $update = ExtendedBls::getOneExtended(['extended_id'=>$post['id']]);
+                $update->title = $post['title'];
+                $update->sort = $post['sort'];
+                $update->comment = $post['comment'];
+                $update->input_type = $post['input_type'];
+                $update->input_value = $post['input_value'];
 
                 //更新扩展数据库
-                if($update->save($post)){
+                if($update->save()){
                     return $this->success(lang('Update success'));
                 }else{
                     return $this->error(lang('Update failed'));
@@ -250,12 +258,16 @@ class Extended extends BasicController
         }
 
         $model = ExtendedBls::getOneExtended(['extended_id'=>$this->id]);
+        $list = $model->extendedChild;
+        $this->formatExtendedField($list);
+
         if(empty($model)){
             return $this->error('参数错误');
         }
 
         return $this->fetch('',[
-            'info'   => $model,
+            'info'  => $model,
+            'list'  => $list
         ]);
     }
 

@@ -12,7 +12,7 @@ class PageTemplateConst
     const GOODS = [3, '产品模版', 'manage/goods/index'];
 
     //页面
-    const ARTICLE = [11, '文章', ' article '];
+    const ARTICLE = [11, '文章', 'article'];
     const NEWS  = [12, '新闻', 'news'];
 
     //内页

@@ -11,7 +11,7 @@ class CreateGoods extends Migrator
      */
     public function up()
     {
-        $table = $this->table('goods', ['id' => 'goods_id', 'engine'=>'InnoDB', 'comment' => '信息表']);
+        $table = $this->table('goods', ['id' => 'goods_id', 'engine'=>'InnoDB', 'comment' => '产品表']);
         $table->addColumn('title', 'string', ['limit' => 100, 'comment' => '标题'])
             ->addColumn('page_id', 'integer', ['limit' => MysqlAdapter::INT_SMALL, 'comment' => '分类导航ID'])
             ->addColumn('display', 'boolean', ['default' => 1, 'comment' => '显示: 0,删除, 1,所有人可见 2,不可见 3,管理员可见'])

@@ -1,0 +1,68 @@
+{extend name="layouts/master" /}
+
+{block name="php"}
+<?php
+use app\common\tool\Tool;
+?>
+{/block}
+
+{block name="content"}
+
+
+{include file='public_file/nav_tabs' /}
+
+<form class="well form-search" id="mainform" action="{:url('index')}" method="get">
+    <div class="btn-group width2">
+        {:Tool::get('form')->select(
+        'type',
+        $extended,
+        input('type'),
+        ['class' => 'form-control', 'id' => 'navcid_select', 'placeholder'=>'全部']
+        )}
+    </div>
+</form>
+
+<table class="table table-hover table-bordered table-list" id="menus-table">
+    <thead>
+    <tr>
+        <th width="50">ID</th>
+        <th>类型</th>
+        <th>表单内容</th>
+        <th width="180">操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {foreach name='$list' item='value' }
+    <tr>
+        <th width="50">{$value.forms_id}</th>
+        <th>
+            {$value.extendedName}
+        </th>
+        <th>
+            <p data-toggle="tooltip" title="" data-original-title="{$value.extendName}">{:mb_substr($value['extendName'],0,40)}</p>
+        </th>
+        <th>
+            <a href="{:url('show', ['id'=>$value['forms_id']])}">详细</a> |
+            <a class="a-post" post-msg="你确定删除吗?" post-url="{:url('delete', ['id'=>$value['forms_id']])}">删除</a>
+        </th>
+    </tr>
+    {/foreach}
+    </tbody>
+</table>
+
+<div class="text-center">
+    {$list->render()}
+</div>
+{/block}
+
+{block name="script"}
+<script>
+    $(function(){
+        $("#navcid_select").change(function() {
+            $("#mainform").submit();
+        });
+
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
+{/block}

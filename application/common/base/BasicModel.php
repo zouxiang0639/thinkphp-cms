@@ -12,15 +12,6 @@ class BasicModel extends Model
     public $primaryKey = 'id';
 
 
-
-    public function defaultImage($value)
-    {
-        if(empty($value)){
-            return Config::get('basic.default_picture');
-        }
-        return $value;
-    }
-
     public function gitKey()
     {
         dump(1);die;

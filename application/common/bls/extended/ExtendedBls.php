@@ -33,9 +33,9 @@ class ExtendedBls
         return $model;
     }
 
-    public static function getExtended($where = '')
+    public static function getExtendedType($type)
     {
-        return ExtendedModel::where($where)->select();
+        return ExtendedModel::where(['type' => $type])->column('extended_id,title');
     }
 
     public static function getOneExtended($where = '')
@@ -324,8 +324,7 @@ class '.$modelName.' extends Model
 
         if($model->type == ExtendedTypeConst::MYSQL){
             $mysqlName      = Config::get('database.prefix').$parent['name'];
-            $type   = lang('mysql fields type');
-            $type   = $type[$model->mysql_fields_type];
+            $type   = ExtendedMysqlFieldsTypeConst::getDesc($model->mysql_fields_type);
             $sql    = "alter table {$mysqlName} add `{$model->name}` ";
 
             //设置字段长度 过滤不需要字段长度类型

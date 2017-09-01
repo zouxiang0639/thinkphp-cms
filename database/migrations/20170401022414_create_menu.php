@@ -10,7 +10,7 @@ class CreateMenu extends Migrator
      */
     public function up()
     {
-        $table = $this->table('menu', ['id', 'engine'=>'MyISAM', 'comment' => '幻灯片表']);
+        $table = $this->table('menu', ['id', 'engine'=>'MyISAM', 'comment' => '后台菜单节点片表']);
         $table->addColumn('name', 'string', ['limit' => 100, 'comment' => '标题'])
             ->addColumn('parent_id', 'integer', ['limit' => MysqlAdapter::INT_SMALL, 'comment' => '父级ID', 'signed'=>false])
             ->addColumn('app', 'char', ['limit' => 20, 'comment' => '应用名称app'])
