@@ -395,6 +395,55 @@ class Menu extends \Phinx\Seed\AbstractSeed
                     )
                 ],
                 [
+                    'name'      => '标签管理',
+                    'app'       => 'manage',
+                    'model'     => 'label',
+                    'action'    => 'default',
+                    'type'      => '0',
+                    'child'     => array(
+                        [
+                            'name'      => '标签列表',
+                            'app'       => 'manage',
+                            'model'     => 'label',
+                            'action'    => 'index',
+                            'type'      => 1,
+                            'status'    => 1
+                        ],
+                        [
+                            'name'      => '标签添加',
+                            'app'       => 'manage',
+                            'model'     => 'label',
+                            'action'    => 'add',
+                            'type'      => 1,
+                            'status'    => 1
+                        ],
+                        [
+                            'name'      => '标签修改',
+                            'app'       => 'manage',
+                            'model'     => 'label',
+                            'action'    => 'edit',
+                            'type'      => 1,
+                            'status'    => 0
+                        ],
+                        [
+                            'name'      => '标签更新',
+                            'app'       => 'manage',
+                            'model'     => 'label',
+                            'action'    => 'update',
+                            'type'      => 1,
+                            'status'    => 0
+                        ],
+                        [
+                            'name'      => '标签删除',
+                            'app'       => 'manage',
+                            'model'     => 'label',
+                            'action'    => 'delete',
+                            'type'      => 1,
+                            'status'    => 0
+                        ]
+                    )
+                ],
+                [
                     'name'      => '数据扩展',
                     'app'       => 'manage',
                     'model'     => 'extended',

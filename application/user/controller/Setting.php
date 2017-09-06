@@ -4,7 +4,7 @@ namespace app\user\controller;
 use app\common\bls\user\UserBls;
 use app\common\tool\Tool;
 
-class setting extends BasicController
+class Setting extends BasicController
 {
     /**
      * 基本设置
