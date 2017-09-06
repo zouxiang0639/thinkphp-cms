@@ -1,0 +1,65 @@
+{extend name="layouts/master" /}
+
+{block name="php"}
+<?php
+use app\common\tool\Tool;
+use app\common\consts\label\LabelTypeConst;
+?>
+{/block}
+
+{block name="style"}
+<link href="__STATIC__/default/artDialog/skins/default.css" rel="stylesheet" />
+{/block}
+
+{block name="content"}
+
+
+{include file='public_file/nav_tabs' /}
+
+<form class="form-horizontal" action="{:empty(input('id')) ? url('add') : url('update',['id'=>input('id')])}" method="post" >
+
+    <div class="bs-example">
+        <table class="table table-bordered">
+            <tr>
+                <th>标题</th>
+                <th>
+                    <input class="form-control text" type="text" name="title" value="{$info.title ?? ''}">
+                    <span class="form-required">*</span>
+                </th>
+            </tr>
+            <tr>
+                <th width="150">所属分类</th>
+                <td>
+                    {:Tool::get('form')->select('type', LabelTypeConst::desc(), isset($info->type) ? $info->type : '', ['class' => 'form-control text'])}
+                    <span class="form-required">*</span>
+                </td>
+            </tr>
+            <tr>
+                <th>字母</th>
+                <th>
+                    <input class="form-control text" type="text" name="alphabet" value="{$info.alphabet ?? ''}">
+                </th>
+            </tr>
+            <tr>
+                <th width="150">图片</th>
+                <td>
+                    {:Tool::get('form')->oneImage('icon', isset($info->icon) ? $info->icon : '')}
+                </td>
+            </tr>
+
+        </table>
+    </div>
+
+    <div class="form-actions col-sm-12">
+        <button type="button" class="btn btn-primary ajax-post " autocomplete="off">
+            保存
+        </button>
+        <a class="btn btn-default active" href="JavaScript:history.go(-1)">返回</a>
+    </div>
+</form>
+{/block}
+
+{block name="script"}
+<script src="__STATIC__/default/headjs.js"></script>
+{/block}
+
