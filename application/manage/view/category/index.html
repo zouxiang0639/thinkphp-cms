@@ -3,7 +3,9 @@
 {block name="php"}
 <?php
 use app\common\tool\Tool;
-use app\common\consts\category\CategoryGroupConst
+use app\common\consts\category\CategoryGroupConst;
+
+$wechat = CategoryGroupConst::WE_CHAT == input('group');
 ?>
 {/block}
 
@@ -21,6 +23,11 @@ use app\common\consts\category\CategoryGroupConst
         <div class="btn-group ">
             <a href="javascript:;" class="btn btn-primary" id="category-sort" >排序 </a>
         </div>
+        {if condition="$wechat"}
+        <div class="btn-group ">
+            <a href="{:url('category/weChatMenu')}" class="btn btn-primary" >生成公众号导航</a>
+        </div>
+        {/if}
         <div class="btn-group">
             {:Tool::get('form')->select('group', CategoryGroupConst::desc(), input('group'), ['class' => 'form-control text'])}
         </div>

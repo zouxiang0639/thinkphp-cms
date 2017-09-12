@@ -19,4 +19,10 @@ class GoodsModel extends BasicModel
         return $this->hasOne('app\common\bls\page\model\PageModel','page_id', 'page_id');
     }
 
+    // photos_format读取器
+    protected function getPhotosFormatAttr($value, $attr)
+    {
+        return json_decode($attr['photos']);
+    }
+
 }

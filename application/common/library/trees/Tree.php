@@ -69,7 +69,7 @@ class Tree implements Countable
      * @param $level   int   所在级别
      * @return int
      */
-    private function recursion($date, $parent = 0, $level = 0)
+    public function recursion($date, $parent = 0, $level = 0)
     {
         $array = array();
         foreach($date as $value) {

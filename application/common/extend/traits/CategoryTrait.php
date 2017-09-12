@@ -31,7 +31,11 @@ trait CategoryTrait
      */
     public static function formatMenu(Collection $items)
     {
-        return $items->each(function ($item) {
+        $module = Request::instance()->module();
+        $arr = ['h5'];
+        $module = in_array($module, $arr) ? $module : 'index';
+
+        return $items->each(function ($item) use ($module) {
             $item->titleName    = $item->title;
             $item->url          = $item->links;
 
@@ -43,14 +47,15 @@ trait CategoryTrait
                 $page = $item->page;
                 $templatePage = PageTemplateConst::getDescEn($page->template_page);
                 if($page->template_type == PageTemplateConst::GOODS[0]) {
-                    $item->url = url('index/goods/'.$templatePage, ['id' => $item->category_id]);
+                    $item->url = url($module.'/goods/'.$templatePage, ['id' => $item->category_id]);
                 } else {
-                    $item->url = url('index/category/'.$templatePage,  ['id' => $item->category_id]);
+                    $item->url = url($module.'/category/'.$templatePage,  ['id' => $item->category_id]);
                 }
             }
         });
 
     }
+
 
     /**
      * 检查页面

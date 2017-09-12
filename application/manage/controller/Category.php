@@ -4,7 +4,9 @@ namespace app\manage\controller;
 use app\common\bls\category\CategoryBls;
 use app\common\bls\category\traits\CategoryTrait;
 use app\common\bls\page\PageBls;
+use app\common\consts\category\CategoryGroupConst;
 use app\common\library\trees\Tree;
+use app\common\library\weChat\WeChatSdk;
 
 
 class Category extends BasicController
@@ -178,5 +180,42 @@ class Category extends BasicController
         }
     }
 
+    /**
+     * 微信公众导航生成器
+     */
+    public function weChatMenu()
+    {
+        $model = CategoryBls::getCategorySelect(['group' => CategoryGroupConst::WE_CHAT]);
+        $menu = (new Tree('parent_id'))->create($model, function($date) {
+            $menu = [];
+            $date = $date->getItems();
+            foreach ($date as $value) {
+                $subButton = [];
+                foreach($value->child as $items) {
+                    $subButton[] = [
+                        'type'  => 'view',
+                        'name'  => $items->title,
+                        'url'   => $items->links
+                    ];
+                }
 
+                $menu[] = [
+                    'name'      => $value->title,
+                    'sub_button'=> $subButton
+                ];
+            }
+            return  [
+                'button'=> $menu
+            ];
+        });
+        $sdk = new WeChatSdk();
+        $sdk->getAccessToken();
+        $sdk->createNav($menu);
+
+    }
+
+    public function aaa()
+    {
+        return $this->success('chengg');
+    }
 }
