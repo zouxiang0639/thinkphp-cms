@@ -25,7 +25,7 @@ $wechat = CategoryGroupConst::WE_CHAT == input('group');
         </div>
         {if condition="$wechat"}
         <div class="btn-group ">
-            <a href="{:url('category/weChatMenu')}" class="btn btn-primary" >生成公众号导航</a>
+            <a post-msg="你确定要生成微信公众号导航吗?" post-url="{:url('category/weChatMenu')}" class="btn btn-primary a-post" >生成公众号导航</a>
         </div>
         {/if}
         <div class="btn-group">

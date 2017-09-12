@@ -1,7 +1,7 @@
 <?php
 namespace app\manage\controller;
 
-use app\common\bls\Admin\AdminBls;
+use app\common\bls\admin\AdminBls;
 use think\Cache;
 use think\Controller;
 use thinkcms\auth\Auth;

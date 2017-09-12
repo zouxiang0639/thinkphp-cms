@@ -34,14 +34,12 @@ class WeChatSdk
 
             $url    = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='.$this->appId.'&secret='.$this->appsecret;
             $json   = self::curlGet($url);
-
             $result = json_decode($json,true);
-
-            $accessToken = $result['access_token'];
 
             if(array_key_exists('errcode',$result) && $result['errcode']!=0){
                 return false;
             }
+            $accessToken = $result['access_token'];
             Cache::set('accessToken',$accessToken,7000);
 
             self::$accessToken = $accessToken;
@@ -102,8 +100,6 @@ class WeChatSdk
     public function createNav($data)
     {
 
-        self::getAccessToken();
-        dump($this->accessToken);die;
         /*  $data = [
             'button'=>[
                 [
@@ -130,7 +126,7 @@ class WeChatSdk
 
         $result = self::curlPost($url,$json);
 
-        return $result;
+        return json_decode($result);
     }
 
     /**
@@ -229,8 +225,8 @@ class WeChatSdk
         $ch = curl_init();
         curl_setopt($ch,CURLOPT_URL,$url);
         curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
-        curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
-        curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);//跳过证书验证
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);  // 从证书中检查SSL加密算法是否存在
         if(!curl_exec($ch)){
             $data = '';
         }else{

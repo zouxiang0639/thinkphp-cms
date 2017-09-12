@@ -51,9 +51,9 @@ class Category extends BasicController
 
                 $html = '';
                 foreach ($date as $value) {
-                   /* if($value->category_id == 6){
-                        dump($value);die;
-                    }*/
+                    /* if($value->category_id == 6){
+                         dump($value);die;
+                     }*/
 
                     $page = $value->url ? '<a target="_blank" href="'.$value->url.'" >内部页面</a>' : '';
 
@@ -210,7 +210,12 @@ class Category extends BasicController
         });
         $sdk = new WeChatSdk();
         $sdk->getAccessToken();
-        $sdk->createNav($menu);
+        $result = $sdk->createNav($menu);
+        if($result->errcode == 0) {
+            return $this->success('微信公众号菜单生成成功');
+        } else {
+            return $this->error($result->errmsg);
+        }
 
     }
 
