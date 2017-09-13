@@ -22,6 +22,7 @@ class Fragment extends BasicController
 
     public function index()
     {
+        FragmentBls::getAllFragment();
         $where = [];
         if(!empty(input('title'))){
             $where['title'] =  ['like', '%'.input('title').'%'];

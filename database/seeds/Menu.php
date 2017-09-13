@@ -843,6 +843,14 @@ class Menu extends \Phinx\Seed\AbstractSeed
                             'action'    => 'sort',
                             'type'      => 1,
                             'status'    => 0
+                        ],
+                        [
+                            'name'      => '生成公众号导航',
+                            'app'       => 'manage',
+                            'model'     => 'category',
+                            'action'    => 'weChatMenu',
+                            'type'      => 1,
+                            'status'    => 0
                         ]
                     )
                 ]

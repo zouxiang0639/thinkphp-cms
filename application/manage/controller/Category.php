@@ -6,7 +6,7 @@ use app\common\bls\category\traits\CategoryTrait;
 use app\common\bls\page\PageBls;
 use app\common\consts\category\CategoryGroupConst;
 use app\common\library\trees\Tree;
-use app\common\library\weChat\WeChatSdk;
+use app\common\library\sdk\WeChatSdk;
 
 
 class Category extends BasicController
@@ -201,26 +201,23 @@ class Category extends BasicController
 
                 $menu[] = [
                     'name'      => $value->title,
-                    'sub_button'=> $subButton
+                    'sub_button'=> $subButton ? $subButton : $value->links
                 ];
             }
             return  [
                 'button'=> $menu
             ];
         });
+
         $sdk = new WeChatSdk();
         $sdk->getAccessToken();
         $result = $sdk->createNav($menu);
+
         if($result->errcode == 0) {
             return $this->success('微信公众号菜单生成成功');
         } else {
             return $this->error($result->errmsg);
         }
 
-    }
-
-    public function aaa()
-    {
-        return $this->success('chengg');
     }
 }

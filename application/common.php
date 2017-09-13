@@ -50,3 +50,22 @@ if (! function_exists('thumb_get')) {
     }
 }
 
+if (! function_exists('fragment')) {
+
+    /**
+     * 获取碎片信息
+     * @param $id
+     * @param $field
+     * @return mixed
+     */
+    function fragment($id, $field)
+    {
+        $thumbPath = str_replace("img", "thumb", $path);
+        if(file_exists(ROOT_PATH.'public'.$thumbPath)){
+            return $thumbPath;
+        }else{
+            return $path;
+        }
+    }
+}
+

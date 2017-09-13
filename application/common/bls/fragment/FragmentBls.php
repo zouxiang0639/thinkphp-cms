@@ -34,4 +34,9 @@ class FragmentBls
     {
         return FragmentModel::where($where)->order($order)->select();
     }
+
+    public static function getAllFragment()
+    {
+      return FragmentModel::cache('getAllFragment', 3600)->column('*', 'fragment_id');
+    }
 }

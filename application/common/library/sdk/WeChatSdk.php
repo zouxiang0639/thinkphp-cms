@@ -1,5 +1,5 @@
 <?php
-namespace app\common\library\weChat;
+namespace app\common\library\sdk;
 
 use think\Cache;
 use think\Config;
