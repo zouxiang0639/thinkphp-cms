@@ -60,12 +60,8 @@ if (! function_exists('fragment')) {
      */
     function fragment($id, $field)
     {
-        $thumbPath = str_replace("img", "thumb", $path);
-        if(file_exists(ROOT_PATH.'public'.$thumbPath)){
-            return $thumbPath;
-        }else{
-            return $path;
-        }
+        $fragment = \app\common\bls\fragment\FragmentBls::getAllFragment();
+        return isset($fragment[$id]) ? $fragment[$id][$field] : '';
     }
 }
 
