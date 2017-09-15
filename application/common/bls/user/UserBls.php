@@ -11,6 +11,8 @@ class UserBls
 {
     public static $session_prefix = 'wwww';
 
+    public static $user = '';
+
     public static function getUserList($where = '', $limit = 20)
     {
         return UserModel::where($where)->paginate($limit, '', [
@@ -40,7 +42,13 @@ class UserBls
     public static function getUser()
     {
         if($user = self::is_login()) {
-            return self::getOneUser(['user_id' => $user['user_id']]);
+
+            if (static::$user){
+                return static::$user;
+            }
+
+            static::$user = self::getOneUser(['user_id' => $user['user_id']]);
+            return static::$user;
         }
 
         return false;

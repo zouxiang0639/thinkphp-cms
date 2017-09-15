@@ -39,7 +39,7 @@ class UserValidate extends BaseValidate
     public function setScene()
     {
         return [
-            'register'      => ['email', 'username', 'password', 'password_confirm', 'verify'], //注册
+            'register'      => ['email', 'password', 'password_confirm', 'verify'], //注册
             'login'         => ['email' => 'require|email|token', 'password', 'verify'], //登入
             'basicEdit'     => ['email', 'nickname', 'sex', 'birthday'], //基本信息修改
             'setPassword'   => ['password','password_confirm'], //修改密码

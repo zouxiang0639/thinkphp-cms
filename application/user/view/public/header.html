@@ -2,27 +2,24 @@
     <div class="main">
         <a class="logo" href="/" title="Fly">Fly社区</a>
         <div class="nav">
-            <a class="nav-this" href="index.html">
-                <i class="iconfont icon-wenda"></i>问答
-            </a>
-            <a href="http://www.layui.com/" target="_blank">
-                <i class="iconfont icon-ui"></i>框架
+            <a class="nav-this" href="/">
+                官网首页
             </a>
         </div>
 
         <div class="nav-user">
+            {if condition="get_user()->is_login()"}
+            <?php $user = get_user()->getUser()->formatUsers()?>
             <!-- 登入后的状态 -->
-
-            <a class="avatar" href="../user/index.html">
-                <img src="http://tp4.sinaimg.cn/1345566427/180/5730976522/0">
-                <cite>贤心</cite>
-                <i>VIP2</i>
+            <a class="avatar" href="{:url('user/index/index')}">
+                <img src="{$user[0]->avatar}">
+                <cite>{$user[0]->nickname}</cite>
             </a>
             <div class="nav">
-                <a href="../user/set.html"><i class="iconfont icon-shezhi"></i>设置</a>
-                <a href=""><i class="iconfont icon-tuichu" style="top: 0; font-size: 22px;"></i>退了</a>
+                <a href="{:url('user/setting/profile')}"><i class="layui-icon">&#xe620;</i>设置</a>
+                <a href="{:url('user/portal/logout')}"><i class="layui-icon">&#xe60f;</i>退了</a>
             </div>
-
+            {/if}
         </div>
     </div>
 </div>

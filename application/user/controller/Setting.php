@@ -2,7 +2,9 @@
 namespace app\user\controller;
 
 use app\common\bls\user\UserBls;
+use app\common\library\email\Email;
 use app\common\tool\Tool;
+use think\Session;
 
 class Setting extends BasicController
 {
@@ -110,9 +112,68 @@ class Setting extends BasicController
 
     }
 
+    /**
+     * 激活邮箱
+     * @return mixed
+     * @throws \phpmailerException
+     */
     public function activate(){
         $model = $this->request->getUser();
+        $model->info = '邮箱已绑定';
+
+        if($model->is_email == 0) {
+            $model->token =  $this->request->token();
+
+            $mail = new Email();
+
+            $mail->addAddress($model->email);     // Add a recipient
+            $mail->isHTML(true);                                  // Set email format to HTML
+            $mail->Subject = '绑定邮箱';
+
+            $url = url('bindMailbox', ['token' => $model->token], true, true);
+            $html ="尊敬的用户：<br>您好！<br>";
+            $html.='<br>为了保障您帐号的安全性，请在 10分钟内完成绑定邮箱。';
+            $html.='<a href="'.$url.'">点击绑定邮箱</a>';
+            $mail->Body    = $html;
+
+            if(!$mail->send()) {
+                $model->info = '邮件发送失败,请确定你的邮箱';
+            } else {
+                $model->save();
+                //记录过期时间
+                Session::set('bind_expiration_date', time());
+                $model->info =  '激活链接已发送';
+            }
+        }
+
         return $this->fetch('', [
+            'info' => $model
+        ]);
+    }
+
+    /**
+     * 绑定邮箱
+     * @return mixed
+     */
+    public function bindMailbox()
+    {
+        $model = $this->request->getUser();
+
+        $time = Session::get('bind_expiration_date') + 600;
+
+        if($model->is_email) {
+            $model->info = '邮箱已绑定';
+        } else if($model->token != input('token')) {
+            $model->info = '令牌错误';
+        } else if($time < time()) {
+            $model->info = '时间过期';
+        } else {
+            $model->info = '邮箱已绑定';
+            $model->is_email = 1;
+            $model->save();
+        }
+
+        return $this->fetch('activate', [
             'info' => $model
         ]);
     }

@@ -50,6 +50,18 @@ if (! function_exists('thumb_get')) {
     }
 }
 
+if (! function_exists('user_bls')) {
+    /**
+     * 获取用户
+     *
+     * @return mixed
+     */
+    function get_user()
+    {
+       return new \app\common\bls\user\UserBls();
+    }
+}
+
 if (! function_exists('fragment')) {
 
     /**
