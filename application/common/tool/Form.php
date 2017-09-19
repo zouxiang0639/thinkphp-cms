@@ -42,6 +42,33 @@ class Form extends FormBuilder
     }
 
     /**
+     * 单个文件上传
+     *
+     * @param  string  $names
+     * @param  string  $value
+     * @param  array   $options
+     * @return string
+     */
+    public function oneFile($names, $value = '', $options = [])
+    {
+        $name = str_replace("[", "-", $names);
+        $name = str_replace("]", "", $name);
+        $picture    = !empty($value) ? $value : Config::get('basic.default_picture');;
+
+        $html       ="<input type='text' class='form-control text' readonly name='{$names}' id='{$name}' value='{$value}'>
+                    <a href=\"javascript:upload_one_file('文件上传', '#{$name}', 'file');\"  class='btn btn-default active'>
+                    上传文件
+                    </a>
+                    <input type='button' class='btn btn-default active' onclick=\"
+                        $('#{$name}-preview').attr('src','{$picture}');
+                        $('#{$name}').val('');
+                        return false;
+                    \" value='取消文件'>";
+        return $html;
+    }
+
+
+    /**
      * 多张图片上传
      *
      * @param  string  $name

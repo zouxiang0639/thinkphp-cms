@@ -59,6 +59,7 @@ use app\common\tool\Tool;
                 <th>{$v.title}</th>
                 <th>{$v.pageName}</th>
                 <th>
+                    <a href="{:url('subproduct', ['id' => $v['goods_id'], 'cid' => input('cid')])}">添加副产品</a> |
                     <a href="{:url('edit', ['id' => $v['goods_id'], 'cid' => input('cid')])}">编辑</a> |
                     <a class="a-post" post-msg="你确定删除吗?" post-url="{:url('delete', ['id'=>$v['goods_id']])}">删除</a>
                 </th>

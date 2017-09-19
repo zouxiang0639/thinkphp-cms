@@ -19,7 +19,7 @@ class FileBls
         $model = new FileModel();
         $model->path  =  $data['path'];
         $model->name  =  $data['name'];
-        $model->group =  $data['group'];
+        $model->type =  $data['type'];
         $model->hash  =  $data['hash'];
         $model->save();
     }
@@ -33,7 +33,7 @@ class FileBls
     {
         $model->path  =  $data['path'];
         $model->name  =  $data['name'];
-        $model->group =  $data['group'];
+        $model->type =  $data['type'];
         $model->hash  =  $data['hash'];
         $model->save();
     }

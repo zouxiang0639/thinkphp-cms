@@ -42,6 +42,8 @@ class Helper
                 return Tool::get('form')->textarea($name, $value,  array_merge(['clos' => '30', 'rows' => 3], $options));
             case CommonFormInputConst::ONE_IMAGE:
                 return Tool::get('form')->oneImage($name, $value);
+            case CommonFormInputConst::ONE_FILE:
+                return Tool::get('form')->onefile($name, $value);
             case 'multiimage':
                 return Tool::get('form')->multiImage($name, $value);
             case 'editor':

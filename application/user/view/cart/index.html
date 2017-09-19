@@ -1,0 +1,54 @@
+{extend name="layouts/master" /}
+
+{block name="php"}
+<?php
+$id = 3;
+?>
+{/block}
+
+{block name="content"}
+<div class="main fly-user-main layui-clear">
+    {include file='public/filt_menu' /}
+    <div class="fly-panel fly-panel-user panel-user" pad20>
+        <form method="post" action="">
+            {foreach name='$list' item='value' }
+            <blockquote class="layui-elem-quote layui-quote-nm">
+                <div class="layui-row">
+                    <div class="layui-col-md2">
+                        <div class="grid-demo">
+                            <span style="padding-right: 10px">
+                                <input name="cart_id" type="checkbox" value="{$value->cart_id}" checked></span>
+                            <img src="{$value->picture}" width="80rem">
+                        </div>
+                    </div>
+                    <div class="layui-col-md3">
+                        <div class="grid-demo grid-demo-bg1">{$value->goods_name}</div>
+                    </div>
+                    <div class="layui-col-md3">
+                        <div class="grid-demo grid-demo-bg1">
+                            <p>111</p>
+                        </div>
+                    </div>
+                    <div class="layui-col-md2">
+                        <div class="grid-demo grid-demo-bg1">¥{$value->amount}</div>
+                    </div>
+                    <div class="layui-col-md2">
+                        <div class="grid-demo grid-demo-bg1"><a href="">删除</a></div>
+                    </div>
+                </div>
+            </blockquote>
+            {/foreach}
+
+            <div style="float: right">
+                <button class="layui-btn layui-btn-radius">立即购买</button>
+            </div>
+
+        </form>
+    </div>
+
+</div>
+{/block}
+
+{block name="script"}
+
+{block}

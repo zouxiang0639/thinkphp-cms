@@ -41,10 +41,24 @@ class FileTypeConst
             self::AUDIO => self::AUDIO_EN,
         ];
     }
+    public static function number()
+    {
+        return [
+            self::IMAGE_EN => self::IMAGE,
+            self::FILE_EN => self::FILE,
+            self::VIDEO_EN => self::VIDEO,
+            self::AUDIO_EN => self::AUDIO,
+        ];
+    }
 
     public static function getDesc($item)
     {
         return array_get(self::desc(), $item);
+    }
+
+    public static function getNumber($item)
+    {
+        return array_get(self::number(), $item);
     }
 
     public static function getEn($item)

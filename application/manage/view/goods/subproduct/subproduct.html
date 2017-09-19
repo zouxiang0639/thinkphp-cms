@@ -1,0 +1,110 @@
+{extend name="layouts/no_attributes" /}
+
+{block name="php"}
+<?php
+use app\common\tool\Tool;
+use app\common\consts\goods\GoodsRecommendationConst;
+?>
+{/block}
+
+{block name="style"}
+<link href="__STATIC__/default/artDialog/skins/default.css" rel="stylesheet" />
+{/block}
+
+{block name="content"}
+
+<form class="form-horizontal"
+      action="{:empty(input('id')) ? url('subproductAdd',['cid'=>input('cid')]) : url('subproductUpdate',['id'=>input('id'), 'cid'=>input('cid')])}"
+      method="post">
+    <input type="hidden" name="goods_id" value="{:input('cid')}">
+    <div class="bs-example" style="padding: 10px">
+        <!--右侧-->
+
+        <table class="table table-bordered">
+            <tr>
+                <th>标题</th>
+                <th>
+                    <input class="form-control text" type="text" name="title" value="{$info.title ?? ''}">
+                    <span class="form-required">*</span>
+                </th>
+            </tr>
+            <tr>
+                <th>价格</th>
+                <th>
+                    <input class="form-control text" type="text" name="price" value="{:isset($info['price']) ? $info['price'] / 100 : ''}">
+                </th>
+            </tr>
+            <tr>
+                <th width="150">类型</th>
+                <td>
+                    {:Tool::get('form')->select('type', $type,
+                    isset($info->type) ? $info->type : '',
+                    ['class' => 'form-control text']
+                    )}
+                </td>
+            </tr>
+            <tbody id="extended">
+
+            </tbody>
+        </table>
+    </div>
+
+</form>
+{/block}
+
+{block name="script"}
+<script src="__STATIC__/default/headjs.js"></script>
+<script>
+
+    $(function () {
+        $("select[name=type]").change(function () {
+            var product_id = '{:input("id")}';
+            var extended_id = $(this).val();
+            $.ajax({
+                url : "{:url('extended')}",
+                type : 'post',
+                data: {'product_id':product_id, 'type':'product', 'extended_id':extended_id},
+                dataType : 'json',
+                success : function (json)
+                {
+                    $("#extended").html(json.data);
+                },
+                error:function(xhr){          //上传失败
+                    alertError(xhr.responseText);
+
+                },
+                beforeSend:function(){
+                    $("#rechargeLog").html('<img src="/statics/admin/css/loading.gif">');
+                }
+            });
+        }).trigger("change");
+    });
+
+    function submitSubProduct()
+    {
+        $.ajax({
+            url : $('.form-horizontal').attr('action'),
+            type : 'post',
+            data: $('.form-horizontal').serialize(),
+            dataType : 'json',
+            success : function (json)
+            {
+                var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                alert(json.msg);
+                if(json.code == 1) {
+                    parent.layer.close(index);
+                    parent.window.location.href= '{:url("goods/subproduct", ["id" => input("cid")])}';
+                }
+
+            },
+            error:function(xhr){          //上传失败
+                alertError(xhr.responseText);
+
+            },
+            beforeSend:function(){
+                $("#rechargeLog").html('<img src="/statics/admin/css/loading.gif">');
+            }
+        });
+    }
+</script>
+{/block}

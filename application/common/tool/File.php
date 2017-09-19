@@ -131,12 +131,11 @@ class File extends \think\File
          * 数据库操作
          */
         if(!$filePath) {
-
             //创建上传的文件数据
             FileBls::createFile([
                 'path'  => $path,
                 'name'  => $info->info['name'],
-                'group' => $type,
+                'type' => FileTypeConst::getNumber($type),
                 'hash'  => $hash,
             ]);
 
@@ -146,7 +145,7 @@ class File extends \think\File
             FileBls::updateFile($replaceFile, [
                 'path'  => $path,
                 'name'  => $info->info['name'],
-                'group' => $type,
+                'type' => FileTypeConst::getNumber($type),
                 'hash'  => $hash,
             ]);
         }
