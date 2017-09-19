@@ -17,6 +17,11 @@ class BasicController extends Controller
         parent::__construct();
 
         if(! $this->request->is_login()) {
+
+            if ($this->request->isAjax()){
+                $this->error('请先登入会员', 'user/portal/login');
+            }
+
             return $this->redirect('portal/login');
         }
 

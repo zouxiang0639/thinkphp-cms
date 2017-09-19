@@ -2,6 +2,7 @@
 
 namespace app\common\bls\cart\traits;
 
+use app\common\bls\goods\GoodsSubProductBls;
 use think\Collection;
 
 trait CartTrait
@@ -11,11 +12,10 @@ trait CartTrait
      * @param Collection $items
      * @return Collection
      */
-    protected function formatBanner(Collection $items)
+    protected function formatCart(Collection $items)
     {
         return $items->each(function ($item) {
-            $item->picture = BannerTypeConst::getDesc($item->type);
-            $item->amount = BannerTypeConst::getDesc($item->type);
+            $item->subproduct =  GoodsSubProductBls::getSubProductSelect(['goods_subproduct_id' => ['in', $item['goods_subproduct_id']]]);
         });
     }
 }
