@@ -1,34 +1,40 @@
 <?php
-namespace app\common\bls\cart\validate;
+namespace app\common\bls\cart;
 
+use app\common\bls\cart\model\CartModel;
 
-use app\common\base\BaseValidate;
-use app\common\consts\category\CategoryBindPageConst;
-
-class CartValidate extends BaseValidate
+class CartBls
 {
 
-    public function setRule()
+    public static function getCartList($where = '', $limit = 20)
     {
-        return  [
-            'product_id'  => 'require',
-            'goods_id'   => 'require',
-        ];
+        return CartModel::where($where)->paginate($limit, '', [
+            'query' => input()
+        ]);
     }
 
-    public function setMessage()
+    /**
+     * @param string $where
+     * @return CartModel
+     */
+    public static function getOneCart($where = '')
     {
-        return [
-            'product_id.require' => '请选择产品',
-            'goods_id.requireIf' => '商品不能为空',
-        ];
+        return CartModel::where($where)->find();
     }
 
-    public function setScene()
+    public static function createCart($model, $data)
     {
-        return [
-            'create'  =>  ['product_id', 'goods_id']
-        ];
+        $model = $model ? $model : new CartModel();
+        $model->user_id = $data['user_id'];
+        $model->goods_id = $data['goods_id'];
+        $model->goods_name = $data['goods_name'];
+        $model->goods_subproduct_id = $data['goods_subproduct_id'];
+        $model->amount = $data['amount'];
+        return $model->save();
     }
 
+    public static function getGoodsSelect($where, $order = '')
+    {
+        return CartModel::where($where)->order($order)->select();
+    }
 }
