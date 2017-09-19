@@ -585,6 +585,50 @@ class Menu extends \Phinx\Seed\AbstractSeed
      */
     public function menuArticle()
     {
+        $subproduct = array(
+            [
+                'name'      => '附属产品列表',
+                'app'       => 'manage',
+                'model'     => 'goods',
+                'action'    => 'subproduct',
+                'type'      => 1,
+                'status'    => 0
+            ],
+            [
+                'name'      => '附属产品增加',
+                'app'       => 'manage',
+                'model'     => 'goods',
+                'action'    => 'subproductAdd',
+                'type'      => 1,
+                'status'    => 0
+            ],
+            [
+                'name'      => '附属产品编辑',
+                'app'       => 'manage',
+                'model'     => 'goods',
+                'action'    => 'subproductEdit',
+                'type'      => 1,
+                'status'    => 0
+            ],
+            [
+                'name'      => '附属产品更新',
+                'app'       => 'manage',
+                'model'     => 'goods',
+                'action'    => 'subproductUpdate',
+                'type'      => 1,
+                'status'    => 0
+            ],
+            [
+                'name'      => '附属产品删除',
+                'app'       => 'manage',
+                'model'     => 'goods',
+                'action'    => 'subproductDelete',
+                'type'      => 1,
+                'status'    => 0
+            ]
+        );
+
+
         $arr = [
             'name'      => '内容管理',
             'app'       => 'manage',
@@ -777,6 +821,15 @@ class Menu extends \Phinx\Seed\AbstractSeed
                             'action'    => 'sort',
                             'type'      => 1,
                             'status'    => 0
+                        ],
+                        [
+                            'name'      => '附属产品管理',
+                            'app'       => 'manage',
+                            'model'     => 'goods',
+                            'action'    => 'default',
+                            'type'      => '0',
+                            'status'    => 0,
+                            'child'     => config('extend.sub_product') ? $subproduct : []
                         ]
                     )
                 ],
