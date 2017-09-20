@@ -1,5 +1,5 @@
 <?php
-namespace app\manage_user\controller;
+namespace app\manage\controller\user;
 
 use app\common\bls\user\UserBls;
 use app\common\consts\user\UserStatusConst;
@@ -7,9 +7,11 @@ use app\common\library\email\Email;
 use app\common\tool\Tool;
 use app\manage\controller\BasicController;
 use app\common\bls\user\traits\UserTrait;
-class User extends BasicController
+
+class Index extends BasicController
 {
     use UserTrait;
+
     public $id;
 
     public function __construct()
@@ -34,7 +36,7 @@ class User extends BasicController
         }
         $model = UserBls::getUserList($where);
         $this->formatUser($model->getCollection());
-        return $this->fetch('' ,[
+        return $this->fetch('/user/user/index' ,[
             'list' => $model
         ]);
     }
@@ -74,7 +76,7 @@ class User extends BasicController
     public function show()
     {
         $modle = UserBls::getOneUser(['user_id'=>input('id')]);
-        return $this->fetch('', [
+        return $this->fetch('/user/user/show', [
             'info' => $modle
         ]);
     }

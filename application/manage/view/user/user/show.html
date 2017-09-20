@@ -21,8 +21,17 @@
                 {$info.nickname ?? ''}
             </td>
         </tr>
+        {if condition="config('extend.integral')"}
         <tr>
-            <th>昵称</th>
+            <th>积分</th>
+            <td>
+                {$info.integral ?? ''}
+            </td>
+        </tr>
+        {/if}
+
+        <tr>
+            <th>生日</th>
             <td>
                 {$info.birthday ?? ''}
             </td>

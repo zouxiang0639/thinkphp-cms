@@ -1082,48 +1082,141 @@ class Menu extends \Phinx\Seed\AbstractSeed
      */
     public function menuUser()
     {
+        //积分管理
+        $integral = [
+            'name'      => '积分规则',
+            'app'       => 'manage',
+            'model'     => 'user.integral.rule',
+            'action'    => 'default',
+            'type'      => '0',
+            'child'     => array(
+                [
+                    'name'      => '规则列表',
+                    'app'       => 'manage',
+                    'model'     => 'user.integral.rule',
+                    'action'    => 'index',
+                    'type'      => 1,
+                    'status'    => 1
+                ],
+                [
+                    'name'      => '规则添加',
+                    'app'       => 'manage',
+                    'model'     => 'user.integral.rule',
+                    'action'    => 'add',
+                    'type'      => 1,
+                    'status'    => 1
+                ],
+                [
+                    'name'      => '规则修改',
+                    'app'       => 'manage',
+                    'model'     => 'user.integral.rule',
+                    'action'    => 'edit',
+                    'type'      => 1,
+                    'status'    => 0
+                ],
+                [
+                    'name'      => '规则更新',
+                    'app'       => 'manage',
+                    'model'     => 'user.integral.rule',
+                    'action'    => 'update',
+                    'type'      => 1,
+                    'status'    => 0
+                ],
+                [
+                    'name'      => '规则删除',
+                    'app'       => 'manage',
+                    'model'     => 'user.integral.rule',
+                    'action'    => 'delete',
+                    'type'      => 1,
+                    'status'    => 0
+                ]
+            )
+        ];
+
+        $integralGoods = [
+            'name'      => '积分商城',
+            'app'       => 'manage',
+            'model'     => 'user.index',
+            'action'    => 'default',
+            'type'      => '0',
+            'child'     => array(
+                [
+                    'name'      => '用户列表',
+                    'app'       => 'manage',
+                    'model'     => 'user.index',
+                    'action'    => 'index',
+                    'type'      => 1,
+                    'status'    => 1
+                ],
+                [
+                    'name'      => '用户禁用启用',
+                    'app'       => 'manage',
+                    'model'     => 'user.index',
+                    'action'    => 'status',
+                    'type'      => 1,
+                    'status'    => 0
+                ],
+                [
+                    'name'      => '用户详细',
+                    'app'       => 'manage',
+                    'model'     => 'user.index',
+                    'action'    => 'show',
+                    'type'      => 1,
+                    'status'    => 0
+                ],
+                [
+                    'name'      => '重置密码',
+                    'app'       => 'manage',
+                    'model'     => 'user.index',
+                    'action'    => 'setPassword',
+                    'type'      => 1,
+                    'status'    => 0
+                ]
+            )
+        ];
+
         $arr = [
             'name'      => '会员管理',
-            'app'       => 'manage_user',
+            'app'       => 'manage',
             'model'     => 'other',
             'action'    => 'default',
             'type'      => '0',
             'child'     => array(
                 [
                     'name'      => '用户管理',
-                    'app'       => 'manage_user',
-                    'model'     => 'user',
+                    'app'       => 'manage',
+                    'model'     => 'user.index',
                     'action'    => 'default',
                     'type'      => '0',
                     'child'     => array(
                         [
                             'name'      => '用户列表',
-                            'app'       => 'manage_user',
-                            'model'     => 'user',
+                            'app'       => 'manage',
+                            'model'     => 'user.index',
                             'action'    => 'index',
                             'type'      => 1,
                             'status'    => 1
                         ],
                         [
                             'name'      => '用户禁用启用',
-                            'app'       => 'manage_user',
-                            'model'     => 'user',
+                            'app'       => 'manage',
+                            'model'     => 'user.index',
                             'action'    => 'status',
                             'type'      => 1,
                             'status'    => 0
                         ],
                         [
                             'name'      => '用户详细',
-                            'app'       => 'manage_user',
-                            'model'     => 'user',
+                            'app'       => 'manage',
+                            'model'     => 'user.index',
                             'action'    => 'show',
                             'type'      => 1,
                             'status'    => 0
                         ],
                         [
                             'name'      => '重置密码',
-                            'app'       => 'manage_user',
-                            'model'     => 'user',
+                            'app'       => 'manage',
+                            'model'     => 'user.index',
                             'action'    => 'setPassword',
                             'type'      => 1,
                             'status'    => 0
@@ -1132,6 +1225,10 @@ class Menu extends \Phinx\Seed\AbstractSeed
                 ]
             )
         ];
+
+        if(config('extend.integral')) {
+            array_push($arr['child'], $integral);
+        }
         return $arr;
     }
 
