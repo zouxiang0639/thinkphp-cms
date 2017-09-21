@@ -44,6 +44,8 @@ class Helper
                 return Tool::get('form')->oneImage($name, $value);
             case CommonFormInputConst::ONE_FILE:
                 return Tool::get('form')->onefile($name, $value);
+            case CommonFormInputConst::ONE_AUDIO:
+                return Tool::get('form')->oneAudio($name, $value);
             case 'multiimage':
                 return Tool::get('form')->multiImage($name, $value);
             case 'editor':

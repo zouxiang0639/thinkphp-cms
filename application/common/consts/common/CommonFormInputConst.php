@@ -16,6 +16,7 @@ class CommonFormInputConst
     const ONE_IMAGE = 7;
     const MULTI_IMAGE = 8;
     const ONE_FILE  = 9;
+    const ONE_AUDIO  = 10;
 
     const TEXT_DESC         = '文本框';
     const SELECT_DESC       = '下拉框';
@@ -26,6 +27,7 @@ class CommonFormInputConst
     const ONE_IMAGE_DESC    = '单张图片上传';
     const MULTI_IMAGE_DESC  = '多图上传';
     const ONE_FILE_DESC     = '单个文件上传';
+    const ONE_AUDIO_DESC    = '单个音频上传';
 
 
     public static function desc()
@@ -39,7 +41,8 @@ class CommonFormInputConst
             self::TEXTAREA  => self::TEXTAREA_DESC,
             self::ONE_IMAGE => self::ONE_IMAGE_DESC,
             self::MULTI_IMAGE => self::MULTI_IMAGE_DESC,
-            self::ONE_FILE  => self::ONE_FILE_DESC
+            self::ONE_FILE  => self::ONE_FILE_DESC,
+            self::ONE_AUDIO => self::ONE_AUDIO_DESC
         ];
     }
 

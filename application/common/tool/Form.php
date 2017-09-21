@@ -67,6 +67,36 @@ class Form extends FormBuilder
         return $html;
     }
 
+    /**
+     * 单个音频上传
+     *
+     * @param  string  $names
+     * @param  string  $value
+     * @param  array   $options
+     * @return string
+     */
+    public function oneAudio($names, $value = '', $options = [])
+    {
+        $name = str_replace("[", "-", $names);
+        $name = str_replace("]", "", $name);
+        $picture    = !empty($value) ? $value : Config::get('basic.default_picture');;
+
+        $html       ="
+                    <input type='hidden' name='{$names}' id='{$name}' value='{$value}'>
+                    <span class='btn'><audio style='width: 280px;' src='{$picture}' id='{$name}-preview' controls='controls'></audio></span>
+
+                    <a href=\"javascript:upload_one_file('音频上传', '#{$name}', 'audio');\"  class='btn btn-default active'>
+                    上传音频
+                    </a>
+
+                    <input type='button' class='btn btn-default active' onclick=\"
+                        $('#{$name}-preview').attr('src','{$picture}');
+                        $('#{$name}').val('');
+                        return false;
+                    \" value='取消文件'>";
+        return $html;
+    }
+
 
     /**
      * 多张图片上传
