@@ -19,6 +19,7 @@ class CreateUser extends Migrator
             ->addColumn('is_email', 'boolean', ['default' => 0, 'comment' => '邮箱是否绑定'])
             ->addColumn('sex', 'boolean', ['default' => 0, 'comment' => '性别 详细CommonSexConst'])
             ->addColumn('comment', 'string', ['limit' => 255, 'comment' => '简介'])
+            ->addColumn('integral', 'integer', ['limit' => 255, 'comment' => '积分'])
             ->addColumn('avatar', 'string', ['limit' => 100, 'comment' => '头像'])
             ->addColumn('token', 'string', ['limit' => 100, 'comment' => '令牌'])
             ->addColumn('birthday', 'datetime', ['comment' => '生日'])

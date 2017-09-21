@@ -8,8 +8,13 @@ use app\common\consts\integral\IntegralRuleMethodConst;
 ?>
 {/block}
 
+{block name="style"}
+<link href="__STATIC__/default/artDialog/skins/default.css" rel="stylesheet" />
+{/block}
 
 {block name="content"}
+
+
 {include file='manage@public_file/nav_tabs' /}
 
 <form class="form-horizontal" action="{:empty(input('id')) ? url('add') : url('update',['id'=>input('id')])}" method="post" >
@@ -24,14 +29,9 @@ use app\common\consts\integral\IntegralRuleMethodConst;
                 </th>
             </tr>
             <tr>
-                <th>规则方法</th>
+                <th width="150">缩略图</th>
                 <th>
-                    {:Tool::get('form')->select('rule_method', IntegralRuleMethodConst::desc(),
-                    isset($info->rule_method) ? $info->rule_method : '',
-                    ['class' => 'form-control text', 'placeholder'=>'请选择',
-                    isset($info) ? 'readonly' : ''
-                    ]
-                    )}
+                    {:Tool::get('form')->oneImage('picture', isset($info->picture) ? $info->picture : '')}
                 </th>
             </tr>
             <tr>
@@ -62,6 +62,6 @@ use app\common\consts\integral\IntegralRuleMethodConst;
 {/block}
 
 {block name="script"}
-
+<script src="__STATIC__/default/headjs.js"></script>
 {/block}
 

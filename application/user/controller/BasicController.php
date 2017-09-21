@@ -32,10 +32,13 @@ class BasicController extends Controller
 
     public function leftMenu()
     {
-        return [
-            ['id'=>1, 'title' => '会员中心', 'url' => url('index/index'), 'icon' => '&#xe612;'],
-            ['id'=>2, 'title' => '基本设置', 'url' => url('setting/profile'), 'icon' => '&#xe620;'],
-            ['id'=>3, 'title' => '购物车', 'url' => url('cart/index'), 'icon' => '&#xe698;'],
-        ];
+        $array[1] = ['id'=>1, 'title' => '会员中心', 'url' => url('index/index'), 'icon' => '&#xe612;'];
+        $array[2] = ['id'=>2, 'title' => '基本设置', 'url' => url('setting/profile'), 'icon' => '&#xe620;'];
+
+        if(config('extend.cart')) {
+            $array[3] = ['id'=>3, 'title' => '购物车', 'url' => url('cart/index'), 'icon' => '&#xe698;'];
+        }
+
+
     }
 }

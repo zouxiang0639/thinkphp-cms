@@ -1,15 +1,15 @@
 <?php
 namespace app\manage\controller\user\integral;
 
+use app\common\bls\integral\IntegralGoodsBls;
 use app\common\bls\integral\IntegralRuleBls;
-use app\common\bls\integral\traits\IntegralRuleTrait;
+use app\common\bls\integral\traits\IntegralGoodsTrait;
 use app\common\consts\common\CommonSwitchConst;
-use app\common\library\integral\IntegralRule;
 use app\manage\controller\BasicController;
 
-class Rule extends BasicController
+class Goods extends BasicController
 {
-    use IntegralRuleTrait;
+    use IntegralGoodsTrait;
 
     private $id     = 0;
 
@@ -18,9 +18,9 @@ class Rule extends BasicController
         parent::__construct();
         $this->id       = !empty($this->request->param('id')) ? intval($this->request->param('id')) : $this->id;
         $nav = [
-            '规则列表' => ['url' => 'index'],
-            '规则增加' => ['url' => 'add'],
-            '规则修改' => ['url' => ['edit', ['id' => $this->id]], 'style' => "display: none;"],
+            '积分商品列表' => ['url' => 'index'],
+            '积分商品增加' => ['url' => 'add'],
+            '积分商品修改' => ['url' => ['edit', ['id' => $this->id]], 'style' => "display: none;"],
         ];
         $this->assign('navTabs',  parent::navTabs($nav));
     }
@@ -29,11 +29,11 @@ class Rule extends BasicController
     {
         $where  = [];
         if(!empty($this->id)){
-            $where['integral_rule_id']  = $this->id;
+            $where['integral_goods_id']  = $this->id;
         }
 
-        $model = IntegralRuleBls::getIntegralRuleList($where);
-        $this->formatIntegralRule($model->getCollection());
+        $model = IntegralGoodsBls::getIntegralGoodsList($where);
+        $this->formatIntegralGoods($model->getCollection());
 
         return $this->fetch('',[
             'list'      => $model,
@@ -41,7 +41,7 @@ class Rule extends BasicController
     }
 
     /**
-     * 规则添加
+     * 积分商品添加
      */
     public function add()
     {
@@ -49,14 +49,14 @@ class Rule extends BasicController
         if($this->request->isPost()){
             $post   = $this->request->post();
 
-            $result = $this->validate($post, 'app\common\bls\integral\validate\IntegralRuleValidate.create');
+            $result = $this->validate($post, 'app\common\bls\integral\validate\IntegralGoodsValidate.create');
             if(true !== $result){
                 // 验证失败 输出错误信息
                 return $this->error($result);
             }
 
             //写入数据库
-            if(IntegralRuleBls::createIntegralRule($post)){
+            if(IntegralGoodsBls::createIntegralGoods($post)){
                 return $this->success('添加成功', url('index'));
             }else{
                 return $this->error('添加失败');
@@ -64,26 +64,26 @@ class Rule extends BasicController
 
         }
 
-        return $this->fetch('rule');
+        return $this->fetch('goods');
     }
 
     /**
-     * 规则修改
+     * 积分商品修改
      */
     public function edit()
     {
 
-        $model = IntegralRuleBls::getOneIntegralRule(['integral_rule_id' => $this->id]);
+        $model = IntegralGoodsBls::getOneIntegralGoods(['integral_goods_id' => $this->id]);
         if(empty($model)){
             return $this->error('参数错误');
         }
-        return $this->fetch('rule',[
+        return $this->fetch('goods',[
             'info'   => $model
         ]);
     }
 
     /**
-     * 规则更新
+     * 积分商品更新
      */
     public function update()
     {
@@ -92,19 +92,19 @@ class Rule extends BasicController
             $post   = $this->request->post();
 
             //数据验证
-            $result = $this->validate($post, 'app\common\bls\integral\validate\IntegralRuleValidate.update');
+            $result = $this->validate($post, 'app\common\bls\integral\validate\IntegralGoodsValidate.update');
             if(true !== $result){
                 // 验证失败 输出错误信息
                 return $this->error($result);
             }
 
             //更新数据库
-            $model = IntegralRuleBls::getOneIntegralRule(['integral_rule_id' => $this->id]);
+            $model = IntegralGoodsBls::getOneIntegralGoods(['integral_goods_id' => $this->id]);
             if(empty($model)){
                 return $this->error('参数错误');
             }
 
-            if(IntegralRuleBls::IntegralRuleUpdate($model, $post)){
+            if(IntegralGoodsBls::IntegralGoodsUpdate($model, $post)){
                 return $this->success('更新成功', url('index'));
             }else{
                 return $this->error('更新失败');
@@ -115,12 +115,12 @@ class Rule extends BasicController
     }
 
     /**
-     * 规则删除
+     * 积分商品删除
      */
     public function delete()
     {
         if($this->request->isPost() && !empty($this->id)){
-            $model = IntegralRuleBls::getOneIntegralRule(['integral_rule_id' => $this->id]);
+            $model = IntegralGoodsBls::getOneIntegralGoods(['integral_goods_id' => $this->id]);
             if(empty($model)){
                 return $this->error('参数错误');
             }

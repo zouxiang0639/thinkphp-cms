@@ -1082,7 +1082,7 @@ class Menu extends \Phinx\Seed\AbstractSeed
      */
     public function menuUser()
     {
-        //积分管理
+        //积分规则管理
         $integral = [
             'name'      => '积分规则',
             'app'       => 'manage',
@@ -1133,47 +1133,58 @@ class Menu extends \Phinx\Seed\AbstractSeed
             )
         ];
 
+        //积分商城管理
         $integralGoods = [
-            'name'      => '积分商城',
+            'name'      => '积分产品',
             'app'       => 'manage',
-            'model'     => 'user.index',
+            'model'     => 'user.integral.goods',
             'action'    => 'default',
             'type'      => '0',
             'child'     => array(
                 [
-                    'name'      => '用户列表',
+                    'name'      => '积分产品列表',
                     'app'       => 'manage',
-                    'model'     => 'user.index',
+                    'model'     => 'user.integral.goods',
                     'action'    => 'index',
                     'type'      => 1,
                     'status'    => 1
                 ],
                 [
-                    'name'      => '用户禁用启用',
+                    'name'      => '积分产品添加',
                     'app'       => 'manage',
-                    'model'     => 'user.index',
-                    'action'    => 'status',
+                    'model'     => 'user.integral.goods',
+                    'action'    => 'add',
+                    'type'      => 1,
+                    'status'    => 1
+                ],
+                [
+                    'name'      => '积分产品修改',
+                    'app'       => 'manage',
+                    'model'     => 'user.integral.goods',
+                    'action'    => 'edit',
                     'type'      => 1,
                     'status'    => 0
                 ],
                 [
-                    'name'      => '用户详细',
+                    'name'      => '积分产品更新',
                     'app'       => 'manage',
-                    'model'     => 'user.index',
-                    'action'    => 'show',
+                    'model'     => 'user.integral.goods',
+                    'action'    => 'update',
                     'type'      => 1,
                     'status'    => 0
                 ],
                 [
-                    'name'      => '重置密码',
+                    'name'      => '积分产品删除',
                     'app'       => 'manage',
-                    'model'     => 'user.index',
-                    'action'    => 'setPassword',
+                    'model'     => 'user.integral.goods',
+                    'action'    => 'delete',
                     'type'      => 1,
                     'status'    => 0
                 ]
             )
         ];
+
+
 
         $arr = [
             'name'      => '会员管理',
@@ -1228,6 +1239,10 @@ class Menu extends \Phinx\Seed\AbstractSeed
 
         if(config('extend.integral')) {
             array_push($arr['child'], $integral);
+        }
+
+        if(config('extend.integral_goods')) {
+            array_push($arr['child'], $integralGoods);
         }
         return $arr;
     }
