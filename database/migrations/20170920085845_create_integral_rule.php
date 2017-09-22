@@ -11,7 +11,7 @@ class CreateIntegralRule extends Migrator
     public function up()
     {
         $table = $this->table('integral_rule', ['id' => 'integral_rule_id', 'engine'=>'InnoDB', 'comment' => ' 积分日志']);
-        $table->addColumn('integral', 'integer', ['limit' => 255, 'comment' => '积分'])
+        $table->addColumn('integral', 'integer', ['limit' => 11, 'comment' => '积分'])
             ->addColumn('title', 'string', ['limit' => 255, 'comment' => '标题'])
             ->addColumn('rule_method', 'string', ['limit' => 255, 'comment' => '规则方法 IntegralRuleMethodConst'])
             ->addColumn('status', 'integer', ['default' => 1, 'comment' => '状态  详细：CommonSwitchConst'])

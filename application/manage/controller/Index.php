@@ -53,7 +53,7 @@ class Index extends BasicController
 
             $url    = $v['url_param']?'?'.$v['url_param']:'';
             $url    = url("{$v['app']}/{$v['model']}/{$v['action']}").$url;
-            $url    = 'href="javascript:openapp(\''.$url.'\',\''.$v['id'].$v['model'].'\',\''.$v['name'].'\',true);"';
+            $url    = 'href="javascript:openapp(\''.$url.'\',\''.$v['id'].'\',\''.$v['name'].'\',true);"';
             $menu[$k]['icon']    = !empty($v['icon'])?$v['icon']:'fa-list';
             $menu[$k]['level']    = $tree->get_level($v['id'], $menu);
             $menu[$k]['url']      = $url;

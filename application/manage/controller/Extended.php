@@ -89,7 +89,7 @@ class Extended extends BasicController
                 return $this->error('参数错误');
             }
             if($update->save($post)){
-                return $this->success(lang('Update success'), url($this->url));
+                return $this->success(lang('Update success'), url('index'));
             }else{
                 return $this->error(lang('Update failed'));
             }
