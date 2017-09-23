@@ -1,13 +1,22 @@
 <div class="header">
     <div class="main">
-        <a class="logo" href="/" title="Fly">Fly社区</a>
+       <!-- <a class="logo" href="/" title="Fly">Fly社区</a>-->
         <div class="nav">
-            <a class="nav-this" href="/">
-                官网首页
-            </a>
+            <a class="nav-this" href="/">首页</a>
+            {if condition="isset($menu)"}
+                {foreach name='$menu' id='item'}
+                    <a class="nav-this" href="{$item.url}">{$item.titleName}</a>
+                {/foreach}
+            {/if}
         </div>
+        <div class="nav-user nav-model" style="left: 0;">
+            <div class="nav">
+                <a class="nav-this" href="/">首页</a>
+            </div>
 
+        </div>
         <div class="nav-user">
+
             {if condition="get_user()->is_login()"}
             <?php $user = get_user()->getUser()->formatUsers()?>
             <!-- 登入后的状态 -->
@@ -15,6 +24,7 @@
                 <img src="{$user[0]->avatar}">
                 <cite>{$user[0]->nickname}</cite>
             </a>
+
             <div class="nav">
                 <a href="{:url('user/setting/profile')}"><i class="layui-icon">&#xe620;</i>设置</a>
                 <a href="{:url('user/portal/logout')}"><i class="layui-icon">&#xe60f;</i>退了</a>

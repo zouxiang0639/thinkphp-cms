@@ -111,7 +111,7 @@ html .fly-full{margin-top: 65px;}
 .header .main{position:relative; margin:0 auto; min-height: 0;}
 .logo{position:absolute; top: 13px; left:0; width: 135px; height: 37px; text-indent:-666px; background:url(../images/logo.png) no-repeat;}
 
-.nav{position:absolute; left: 220px; top: 18px;}
+.nav{position:absolute;  top: 18px;}
 .nav a{padding: 0 20px; font-size:14px; color:#999;}
 .nav a i{position:relative; top: 2px; padding-right:8px; font-size:18px; font-size: 26px;}
 .nav a .icon-shouye, .nav a .icon-shezhi{top: 2px;}
@@ -132,7 +132,7 @@ html .fly-full{margin-top: 65px;}
 .nav-user .nav{position:relative; top: -2px; left: auto; right: 0; margin-left: 30px;}
 .nav-user .nav a{padding: 0 10px;}
 .nav-user .unlogin i{margin-bottom: 12px;}
-
+.nav-model {display:none}
 .out-login{margin-left:20px; text-align:center}
 .out-login a{color:#A9B7B7; font-size:30px; padding:0 10px;}
 .out-login a:hover{color:#fff;}
@@ -481,6 +481,7 @@ body .fly-user-main{position: relative; width: 1085px; min-height: 600px; margin
 
 /* 适配多设备 */
 @media screen and (max-width: 1024px) {
+
   .logo{left: 10px;}
   .main, .footer{width: auto; }
   .main{margin: 10px;}
@@ -506,6 +507,7 @@ body .fly-user-main{position: relative; width: 1085px; min-height: 600px; margin
   .nav-user>span,
   .fly-list-li h2 span,
   .fly-list-hint{display:none;}
+  .nav-model {display:block}
   
   .nav-user{top: 18px;}
   .nav-user .out-login{display: block; margin-right: 15px;}

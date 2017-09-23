@@ -23,7 +23,6 @@ class UserBls
     public static function createUser($data)
     {
         $model = new UserModel();
-        $model->username    = $data['username'];
         $model->email       = $data['email'];
         $model->password    = Tool::get('helper')->getMd5($data['password']);
 

@@ -56,7 +56,7 @@ class Portal extends BaseController
             if($user = UserBls::createUser($post)) {
 
                 //写人session
-                UserBls::setSession($user->user_id, $user->username);
+                UserBls::setSession($user->user_id, $user->email);
 
                 return $this->success('注册成功', url('index/index'));
             } else {

@@ -11,7 +11,7 @@ use app\common\consts\integral\IntegralTypeConst;
  */
 class IntegralRule
 {
-    public function checkIntegralRule ($id, $user_id)
+    public function checkIntegralRule ($id, $userId)
     {
         $model = IntegralRuleBls::getOneIntegralRule(['integral_rule_id' => $id]);
         if(empty($model)){
@@ -25,10 +25,17 @@ class IntegralRule
         $object = new Rule();
 
         if(method_exists($object, $model->rule_method)){
-            $result =  call_user_func([$object, $model->rule_method], $model->integral, $user_id);
+            $result =  call_user_func([$object, $model->rule_method], $model->integral, $userId);
 
             if($result) {
-                self::createLog($result, $model);
+                $data = [
+                    'integral_rule_id' => $model->integral_rule_id,
+                    'title' => $model->title,
+                    'user_id' => $result->user_id,
+                    'integral' => $model->integral,
+                    'type' => IntegralTypeConst::ADD
+                ];
+                self::createLog($data);
                 return true;
             }
 
@@ -36,16 +43,30 @@ class IntegralRule
         }
     }
 
-    public function createLog($user, $integralRule)
+    public function createLog($data)
     {
-        $data = [
-            'integral_rule_id' => $integralRule->integral_rule_id,
-            'title' => $integralRule->title,
-            'user_id' => $user->user_id,
-            'integral' => $integralRule->integral,
-            'type' => IntegralTypeConst::ADD
-        ];
-
         return IntegralLogBls::createIntegralLog($data);
+    }
+
+    public function reduceIntegral($userId, $integral, $title)
+    {
+
+        $object = new Rule();
+        if(method_exists($object, 'reduce')){
+            $result =  call_user_func([$object, 'reduce'], $integral, $userId);
+            if($result) {
+                $data = [
+                    'integral_rule_id' => 0,
+                    'title' => $title,
+                    'user_id' => $userId,
+                    'integral' => $integral,
+                    'type' => IntegralTypeConst::REDUCE
+                ];
+                self::createLog($data);
+                return true;
+            }
+
+            return '积分不够';
+        }
     }
 }

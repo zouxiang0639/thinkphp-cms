@@ -26,7 +26,6 @@ class BasicController extends Controller
         }
 
         $this->user_id = $this->request->getUser()->user_id;
-
         $this->assign('leftMenu', self::leftMenu());
     }
 
@@ -39,6 +38,6 @@ class BasicController extends Controller
             $array[] = ['id'=>3, 'title' => '购物车', 'url' => url('cart/index'), 'icon' => '&#xe602;'];
         }
 
-
+        return $array;
     }
 }
