@@ -236,7 +236,8 @@ class Goods extends BasicController
         $model  = GoodsBls::getOneGoods(['goods_id' => $this->id]);
 
         return $this->fetch('goods/subproduct/index', [
-            'list' => $model->goodsSubProduct
+            'list' => $model->goodsSubProduct,
+            'info' => $model
         ]);
     }
 

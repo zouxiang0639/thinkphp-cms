@@ -22,6 +22,9 @@ use app\common\tool\Tool;
             <input type="button" class="btn btn-primary add" value="添加"
                    onclick="subproduct('{:url(\'goods/subproductAdd\', [\'cid\'=>input(\'id\')])}', '添加')" >
         </div>
+        <div class="form-group">
+            <input type="text" class="text2 form-control"  readonly value="{$info->title}">
+        </div>
 
     </form>
 
