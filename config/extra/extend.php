@@ -7,4 +7,5 @@ return [
     'integral'  =>  1, //开启会员管理->积分功能功能
     'integral_goods'  =>  1, //开启会员管理->积分商城
     'cart'  =>  1, //开启会员中心->购物车
+    'excel_goods' => 1 //开启excel 产品导入导出功能
 ];

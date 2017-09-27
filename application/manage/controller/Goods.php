@@ -4,13 +4,16 @@ namespace app\manage\controller;
 use app\common\bls\extended\ExtendedBls;
 use app\common\bls\goods\GoodsBls;
 use app\common\bls\goods\GoodsSubProductBls;
-use app\common\bls\goods\model\GoodsSubProductModel;
 use app\common\bls\page\PageBls;
 use app\common\consts\common\CommonStatusConst;
 use app\common\consts\extended\ExtendedTypeConst;
 use app\common\consts\page\PageTemplateConst;
+use app\common\library\format\FormatData;
+use app\common\library\office\Excel;
 use app\common\tool\Helper;
 use app\common\bls\goods\traits\GoodsTrait;
+use think\Config;
+use think\model\Collection;
 
 class Goods extends BasicController
 {
@@ -224,6 +227,73 @@ class Goods extends BasicController
 
             return $this->success('' ,'', $html);
         }
+    }
+
+    /**
+     * 导出excel
+     */
+    public function exportExcel()
+    {
+        $config = Config::get('excel.goods');
+        $field = array(array_keys($config));
+
+        $limit = $this->request->get('limit');
+
+        $model = GoodsBls::getGoodsSelect('', '', $limit);
+
+        $formatData = [];
+        foreach($model as $value) {
+            $formatData[] = [
+                $value->title,
+                $value->page_id,
+                $value->picture,
+                FormatData::photosFormat($value->photos),
+                $value->content,
+            ];
+        }
+        $data = array_merge($field, $formatData);
+
+        return Excel::export($data);
+    }
+
+    /**
+     * 导入excel
+     */
+    public function loadExcel()
+    {
+        if($this->request->isPost()) {
+            $file = request()->file('file');
+
+            if($file) {
+
+                $info = $file->move(ROOT_PATH . 'public' . DS . 'uploads'. DS . 'excel');
+                if($info){
+                    $filePath = $info->getPathname();
+
+                    try{
+
+                        //从上传的excel获取数据
+                        $field = Config::get('excel.goods');
+                        $data = Excel::load($filePath, $field);
+
+                        //格式化数据
+                        $data = Collection::make($data);
+                        $this->LoadExcelByGoods($data);
+                        unlink($filePath); //删除文件
+                        return $this->success('导入成功');
+
+                    } catch (\Exception $e) {
+                        unlink($filePath); //删除文件
+                        return $this->error('导入失败');
+                    }
+                }else{
+                    return $this->error($file->getError());
+                }
+            }
+            return $this->error('请上传文件');
+        }
+
+        return $this->fetch();
     }
 
     /****************************************************** 附属产品 ***************************************************/

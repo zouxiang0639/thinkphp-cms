@@ -40,7 +40,7 @@ class GoodsBls
                 });
                 return true;
             }
-            $model->extend = $date['extend'];
+            $model->extend = isset($date['extend']) ? $date['extend'] : [];
         }
 
         return $model->save();
@@ -70,8 +70,7 @@ class GoodsBls
                 });
                 return true;
             }
-
-            $model->extend = $date['extend'];
+            $model->extend = isset($date['extend']) ? $date['extend'] : [];
         }
 
         return $model->save();
@@ -103,8 +102,8 @@ class GoodsBls
        return Db::name($tableName)->where(['extended_id'=>$extended_id])->find();
     }
 
-    public static function getGoodsSelect($where, $order = '')
+    public static function getGoodsSelect($where, $order = '', $limit = '')
     {
-        return GoodsModel::where($where)->order($order)->select();
+        return GoodsModel::where($where)->order($order)->limit($limit)->select();
     }
 }
