@@ -15,12 +15,16 @@ class FormatData
     {
         $data = json_decode($data);
         $array = '';
-        foreach ($data as $value) {
+        foreach ((array)$data as $value) {
             $value = array_values((array)$value);
-            $array[] = implode(':', $value);
+            $array[] = implode('|', $value);
         }
-        return implode('|'.PHP_EOL, $array);
+        if(is_array($array)) {
+            return implode('<>'.PHP_EOL, $array);
+        }
+        return '';
     }
+
     /**
      * 多图上传 Excel导入格式化
      * @param $data
@@ -28,10 +32,10 @@ class FormatData
      */
     public static function photosFormatUn($data)
     {
-        $data = explode('|', $data);
+        $data = explode('<>', $data);
         $array = [];
         foreach ((array)$data as $value) {
-            $value = explode(':', trim($value));
+            $value = explode('|', trim($value));
             $array[] = [
                 'path' => isset($value[0]) ? $value[0] : '',
                 'name' => isset($value[1]) ? $value[1] : '',

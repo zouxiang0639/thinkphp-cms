@@ -19,16 +19,17 @@ class Excel
         $objPHPExcel = \PHPExcel_IOFactory::load($file);
         $sheet = $objPHPExcel->getSheet(0);
         $highestRow = $sheet->getHighestRow(); // 取得总行数
-        $highestColumn = $sheet->getHighestColumn(); // 取得总列数
+
         $excelArray = [];
         $field = [];
 
         //获取第一列标题
-        for ($k = 'A'; $k <= $highestColumn; $k++) {
+        for ($k = 'A'; $k <= 'Y'; $k++) {
             $excelValue = $objPHPExcel->getActiveSheet()->getCell("{$k}1")->getValue();
             if(!empty($excelValue)) {
                 $field[$k] = $excelValue;
             }
+
         }
 
         //excel 转化成 数组
@@ -37,7 +38,9 @@ class Excel
             foreach($field as $key => $value) {
                 $array[$value] = (string) $objPHPExcel->getActiveSheet()->getCell("{$key}{$j}")->getValue();
             }
-            array_push($excelArray, $array);
+            if($array[$field['A']]) {
+                array_push($excelArray, $array);
+            }
         }
 
         //格式化
@@ -91,7 +94,18 @@ class Excel
                 ->setCellValue('L'.$num, array_get($v, 11, ''))
                 ->setCellValue('M'.$num, array_get($v, 12, ''))
                 ->setCellValue('N'.$num, array_get($v, 13, ''))
-                ->setCellValue('O'.$num, array_get($v, 14, ''));
+                ->setCellValue('O'.$num, array_get($v, 14, ''))
+                ->setCellValue('P'.$num, array_get($v, 15, ''))
+                ->setCellValue('Q'.$num, array_get($v, 16, ''))
+                ->setCellValue('R'.$num, array_get($v, 17, ''))
+                ->setCellValue('S'.$num, array_get($v, 18, ''))
+                ->setCellValue('T'.$num, array_get($v, 19, ''))
+                ->setCellValue('U'.$num, array_get($v, 20, ''))
+                ->setCellValue('V'.$num, array_get($v, 21, ''))
+                ->setCellValue('W'.$num, array_get($v, 22, ''))
+                ->setCellValue('S'.$num, array_get($v, 23, ''))
+                ->setCellValue('Y'.$num, array_get($v, 24, ''))
+                ->setCellValue('Z'.$num, array_get($v, 25, ''));
         }
 
         $objPHPExcel->getActiveSheet()->setTitle('数据');

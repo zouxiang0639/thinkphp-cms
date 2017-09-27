@@ -89,6 +89,16 @@ class GoodsBls
                 });
             }
         }
+
+        //删除附属产品
+        if(config('extend.sub_product')){
+            if($goodsSubProduct = $model->goodsSubProduct) {
+                foreach($goodsSubProduct as $value){
+                    $value->delete();
+                }
+            }
+        }
+
         return $model->delete();
     }
 
