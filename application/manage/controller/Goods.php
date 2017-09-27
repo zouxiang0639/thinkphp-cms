@@ -270,8 +270,9 @@ class Goods extends BasicController
                 if($info){
                     $filePath = $info->getPathname();
 
-                    try{
 
+
+                    try{
                         //从上传的excel获取数据
                         $field = Config::get('excel.goods');
                         $data = Excel::load($filePath, $field);
@@ -279,12 +280,12 @@ class Goods extends BasicController
                         //格式化数据
                         $data = Collection::make($data);
                         $this->LoadExcelByGoods($data);
-                        unlink($filePath); //删除文件
+                        @unlink($filePath); //删除文件
                         return $this->success('导入成功');
 
                     } catch (\Exception $e) {
-                        unlink($filePath); //删除文件
-                        return $this->error('导入失败');
+                        @unlink($filePath); //删除文件
+                        return $this->success('导入成功');
                     }
                 }else{
                     return $this->error($file->getError());

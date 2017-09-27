@@ -92,14 +92,14 @@ use app\common\tool\Tool;
         layer.open({
             title: '导入excel数据',
             type: 2,
-            area: ['680px', '600px'],
+            area: ['600px', '300px'],
             shade: 0.8,
             maxmin: true,
             content: '{:url("loadExcel")}',
             zIndex: layer.zIndex, //重点1
             btn:['提交', '取消'],
             yes:function(index, layero) {
-                $(layero).find("iframe")[0].contentWindow.submitSubProduct();
+                $(layero).find("iframe")[0].contentWindow.submit();
             },
             success: function(layero){
                 layer.setTop(layero); //重点2

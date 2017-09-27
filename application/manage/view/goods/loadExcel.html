@@ -21,7 +21,6 @@ use app\common\consts\goods\GoodsRecommendationConst;
     </div>
 
 </form>
-<button onclick="submit()"> asdasd</button>
 {/block}
 
 {block name="script"}
@@ -51,13 +50,12 @@ use app\common\consts\goods\GoodsRecommendationConst;
                 alert(json.msg);
                 if(json.code == 1) {
                     parent.layer.close(index);
-                    parent.window.location.href= '{:url("goods/subproduct", ["id" => input("cid")])}';
+                    parent.window.location.href= '{:url("goods/index")}';
                 }
 
             },
             error:function(xhr){          //上传失败
                 alertError(xhr.responseText);
-
             },
             beforeSend:function(){
                 $("#rechargeLog").html('<img src="/statics/admin/css/loading.gif">');
