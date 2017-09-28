@@ -11,7 +11,8 @@ class UserValidate extends BaseValidate
     {
         $id = intval(input('id'));
         return [
-            ['email|邮箱', 'require|email|unique:user,email,'.$id.',user_id|token'],
+            ['__token__|令牌', 'token'],
+            ['email|邮箱', 'require|email|unique:user,email,'.$id.',user_id'],
             ['username|昵称', 'require|unique:user,email,'.$id.',user_id'],
             ['password|密码', 'require|length:6,16'],
             ['password_confirm|确认密码', 'require|confirm'],
@@ -39,12 +40,12 @@ class UserValidate extends BaseValidate
     public function setScene()
     {
         return [
-            'register'      => ['email', 'password', 'password_confirm', 'verify'], //注册
-            'login'         => ['email' => 'require|email|token', 'password', 'verify'], //登入
-            'basicEdit'     => ['email', 'nickname', 'sex', 'birthday'], //基本信息修改
+            'register'      => ['__token__', 'email', 'password', 'password_confirm', 'verify'], //注册
+            'login'         => ['__token__', 'email' => 'require|email', 'password', 'verify'], //登入
+            'basicEdit'     => ['__token__', 'email', 'nickname', 'sex', 'birthday'], //基本信息修改
             'setPassword'   => ['password','password_confirm'], //修改密码
             'uploadAvatar'  => ['file'], //上传头像
-            'forget'        => ['email' => 'require|email|token', 'verify'], //邮箱找回密码
+            'forget'        => ['__token__', 'email' => 'require|email', 'verify'], //邮箱找回密码
         ];
     }
 

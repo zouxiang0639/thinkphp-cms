@@ -89,7 +89,7 @@ use app\common\consts\file\FileTypeConst;
         <div class="btn-group width2">
             <?=Tool::get('form')->select(
             'type',
-            array_merge([0 => '全部模型'], FileTypeConst::desc()),
+            array_merge([0 => '全部类型'], FileTypeConst::desc()),
             input('type'),
             ['class' => 'form-control', 'id' => 'navcid_select' ]
             )?>
@@ -97,10 +97,14 @@ use app\common\consts\file\FileTypeConst;
         <div class="btn-group width2">
             <input class="form-control width2" placeholder="文件路由或者名称" type="text" name="name" value="{:input('name')}">
         </div>
-        <div class="btn-group width2">
+        <div class="btn-group">
             <input class="btn btn-primary"  type="submit" value="查询">
         </div>
+        <div class="btn-group">
+            <a class="btn btn-primary" onclick="uploadFile()">上传文件</a>
+        </div>
     </form>
+
 
     <div class="bs-example" data-example-id="simple-thumbnails">
 
@@ -129,4 +133,29 @@ use app\common\consts\file\FileTypeConst;
 
 {block name="script"}
 <script src="__STATIC__/default/headjs.js"></script>
+<script src="__STATIC__/default/layui/layui.js"></script>
+<script>
+    layui.use(['layer'], function(){
+        var layer = layui.layer; //弹层
+    });
+    function uploadFile(){
+        layer.open({
+            title: '导入excel数据',
+            type: 2,
+            area: ['600px', '600px'],
+            shade: 0.8,
+            maxmin: true,
+            content: '{:url("loadExcel")}',
+            zIndex: layer.zIndex, //重点1
+            btn:['提交', '取消'],
+            yes:function(index, layero) {
+                $(layero).find("iframe")[0].contentWindow.submit();
+            },
+            success: function(layero){
+                layer.setTop(layero); //重点2
+            }
+        });
+    }
+
+</script>
 {/block}

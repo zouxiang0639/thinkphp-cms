@@ -7,4 +7,5 @@ namespace app\common\consts\user;
 class UserLoginType
 {
     const EMAIL  = 1;  //邮箱
+    const USERNAME  = 2;  //用户名
 }

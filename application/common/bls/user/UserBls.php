@@ -60,6 +60,9 @@ class UserBls
             case UserLoginType::EMAIL :
                 $where['email'] = $name;
                 break;
+            case UserLoginType::USERNAME :
+                $where['username'] = $name;
+                break;
             default:
                 return '没有这个登入类型';
         }
@@ -72,7 +75,7 @@ class UserBls
             if($model->password == $password) {
 
                 //写人session
-                self::setSession($model->user_id, $model->username);
+                self::setSession($model->user_id, $name);
 
                 return true;
             }
