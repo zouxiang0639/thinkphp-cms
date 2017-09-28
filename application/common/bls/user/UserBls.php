@@ -38,6 +38,12 @@ class UserBls
         return UserModel::where($where)->find();
     }
 
+    public static function update(UserModel $model, $data)
+    {
+        dump($model->save($data));die;
+        return $model->save($data);
+    }
+
     public static function getUser()
     {
         if($user = self::is_login()) {

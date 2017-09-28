@@ -15,9 +15,9 @@ class Rule
      * @param $user_id
      * @return array|bool|false|\PDOStatement|string|\think\Model
      */
-    public function add($integral, $user_id)
+    public function add($integral, $model)
     {
-        $model = UserBls::getOneUser(['user_id' => $user_id]);
+
         $model->integral = $model->integral + $integral;
         $model->total_integral = $model->total_integral + $integral;
         if($model->level != IntegralLevelConst::THREE) {

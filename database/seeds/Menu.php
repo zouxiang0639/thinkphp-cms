@@ -1259,6 +1259,14 @@ class Menu extends \Phinx\Seed\AbstractSeed
                             'action'    => 'setPassword',
                             'type'      => 1,
                             'status'    => 0
+                        ],
+                        [
+                            'name'      => '用户更新',
+                            'app'       => 'manage',
+                            'model'     => 'user.index',
+                            'action'    => 'update',
+                            'type'      => 1,
+                            'status'    => 0
                         ]
                     )
                 ]

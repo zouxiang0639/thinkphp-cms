@@ -20,13 +20,27 @@ class Integral
 
     /**
      * 减积分
-     * @param $id
      * @param $user_id
+     * @param $integral
      * @param $title
      * @return bool|string
      */
-    public static function reduceIntegral($id, $user_id, $title)
+    public static function reduceIntegral($user_id, $integral, $title)
     {
-        return (new IntegralRule())->reduceIntegral($id, $user_id, $title);
+        return (new IntegralRule())->reduceIntegral($user_id, $integral, $title);
     }
+
+    /**
+     * 手动添加积分
+     * @param $user_id
+     * @param $integral
+     * @param $title
+     * @return bool|string
+     */
+    public static function manuallyAddIntegral($user_id, $integral, $title)
+    {
+        return (new IntegralRule())->manuallyAddIntegral($user_id, $integral, $title);
+    }
+
+
 }

@@ -1,24 +1,32 @@
 {extend name="manage@layouts/master" /}
+
+{block name="php"}
+<?php
+use app\common\tool\Tool;
+use app\common\consts\integral\IntegralLevelConst;
+?>
+{/block}
 {block name="content"}
 {include file='manage@public_file/nav_tabs' /}
     <div class="bs-example">
+        <form class="form-horizontal" action="{:url('update',['id'=>$info['user_id']])}" method="post" >
     <table class="table table-bordered">
         <tr>
             <th width="150">用户名</th>
             <th>
-                {$info.username ?? ''}
+                {:e($info['username']) ?? ''}
             </th>
         </tr>
         <tr>
             <th>电子邮箱</th>
             <td>
-                {$info.email ?? ''}  ({$info.is_email ? '已绑定邮箱' : '还未绑定邮箱'})
+                {:e($info['email']) ?? ''}  ({$info.is_email ? '已绑定邮箱' : '还未绑定邮箱'})
             </td>
         </tr>
         <tr>
             <th>昵称</th>
             <td>
-                {$info.nickname ?? ''}
+                {:e($info['nickname']) ?? ''}
             </td>
         </tr>
         {if condition="config('extend.integral')"}
@@ -26,6 +34,29 @@
             <th>积分</th>
             <td>
                 {$info.integral ?? ''}
+            </td>
+        </tr>
+        <tr>
+            <th>总积分</th>
+            <td>
+                {$info.total_integral ?? ''}
+            </td>
+        </tr>
+        <tr>
+            <th>会员等级</th>
+            <td>
+                {:Tool::get('form')->select(
+                'level',
+                IntegralLevelConst::desc(),
+                isset($info->level) ? $info->level :'',
+                ['class'=>'form-control text']
+                )}
+            </td>
+        </tr>
+        <tr>
+            <th>添加积分</th>
+            <td>
+                <input type="text" value='' class="form-control text" name="add_integral">
             </td>
         </tr>
         {/if}
@@ -39,20 +70,20 @@
         <tr>
             <th>简介</th>
             <td>
-                {$info.comment ?? ''}
+                {:e($info['comment']) ?? ''}
             </td>
         </tr>
-
-
     </table>
+            <div class="form-actions col-sm-12">
+
+                <button type="button" class="btn btn-primary ajax-post " autocomplete="off">
+                    保存
+                </button>
+                <a class="btn btn-default active" href="JavaScript:history.go(-1)">返回</a>
+            </div>
+        </form>
 </div>
 
-    <div class="form-actions col-sm-12">
 
-   <!--     <button type="button" class="btn btn-primary ajax-post " autocomplete="off">
-            保存
-        </button>-->
-        <a class="btn btn-default active" href="JavaScript:history.go(-1)">返回</a>
-    </div>
 {/block}
 

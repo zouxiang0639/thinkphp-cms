@@ -36,11 +36,10 @@ $able = UserStatusConst::ABLE;
         {foreach name='$list' item='value' }
         <tr>
             <th width="50">{$value.user_id}</th>
-            <th>{$value.email}</th>
-            <th>{$value.nickname}</th>
-            <th>{$value.statusName}</th>
+            <th>{:e($value['email'])}</th>
+            <th>{:e($value['nickname'])}</th>
+            <th>{:e($value['statusName'])}</th>
             <th>
-
                 {if condition="$value->status == $able"}
                 <a class="a-post" post-msg="你确定要禁用吗?" post-url="{:url('status', ['id'=>$value['user_id'], 'status' => UserStatusConst::UNABLE])}">
                     禁用
