@@ -8,7 +8,6 @@ use app\common\library\integral\Integral;
 use app\common\tool\Tool;
 use app\manage\controller\BasicController;
 use app\common\bls\user\traits\UserTrait;
-use thinkcms\auth\Auth;
 
 class Index extends BasicController
 {
@@ -122,14 +121,15 @@ class Index extends BasicController
             $post = $this->request->post();
             $model = UserBls::getOneUser(['user_id'=>input('id')]);
             $data = ['update_time' => date('Y-m-d H:i:s')];
+            $integral = false;
             if(config('extend.integral')){
                 $data['level'] = $post['level'];
-                if(empty($post['add_integral'])) {
-                    Integral::manuallyAddIntegral($model->user_id, intval($post['add_integral']), '官方操作');
+                if(!empty($post['add_integral'])) {
+                    $integral = Integral::manuallyAddIntegral($model->user_id, intval($post['add_integral']), '官方操作');
                 }
             }
 
-            if(UserBls::update($model, $data)){
+            if(UserBls::update($model, $data) || $integral){
                 return $this->success('操作成功', url('index'));
             } else {
                 return $this->error('操作失败');

@@ -1,5 +1,6 @@
 <?php
 namespace app\common\library\integral;
+use app\common\bls\user\model\UserModel;
 use app\common\bls\user\UserBls;
 use app\common\consts\integral\IntegralLevelConst;
 
@@ -12,18 +13,14 @@ class Rule
     /**
      * 增加积分
      * @param $integral
-     * @param $user_id
+     * @param $model
      * @return array|bool|false|\PDOStatement|string|\think\Model
      */
-    public function add($integral, $model)
+    public function add($integral, UserModel $model)
     {
-
         $model->integral = $model->integral + $integral;
         $model->total_integral = $model->total_integral + $integral;
-        if($model->level != IntegralLevelConst::THREE) {
-            $model->level = IntegralLevelConst::checkLevel($model->total_integral);
-        }
-
+        $model->level = self::diffLevel($model->level, $model->total_integral);
         if($model->save()) {
             return $model;
         }
@@ -48,5 +45,23 @@ class Rule
             }
         }
         return false;
+    }
+
+    /**
+     * 会员等级
+     * @param int $level   会员等级
+     * @param int $integral  总积分
+     * @return int|string
+     */
+    private function diffLevel($level, $integral)
+    {
+        if($level != IntegralLevelConst::THREE) {
+            $checkLevel = IntegralLevelConst::checkLevel($integral);
+            if($checkLevel > $level) {
+                return $checkLevel;
+            }
+        }
+
+        return $level;
     }
 }
