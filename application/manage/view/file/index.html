@@ -140,16 +140,17 @@ use app\common\consts\file\FileTypeConst;
     });
     function uploadFile(){
         layer.open({
-            title: '导入excel数据',
+            title: '上传文件',
             type: 2,
             area: ['600px', '600px'],
             shade: 0.8,
             maxmin: true,
-            content: '{:url("loadExcel")}',
+            content: '{:url("uploadFile")}',
             zIndex: layer.zIndex, //重点1
-            btn:['提交', '取消'],
+            btn:['获取文件链接', '关闭'],
             yes:function(index, layero) {
-                $(layero).find("iframe")[0].contentWindow.submit();
+                var html = $(layero).find("iframe")[0].contentWindow.filePath();
+                alert(html);die;
             },
             success: function(layero){
                 layer.setTop(layero); //重点2

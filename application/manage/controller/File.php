@@ -2,6 +2,7 @@
 namespace app\manage\controller;
 
 use app\common\bls\file\FileBls;
+use app\common\consts\file\FileTypeConst;
 use app\common\tool\Tool;
 use think\Request;
 use app\common\bls\file\traits\FileTrait;
@@ -72,7 +73,6 @@ class File extends BasicController
     {
 
         $param              = $this->request->param();
-        $this->view->engine->layout(false);
         $extensions         = Tool::get('file')->fileType($param['filetype']);
         $info   = [
             'multi'                     => $param['multi'],
@@ -83,6 +83,29 @@ class File extends BasicController
         ];
         return $this->fetch('',[
             'info'  =>  $info
+        ]);
+    }
+
+    public function uploadFile()
+    {
+        if(empty($_GET['type'])) {
+            $_GET['type'] = 1;
+        }
+        $param              = $this->request->param();
+        $type = FileTypeConst::getEn($param['type']);
+
+        $extensions         = Tool::get('file')->fileType($type);
+
+        $info   = [
+            'multi'                     => 20,
+            'extensions'                => $extensions['ext'],
+            'mime_type'                 => "{'title':'{$extensions['title']}','extensions':'{$extensions['ext']}'}",
+            'upload_max_filesize_mb'    => $extensions['upload_max_filesize'],
+            'app'                       => 'Portal'
+        ];
+        return $this->fetch('',[
+            'info'  =>  $info,
+            'type' => $type
         ]);
     }
 

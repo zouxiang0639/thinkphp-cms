@@ -1064,7 +1064,15 @@ class Menu extends \Phinx\Seed\AbstractSeed
                             'action'    => 'index',
                             'type'      => 1,
                             'status'    => 1
-                        ]
+                        ],
+                        [
+                            'name'      => '文件上传',
+                            'app'       => 'manage',
+                            'model'     => 'file',
+                            'action'    => 'uploadFile',
+                            'type'      => 1,
+                            'status'    => 0
+                        ],
                     )
                 ],
                 [

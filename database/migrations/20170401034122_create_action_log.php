@@ -18,6 +18,7 @@ class CreateActionLog extends Migrator
             ->addColumn('log', 'string', ['limit' =>  MysqlAdapter::TEXT_LONG, 'comment' => '日志备注'])
             ->addColumn('log_url', 'string', ['limit' => '100', 'comment' => '执行的URL'])
             ->addColumn('username', 'string', ['limit' => '100', 'comment' => '执行者名称'])
+            ->addColumn('create_time', 'integer', ['comment' => '创建日期'])
             ->addIndex(['user_id'])
             ->addIndex(['title'])
             ->save();
