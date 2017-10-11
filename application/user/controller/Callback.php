@@ -1,20 +1,12 @@
 <?php
 namespace app\user\controller;
 
+use app\common\library\sdk\AliPaySdk;
 
-
-use think\Collection;
-
-class Callback extends Collection
+class Callback
 {
-
-    public function abc()
-    {
-
-    }
-
     public function alipayCallback()
     {
-
+        return (new AliPaySdk())->aliPayCallback();
     }
 }

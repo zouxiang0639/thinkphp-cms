@@ -52,9 +52,9 @@ class Cart extends BasicController
             }
 
             if(CartBls::createCart($cart, $data)) {
-                return $this->success('添加成功');
+                return $this->success('已加入购物车');
             } else {
-                return $this->error('产品已存在');
+                return $this->success('产品已存在');
             }
 
         }

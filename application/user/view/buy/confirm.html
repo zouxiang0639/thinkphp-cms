@@ -1,0 +1,211 @@
+{extend name="layouts/master" /}
+
+{block name="php"}
+<?php
+use app\common\consts\order\OrderPayTypeConst;
+?>
+{/block}
+
+
+{block name="style"}
+<style>
+    .layui-col-md12{padding: 20px 0px}
+    .money-box label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 90px;
+        color: #757575;
+        zoom: 1;
+    }
+    .money-box li {
+        display: block;
+        padding-left: 100px;
+        line-height: 2;
+        position: relative;
+        zoom: 1;
+    }
+    .money-box .val {
+        color: #ff6700;
+        zoom: 1;
+    }
+    .title {
+        float: left;
+        color: #333;
+        font-size: 18px;
+        line-height: 20px;
+        font-weight: normal;
+        line-height: 40px;
+    }
+    .payment-box {
+        margin-bottom: 30px;
+    }
+    .payment-box .payment-header {
+        margin-bottom: 15px;
+    }
+    .payment-box .payment-header .title {
+        float: left;
+        font-size: 16px;
+        color: #616161;
+    }
+    .section ul, .section li {
+        list-style: none;
+    }
+    .payment-list li:hover {
+        border: 1px solid red;
+    }
+    .payment-list .checked{
+        border: 1px solid red;
+    }
+    .payment-list li {
+        float: left;
+        width: 174px;
+        height: 60px;
+        line-height: 60px;
+        margin-left: 14px;
+        margin-bottom: 14px;
+        border: 1px solid #e0e0e0;
+        text-align: center;
+        cursor: pointer;
+        overflow: hidden;
+        _zoom: 1;
+        -webkit-transition: all .4s;
+        transition: all .4s;
+    }
+</style>
+{/block}
+{block name="content"}
+<div class="main layui-clear">
+    <form class="layui-form" action="">
+        <div class="fly-panel fly-panel-user" pad20="">
+        <table class="layui-table" lay-size="lg">
+            <colgroup>
+                <col width="150">
+                <col width="200">
+                <col>
+            </colgroup>
+            <thead>
+            <tr>
+                <th>商品名称</th>
+                <th>所选格式</th>
+                <th>价格/元</th>
+            </tr>
+            </thead>
+            <tbody>
+            {foreach name='$list' item='value' }
+            <tr>
+                <td>
+                    <input type="hidden" name="id[{$key}]" value="{$value->cart_id}" >
+                    {$value->goods_name}
+                </td>
+                <td>
+                    {foreach name='$value->subproduct' item='item' }
+                    <p>
+                        <span>{$item->title}</span>
+                        <strong>¥{$item->price_format}</strong>
+                    </p>
+                    {/foreach}
+                </td>
+                <td>
+                    ¥{$value->amount_format}
+                </td>
+            </tr>
+            {/foreach}
+            </tbody>
+        </table>
+
+        <div>
+            选择以下支付方式付款
+            <hr>
+        </div>
+
+        <div class="payment-box ">
+            <div class="payment-header clearfix">
+                <h3 class="title">支付平台</h3>
+                <span class="desc"></span>
+            </div>
+            <div class="payment-body">
+                <ul class="payment-list">
+                    {foreach name=':OrderPayTypeConst::image()' item='value' }
+                    <li onclick="payPush(this, {$key})">
+                        <img src="__STATIC__{$value}" >
+                    </li>
+                    {/foreach}
+                </ul>
+            </div>
+        </div>
+
+        <div>
+            <hr>
+        </div>
+
+        <div class="money-box">
+            <ul>
+                <li class="clearfix">
+                    <label>商品件数：</label>
+                    <span class="val">{:count($list)}件</span>
+                </li>
+                <li class="clearfix total-price">
+                    <label>应付总额：</label>
+                    <span class="val"><em data-id="J_totalPrice">{$list->amount}</em>元</span>
+                </li>
+
+            </ul>
+        </div>
+        <input type="hidden" name="buy_type" value="">
+        <div style="float: right">
+            <button class="layui-btn" lay-submit="" lay-filter="order">立即购买</button>
+        </div>
+        <div style="clear: right">
+
+        </div>
+
+    </div>
+    </form>
+</div>
+{/block}
+
+{block name="script"}
+<script>
+
+
+    layui.use(['form'], function(){
+        var form = layui.form;
+
+        //监听提交
+        form.on('submit(order)', function(data){
+            var _this = $(this);
+            buttonDisabledTrue(_this);
+
+            $.ajax({
+                url: '{:url("generateOrder")}',
+                data: data.field,
+                type:'POST',
+                cache: false,
+                dataType:'json',
+                success:function(res) {
+                    if(res.code == 0) {
+                        buttonDisabledFalse(_this);
+                        layer.msg(res.msg, {icon: 5, time: 2000});
+                    } else {
+                        window.location.href = res.url;
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    layer.msg('服务器未正常响应，请稍后重试', {icon: 5, time: 2000});
+                }
+            });
+            return false;
+        });
+
+
+    });
+
+    function payPush(obj, num)
+    {
+        $('.checked').removeClass('checked');
+        $(obj).addClass('checked');
+        $('input[name=buy_type]').val(num)
+    }
+</script>
+{/block}

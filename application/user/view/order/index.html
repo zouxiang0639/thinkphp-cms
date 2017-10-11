@@ -1,0 +1,113 @@
+{extend name="layouts/master" /}
+
+{block name="php"}
+<?php
+$id = 4;
+use app\common\consts\order\OrderStatusConst;
+
+$paying = OrderStatusConst::PAYING;
+?>
+{/block}
+
+{block name="content"}
+<div class="main fly-user-main layui-clear">
+    {include file='public/filt_menu' /}
+    <div class="fly-panel fly-panel-user panel-user" pad20>
+        <div class="layui-tab layui-tab-brief" lay-filter="user" id="LAY_uc">
+            <ul class="layui-tab-title">
+                {foreach name=":OrderStatusConst::orderMenu()" item='item' }
+
+                <li data-type="mine-jie" lay-id="index" {:input("type") == $key ? 'class="layui-this"' : ''} >
+                <a href="{:url('order/index', ['type' => $key])}">{$item}</a>
+                </li>
+                {/foreach}
+
+            </ul>
+            <div class="layui-tab-content" id="LAY_ucm" style="padding: 20px 0;">
+
+                {foreach name='$list' item='value' }
+                <blockquote class="layui-elem-quote layui-quote-nm">
+                    <div class="layui-row">
+                        <div class="layui-col-md12">
+                            <div style="font-size: 16px">
+                                订单号:
+                                <b style="padding-right: 10px;">
+                                    {$value->sn}
+                                </b>
+                            </div>
+                        </div>
+                        <div class="layui-col-md5">
+                            <div class="grid-demo grid-demo-bg1">{$value->goods_name}</div>
+                        </div>
+                        <div class="layui-col-md3">
+                            <div class="grid-demo grid-demo-bg1">
+                                {foreach name='$value->orderAttachment' item='item' }
+                                <p>
+                                    <span>{$item->title}</span>
+                                    <strong>¥{$item->price_format}</strong>
+                                </p>
+                                {/foreach}
+                            </div>
+                        </div>
+                        <div class="layui-col-md2">
+                            <div class="grid-demo grid-demo-bg1">¥{$value->amount_format}</div>
+                        </div>
+                        <div class="layui-col-md2">
+                            <div class="grid-demo grid-demo-bg1">
+
+                                {if condition='$paying == $value->status'}
+                                <a class="layui-btn layui-btn-small" href="{:url('buy/payment', ['sn'=>$value->sn])}"  style="width: 68px;
+margin-bottom: 2px;">
+                                    {:OrderStatusConst::getDesc($value->status)}
+                                </a>
+                                <br>
+                                <a class="layui-btn layui-btn-small layui-btn-danger order-cancel"  data-id="{$value->order_id}">
+                                    取消订单
+                                </a>
+                                {else /}
+                                    {:OrderStatusConst::getDesc($value->status)}
+                                {/if}
+
+                            </div>
+                        </div>
+                    </div>
+                </blockquote>
+                {/foreach}
+            </div>
+        </div>
+    </div>
+
+</div>
+{/block}
+
+{block name="script"}
+<script>
+    layui.use(['form'], function(){
+        var form = layui.form;
+
+        $('.order-cancel').click(function(){
+
+            var id = $(this).attr('data-id');
+            $.ajax({
+                url: '{:url("cancel")}',
+                data: {'id':id, '_method':'delete'},
+                type:'POST',
+                cache: false,
+                dataType:'json',
+                success:function(res) {
+                    if(res.code == 0) {
+                        layer.msg(res.msg, {icon: 5, time: 2000});
+                    } else {
+                        layer.msg(res.msg, {icon: 1, time: 2000});
+                        window.location.href = res.url;
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    layer.msg('服务器未正常响应，请稍后重试', {icon: 5, time: 2000});
+                }
+            });
+        })
+
+    });
+</script>
+{/block}

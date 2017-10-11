@@ -10,45 +10,94 @@ $id = 3;
 <div class="main fly-user-main layui-clear">
     {include file='public/filt_menu' /}
     <div class="fly-panel fly-panel-user panel-user" pad20>
-        <form method="post" action="">
-            {foreach name='$list' item='value' }
-            <blockquote class="layui-elem-quote layui-quote-nm">
-                <div class="layui-row">
-                    <div class="layui-col-md2">
-                        <div class="grid-demo">
+        <div class="layui-tab layui-tab-brief" lay-filter="user" id="LAY_uc">
+            <ul class="layui-tab-title">
+                <li data-type="mine-jie" lay-id="index" class="layui-this">我的购物车</li>
+            </ul>
+            <div class="layui-tab-content" id="LAY_ucm" style="padding: 20px 0;">
+
+                <form method="post" action="{:url('buy/confirm')}">
+
+                    {foreach name='$list' item='value' }
+                    <blockquote class="layui-elem-quote layui-quote-nm">
+                        <div class="layui-row">
+                            <div class="layui-col-md2">
+                                <div class="grid-demo">
                             <span style="padding-right: 10px">
-                                <input name="cart_id" type="checkbox" value="{$value->cart_id}" checked></span>
-                            <img src="{$value->picture}" width="80rem">
-                        </div>
-                    </div>
-                    <div class="layui-col-md3">
-                        <div class="grid-demo grid-demo-bg1">{$value->goods_name}</div>
-                    </div>
-                    <div class="layui-col-md3">
-                        <div class="grid-demo grid-demo-bg1">
-                            <p>111</p>
-                        </div>
-                    </div>
-                    <div class="layui-col-md2">
-                        <div class="grid-demo grid-demo-bg1">¥{$value->amount}</div>
-                    </div>
-                    <div class="layui-col-md2">
-                        <div class="grid-demo grid-demo-bg1"><a href="">删除</a></div>
-                    </div>
-                </div>
-            </blockquote>
-            {/foreach}
+                                <input name="id[]" type="checkbox" value="{$value->cart_id}" checked>
+                            </span>
 
-            <div style="float: right">
-                <button class="layui-btn layui-btn-radius">立即购买</button>
+                                    {if condition="!empty($value->picture)"}
+                                    <img src="{$value->picture}" width="80rem">
+                                    {/if}
+                                </div>
+                            </div>
+                            <div class="layui-col-md3">
+                                <div class="grid-demo grid-demo-bg1">{$value->goods_name}</div>
+                            </div>
+                            <div class="layui-col-md3">
+                                <div class="grid-demo grid-demo-bg1">
+                                    {foreach name='$value->subproduct' item='item' }
+                                    <p>
+                                        <span>{$item->title}</span>
+                                        <strong>¥{$item->price_format}</strong>
+                                    </p>
+                                    {/foreach}
+                                </div>
+                            </div>
+                            <div class="layui-col-md2">
+                                <div class="grid-demo grid-demo-bg1">¥{$value->amount_format}</div>
+                            </div>
+                            <div class="layui-col-md2">
+                                <div class="grid-demo grid-demo-bg1">
+                                    <a data-id="{$value->cart_id}" class="cart-delete" >删除</a>
+                                </div>
+                            </div>
+                        </div>
+                    </blockquote>
+                    {/foreach}
+
+                    <div style="float: right">
+                        <button class="layui-btn layui-btn-radius">立即支付</button>
+                    </div>
+
+                </form>
             </div>
+        </div>
 
-        </form>
     </div>
 
 </div>
 {/block}
 
 {block name="script"}
+<script>
+    layui.use(['form'], function(){
+        var form = layui.form;
 
-{block}
+        $('.cart-delete').click(function(){
+
+            var id = $(this).attr('data-id');
+            $.ajax({
+                url: '{:url("delete")}',
+                data: {'id':id, '_method':'delete'},
+                type:'POST',
+                cache: false,
+                dataType:'json',
+                success:function(res) {
+                    if(res.code == 0) {
+                        layer.msg(res.msg, {icon: 5, time: 2000});
+                    } else {
+                        layer.msg(res.msg, {icon: 1, time: 2000});
+                        window.location.href = res.url;
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    layer.msg('服务器未正常响应，请稍后重试', {icon: 5, time: 2000});
+                }
+            });
+        })
+
+    });
+</script>
+{/block}
