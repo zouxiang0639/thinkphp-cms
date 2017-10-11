@@ -239,7 +239,7 @@ class Goods extends BasicController
 
         $limit = $this->request->get('limit');
 
-        $model = GoodsBls::getGoodsSelect('', '', $limit);
+        $model = GoodsBls::getGoodsSelect('', $limit);
 
         $formatData = [];
         foreach($model as $value) {

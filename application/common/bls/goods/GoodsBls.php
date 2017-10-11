@@ -112,7 +112,7 @@ class GoodsBls
        return Db::name($tableName)->where(['extended_id'=>$extended_id])->find();
     }
 
-    public static function getGoodsSelect($where, $order = '', $limit = '')
+    public static function getGoodsSelect($where, $limit = '', $order = '')
     {
         return GoodsModel::where($where)->order($order)->limit($limit)->select();
     }

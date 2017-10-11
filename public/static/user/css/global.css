@@ -217,7 +217,7 @@ body .layui-edit-face  .layui-layer-content{padding:0; background-color:#fff; co
 
 /* 用户中心 */
 body .fly-user-main{position: relative; width: 1085px; min-height: 600px; margin: 20px auto;}
-.fly-user-main>.layui-nav{position: absolute; left: 0; top: 0; z-index: 1000; height: 100%; padding: 10px 0;}
+.fly-user-main>.layui-nav{position: absolute; left: 0; top: 0; z-index: 1000; height: 100%; padding: 10px 0;max-height: 600px;}
 .fly-user-main>.layui-nav .layui-icon{position: relative; top: 2px; font-size: 20px; margin-right: 10px;}
 .fly-user-main>.fly-panel{width: 860px; min-height: 575px; margin: 0 0 10px 215px;}
 .fly-user-main .fly-none{min-height: 0;}

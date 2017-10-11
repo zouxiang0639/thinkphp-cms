@@ -71,7 +71,7 @@ class page extends BasicController
             $post   = Helper::recombinantArray($this->request->post(), 'photos');
 
             //数据验证
-            $result = $this->validate($post, 'app\common\bls\page\validate\pageValidate.create');
+            $result = $this->validate($post, 'app\common\bls\page\validate\PageValidate.create');
             if(true !== $result){
                 // 验证失败 输出错误信息
                 return $this->error($result);
@@ -118,7 +118,7 @@ class page extends BasicController
 
             $post   = Helper::recombinantArray($this->request->post(), 'photos');
             //数据验证
-            $result = $this->validate($post, 'app\common\bls\page\validate\pageValidate.update');
+            $result = $this->validate($post, 'app\common\bls\page\validate\PageValidate.update');
             if(true !== $result){
                 // 验证失败 输出错误信息
                 return $this->error($result);
