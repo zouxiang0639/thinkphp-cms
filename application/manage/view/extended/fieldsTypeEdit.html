@@ -5,6 +5,7 @@
 use app\common\tool\Tool;
 use app\common\consts\extended\ExtendedTypeConst;
 use app\common\consts\common\CommonFormInputConst;
+use app\common\consts\label\LabelTypeConst;
 ?>
 {/block}
 
@@ -58,7 +59,7 @@ use app\common\consts\common\CommonFormInputConst;
                 <th>
 
                     <a class="fields"   data-target=".bs-example-modal-lg" data-toggle="modal" input_value='{$v.input_value}'
-                       onclick="fields('{$v.title}', '{$v.input_type}' , $(this).attr('input_value') ,'{$v.comment}', '{$v.sort}', '{$v.extended_id}')" href="#">编辑</a>
+                       onclick="fields('{$v.title}', '{$v.input_type}' , $(this).attr('input_value') ,'{$v.comment}', '{$v.sort}', '{$v.extended_id}', '{$v.binding_label}')" href="#">编辑</a>
                     <a class="a-post" post-msg="你确定删除吗?" post-url="{:url('extended/fieldsDelete', ['id'=>$v['extended_id']])}">删除</a>
                 </th>
             </tr>
@@ -133,6 +134,20 @@ use app\common\consts\common\CommonFormInputConst;
                                 </td>
                             </tr>
                             <tr>
+                                <th>
+                                    绑定标签类型
+                                </th>
+                                <td>
+                                    {:Tool::get('form')->select('binding_label',
+                                    LabelTypeConst::desc(),
+                                    object_get($info,'input_type'),
+                                    ['class' =>'form-control text', 'placeholder'=>'不绑定标签']
+                                    )}
+                                    <span class="form-required">*</span>
+                                    <span class="span-text">绑定标签后可以在标签栏目上面添加标签就无需设置 输出默认值</span>
+                                </td>
+                            </tr>
+                            <tr>
                                 <th>输出默认值</th>
                                 <th>
                                     <textarea class="form-control text"  name="input_value" >{$info.input_value ?? ''}</textarea>
@@ -152,7 +167,7 @@ use app\common\consts\common\CommonFormInputConst;
     </div>
 
     <script>
-        function fields(title, input_type, input_value, comment, sort, id)
+        function fields(title, input_type, input_value, comment, sort, id, binding_label)
         {
             if(!id){
                 $('.modal-title').html('字段添加');
@@ -166,6 +181,7 @@ use app\common\consts\common\CommonFormInputConst;
             $('.modal-body [name=input_value] ').val(input_value);
             $('.modal-body [name=input_type] ').val(input_type);
             $('.modal-body [name=title]').val(title);
+            $('.modal-body [name=binding_label]').val(binding_label);
         }
 
         $(function(){

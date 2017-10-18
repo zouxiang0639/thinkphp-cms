@@ -36,4 +36,16 @@ class LabelBls
     {
         return LabelModel::where($where)->order($order)->select();
     }
+
+
+    /**
+     * 获取标签数组
+     * @param $type
+     * @param string $order
+     * @return false|\PDOStatement|string|\think\Collection
+     */
+    public static function getLabelArray($type, $order = '')
+    {
+        return LabelModel::where('type', $type)->order($order)->column('title', 'label_id');
+    }
 }

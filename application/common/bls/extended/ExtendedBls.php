@@ -3,6 +3,7 @@ namespace app\common\bls\extended;
 
 
 use app\common\bls\extended\model\ExtendedModel;
+use app\common\bls\label\LabelBls;
 use app\common\consts\extended\ExtendedMysqlFieldsTypeConst;
 use app\common\consts\extended\ExtendedTypeConst;
 use app\common\tool\Tool;
@@ -54,6 +55,7 @@ class ExtendedBls
         $model->input_type = $data['input_type'];
         $model->input_value = $data['input_value'];
         $model->parent_id = $data['parent_id'];
+        $model->binding_label = $data['binding_label'];
         $model->save();
 
         return $model;
@@ -195,15 +197,22 @@ class ExtendedBls
         $extend     = ExtendedModel::where(['parent_id'=>$id])
             ->order(["sort" => "desc", 'extended_id' => 'asc'])
             ->select();
-
         foreach((object)$extend as $v){
+
+            $inputValue = json_decode($v['input_value']);
+
+            //判断是否绑标签库
+            if($v['binding_label'] > 0) {
+                $inputValue = LabelBls::getLabelArray($v['binding_label']);
+            }
+
             //使用表单枚举生成<form> 标签支持
             $input  =  Tool::get('helper')->formEnum(
                 $v['input_type'],        //表单类型
                 'extend['.$v['name'].']',                       //变量名称
                 array_get($data,$v['name']),                    //置变量的值
                 ['class' => 'form-control text'],               //其他属性
-                json_decode($v['input_value'])                  //需要生成多个 如select
+                $inputValue                 //需要生成多个 如select
             );
 
             $html  .= "<tr>

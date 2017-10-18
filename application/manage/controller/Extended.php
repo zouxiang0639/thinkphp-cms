@@ -206,7 +206,7 @@ class Extended extends BasicController
     }
 
     /**
-     * 数据库类型修改
+     * 字段类型修改
      */
     public function fieldsTypeEdit()
     {
@@ -247,6 +247,7 @@ class Extended extends BasicController
                 $update->comment = $post['comment'];
                 $update->input_type = $post['input_type'];
                 $update->input_value = $post['input_value'];
+                $update->binding_label = $post['binding_label'];
 
                 //更新扩展数据库
                 if($update->save()){

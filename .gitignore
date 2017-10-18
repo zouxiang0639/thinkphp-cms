@@ -9,3 +9,5 @@ public/uploads/
 web.config
 database/backups
 application/manage/model/
+public/static/h5/
+public/static/index/
