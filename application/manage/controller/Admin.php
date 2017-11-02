@@ -1,7 +1,7 @@
 <?php
 namespace app\manage\controller;
 
-use app\common\bls\Admin\AdminBls;
+use app\common\bls\admin\AdminBls;
 use app\common\tool\Tool;
 use thinkcms\auth\model\AuthRole;
 use thinkcms\auth\model\AuthRoleUser;
